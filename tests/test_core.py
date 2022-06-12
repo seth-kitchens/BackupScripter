@@ -1,0 +1,254 @@
+from typing import Iterable
+import unittest
+import os
+import shutil
+import copy
+import zipfile
+
+from bs.fs.vfs import VFSBS
+from bs.script_data import ScriptDataManagerBS
+from bs import create
+from bs import g
+from bs.fs.matching_group import MatchingGroup
+
+fio_path = g.project_relpath('temp/fio')
+def fio_relpath(path):
+    return os.path.normpath(os.path.join(fio_path, path))
+def clear_fio():
+    if os.path.exists(fio_path):
+        shutil.rmtree(fio_path)
+    os.mkdir(fio_path)
+
+def make_sdm(sdm=None,
+        script_filename=None,
+        script_dest_rel=None,
+        backup_filename=None,
+        backup_dest_rel=None,
+        backup_filename_date=None,
+        included_items=None,
+        excluded_items=None,
+        archive_type=None,
+        max_backups=None,
+        backup_old_age_secs=None,
+        backup_recent_age_secs=None,
+        pull_age_from_postfix=None,
+        matching_groups=None):
+    sdm = copy.deepcopy(sdm) if sdm != None else ScriptDataManagerBS(script_data_file=None)
+    def update(name, val):
+        if val != None:
+            sdm[name] = val
+
+    if script_dest_rel != None:
+        sdm['ScriptDestination'] = fio_relpath(script_dest_rel)
+    elif not sdm['ScriptDestination'].startswith(fio_path):
+        raise RuntimeError
+    if backup_dest_rel != None:
+        sdm['BackupDestination'] = fio_relpath(backup_dest_rel)
+    elif not sdm['BackupDestination'].startswith(fio_path):
+        raise RuntimeError
+    
+    update('ScriptFileName', script_filename)
+    update('BackupFileName', backup_filename)
+    update('BackupFileNameDate', backup_filename_date)
+    update('IncludedItems', included_items)
+    update('ExcludedItems', excluded_items)
+    update('ArchiveType', archive_type)
+    update('MaxBackups', max_backups)
+    update('BackupOldAge', backup_old_age_secs)
+    update('BackupRecentAge', backup_recent_age_secs)
+    update('PullAgeFromPostfix', pull_age_from_postfix)
+    update('MatchingGroupsList', matching_groups)
+
+    return sdm
+
+class TestCaseBS(unittest.TestCase):
+    def tearDown(self):
+        clear_fio()
+        packing_dir = g.paths.abs.dirs.packing
+        if os.path.exists(packing_dir):
+            shutil.rmtree(packing_dir)
+
+class TestFile:
+    def __init__(self, name=None, parent_dir=None, path=None, size=None, text=None):
+        if path:
+            if name or parent_dir:
+                raise RuntimeError
+            self.path = path
+        else:
+            self.name = name
+            self.parent_dir = parent_dir
+        self.size = size
+        self.text = text
+
+    @property
+    def path(self):
+        return os.path.normpath(os.path.join(self.parent_dir, self.name))
+    @path.setter
+    def path(self, value):
+        self.parent_dir = os.path.dirname(value)
+        self.name = os.path.basename(value)
+    
+    def create(self, path=None):
+        MAX_TEST_FILE_SIZE = 10 * 1024 * 1024
+        encoding = 'UTF-8'
+
+        path = path if path != None else self.path
+        text = self.text if self.text != None else ''
+        if self.size != None:
+            if self.size > MAX_TEST_FILE_SIZE:
+                raise ValueError
+            text_bytes = bytes(text, encoding=encoding)
+            with open(path, 'wb') as f:
+                f.write(text_bytes)
+                if self.size > len(text_bytes):
+                    f.seek(self.size - 1)
+                    f.write('\0'.encode(encoding))
+        else:
+            with open(path, 'w', encoding=encoding) as f:
+                f.write(text)
+
+class TestDir:
+    def __init__(self, name=None, parent_dir=None, path=None):
+        if path:
+            if name or parent_dir:
+                raise RuntimeError
+            self.path = path
+        else:
+            self.name = name
+            self.parent_dir = parent_dir
+
+    @property
+    def path(self):
+        return os.path.normpath(os.path.join(self.parent_dir, self.name))
+    @path.setter
+    def path(self, value):
+        self.parent_dir = os.path.dirname(value)
+        self.name = os.path.basename(value)
+    
+    def create(self, path=None):
+        path = path if path != None else self.path
+        os.makedirs(path)
+
+class FSDef:
+    def __init__(self, base_path, fsdef_dict):
+        """FSDef: Define nested directories and files as a dict:\n
+            FSDef(..., fsdef_dict={
+                'fileA.txt': 'fileA text'
+                'dirA': {
+                    'fileB.dat': 'fileB text'
+                    'dirB': {},
+                    'dirC': {
+                        'fileC.txt': 'fileC text'
+                    }
+                },
+                'dirD': {
+                    'fileD.txt',
+                    'fileE.dat'
+                },
+                'fileX.txt': 'abc', # File with contents 'abc'
+                'fileY.txt': '',    # Empty file
+                'fileZ.txt': None,  # Empty file
+                'dirX': {},         # Empty directory
+                'dirY': None        # Incorrect! This will be a file, not an empty directory
+                'dirZ': {           # Any other Iterable[str] makes a directory of only empty files
+                    'file1.txt',
+                    'file2.txt'
+                }
+            })"""
+        self.files = {}
+        self.dirs = {}
+        self.base_path = base_path
+    
+        self.unpack_fsdef_dict(base_path, fsdef_dict)
+        
+        # Remove Duplicates
+        to_remove = set()
+        for l in self.dirs.keys():
+            for r in self.dirs.keys():
+                if l != r and l.startswith(r):
+                    to_remove.add(r)
+        for path in to_remove:
+            del self.dirs[path]
+
+    def add_file(self, name, parent_dir, test_file):
+        test_file.name = name
+        test_file.parent_dir = parent_dir
+        path = test_file.path
+        self.files[path] = test_file
+    def add_dir(self, name, parent_dir, test_dir):
+        test_dir.name = name
+        test_dir.parent_dir = parent_dir
+        path = test_dir.path
+        self.dirs[path] = test_dir
+    def unpack_fsdef_dict(self, root, fsdef_dict) -> list[str]:
+        for k, v in fsdef_dict.items():
+            if root:
+                current = os.path.normpath(os.path.join(root, k))
+            else:
+                current = os.path.normpath(k)
+            if v == None:
+                self.add_file(k, root, TestFile(text=''))
+            elif isinstance(v, str):
+                self.add_file(k, root, TestFile(text=v))
+            elif isinstance(v, dict):
+                self.add_dir(k, root, TestDir())
+                self.unpack_fsdef_dict(current, v)
+            elif isinstance(v, TestFile):
+                self.add_file(k, root, v)
+            elif isinstance(v, TestDir):
+                self.add_dir(k, root, v)
+            elif isinstance(v, Iterable):
+                for el in v:
+                    if isinstance(el, str):
+                        self.add_file(el, current, TestFile(text=el))
+                    elif isinstance(el, TestFile):
+                        self.add_file(el.name, current, el)
+                    elif isinstance(el, TestDir):
+                        self.add_dir(el.name, current, el)
+                    else:
+                        raise RuntimeError('bad fsdef_dict, Iterables must'
+                            'consist of only (A) strings representing empty files,'
+                            '(B) TestFiles, or (C) TestDirss')
+            else:
+                raise RuntimeError('bad fsdef_dict, entry of type \'' + str(type(v)) + '\' not supported')
+
+    def create(self):
+        if not os.path.exists(self.base_path):
+            raise RuntimeError('base_path does not exist')
+        if not os.path.isdir(self.base_path):
+            raise RuntimeError('base_path not dir')
+        for test_dir in self.dirs.values():
+            path = test_dir.path
+            if os.path.exists(path):
+                raise RuntimeError('Path already exists', path)
+            test_dir.create()
+        
+        for test_file in self.files.values():
+            path = test_file.path
+            if os.path.exists(path):
+                raise RuntimeError('Path already exists', path)
+            test_file.create()
+        
+    def assert_exists(self, testcase):
+        for d in self.dirs.keys():
+            testcase.assertTrue(os.path.isdir(d))
+        for f in self.files.keys():
+            testcase.assertTrue(os.path.isfile(f))
+    
+    def assert_files_match_zip(self, testcase, path, compare_contents=False):
+        if compare_contents:
+            raise NotImplementedError
+        zfiles = set()
+        with zipfile.ZipFile(path, 'r') as zf:
+            for zi in zf.infolist():
+                if not zi.is_dir():
+                    zfiles.add(os.path.normpath(zi.filename))
+        filenames = set(self.files.keys())
+        diff = filenames.symmetric_difference(zfiles)
+        msg = ''.join((str(s) for s in (
+            'Zipped files do not match expected.\n',
+            '  Expected: ', filenames, '\n',
+            '  Actual: ', zfiles, '\n',
+            '  diff: ', diff
+        )))
+        testcase.assertTrue(len(diff) == 0, msg)

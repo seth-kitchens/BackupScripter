@@ -1,0 +1,85 @@
+import PySimpleGUI as sg
+import nssgui as nss
+
+__all__ = ['VFSExplorerViewBS']
+
+class VFSExplorerViewBS(nss.el.VFSExplorerView):
+    def __init__(self, object_id, vfs_explorer, read_only=False) -> None:
+        super().__init__(object_id, vfs_explorer, read_only=read_only)
+
+    ### GuiElement
+
+    def _get_row_actions(self):
+        row = super()._get_row_actions()
+        row.append(sg.Button('Exclude', key=self.keys['Exclude'], size=10)),
+        row.append(sg.Button('Include', key=self.keys['Include'], size=10))
+        return row
+
+    ### VFSExplorerView
+
+    def define_events(self):
+        super().define_events()
+
+        if self.read_only:
+            return
+        
+        @self.event(self.keys['AddFolder'])
+        def event_add_folder(context):
+            item_path = context.values[self.keys['AddFolder']]
+            if item_path == '':
+                return
+            self.vfs.add_path(item_path)
+            self.vfs.calc_root(item_path)
+            self.vfs_explorer.exit_to_root()
+            self.push(context.window)
+        
+        @self.event(self.keys['AddFiles'])
+        def event_add_files(context):
+            item_paths = context.values[self.keys['AddFiles']].split(';')
+            if len(item_paths) <= 0:
+                return
+            for item_path in item_paths:
+                self.vfs.add_path(item_path)
+            self.vfs.calc_all()
+            self.vfs_explorer.exit_to_root()
+            self.push(context.window)
+
+        @self.event(self.keys['Remove'])
+        def event_remove(context):
+            if not self.selection:
+                return
+            path = self.selection.get_path()
+            root = self.vfs.find_root_entry(path)
+            if path != root.get_path():
+                context.event = self.keys['Exclude']
+                return self.handle_event(context)
+            else:
+                self.vfs.remove(path)
+            root.calc_ie()
+            self.vfs_explorer.refresh_current_dir()
+            self.deselect()
+            self.push(context.window)
+
+        # VFSExplorerViewBS
+
+        @self.event(self.keys['Include'])
+        def event_include(context):
+            if not self.selection:
+                return
+            self.selection.include()
+            root = self.vfs.find_root_entry(self.selection.get_path())
+            root.calc_ie()
+            self.push(context.window)
+
+        @self.event(self.keys['Exclude'])
+        def event_exclude(context):
+            if not self.selection:
+                return
+            self.selection.exclude()
+            path = self.selection.get_path()
+            root = self.vfs.find_root_entry(path)
+            if path == root.get_path():
+                context.event = self.keys['Remove']
+                return self.handle_event(context)
+            root.calc_ie()
+            self.push(context.window)

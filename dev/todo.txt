@@ -1,0 +1,61 @@
+Backup Scripter
+
+Todo
+---
+
+QoL, Settings
+- add default locations for main page file browsing
+- consider settings for editor, particularly default browse locations
+	- settings screen?
+
+Bugs, Poorly Implemented
+- in windows/manage_included.py, Resolve All does not remove root folders
+- stored script data is redundantly json encoded
+- make units dropdown from InputUnits ordered correctly
+- window flashes when being re-enabled
+- what happens when two included roots have the same name?
+- InfoButton and Info is messy
+
+Unimplemented
+- add '(Repeat) until no changes' option to matching groups
+- Add 7z
+- Implement compression settings
+- in assert_files_match_zip in test_core.py, implement compare_contents
+- add backup results (size of backup created, file deleted, current backups)
+- in script/details.py add (# days old) text to backup-to-be-overwritten segment
+- in script/app.py add option to edit scripts with editor
+- in general/.../script_data.py:ScriptDataManager:verify_file_is_script(), make a more through check, perhaps by inserting data into the pyz
+- Increase performance by making a lazy init function in gem, as in gem.layout(class, *args, *kwargs) that calls init IF first call
+- add relative paths (might have to be explicit)
+- add matching option for age of file
+
+Design, Behavior, Error Prevention
+- status messages? set defaults / load defaults need 'Loading...' or something
+- improve consistency with 'folder' vs 'dir'
+- pulling date from files only works if no periods in file name or date string, enforce this with GUI
+- making the edit window for ListContainer was messy and poorly documented. This needs to be easier to understand.
+- how do changes to code affect backwards compatibility with existing pyz scripts? how to prevent the functions from breaking when accessing pyz script generated from older code?
+- should the event_loop() function really be in the event_manager class?
+- folder browse button for StringContainer/TextList is currently a part of StringContainer (in the init), shouldn't it be a part of TextList instead?
+- are asyncwindows disabled from context.disable()?
+- gem.row/etc should be self.row in window classes. Maybe use a iGEManager interface for passing gem as param as well?
+
+Documentation
+- clean and document project/create.py
+- convert above-function comments to docstrings so that they can be seen in ide
+- look over and update existing documentation
+- update FSDef in test_core.py with correct documentation of TestFile and TestDir
+
+Inclusion Matching
+- Implement Inclusion Matching
+- Does including with pattern matching include appropriate parent folders
+- Should inclusion require a 'within path' ?
+
+Info
+- add main page info
+- add manage included info
+- add matching groups info
+
+Project Organization, Version Control
+- vfs explorer view is still somewhat project specific
+- move EmbedText from nssgui.sg.utils to somewhere better
