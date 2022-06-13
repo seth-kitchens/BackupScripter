@@ -2,7 +2,7 @@ from scriptlib.script_data import ScriptDataManager, ScriptVariable, ScriptDataG
 from bs import g
 
 class ScriptDataManagerBS(ScriptDataManager):
-    def __init__(self, packfio=g.packfio, script_data_file:str|None=g.paths.files.script_data, read_only=False):
+    def __init__(self, packfio=g.packfio, script_data_file:str|None=g.paths.rel.files.script_data, read_only=False):
         super().__init__(packfio, script_data_file=script_data_file, read_only=read_only)
         SV = ScriptVariable
         

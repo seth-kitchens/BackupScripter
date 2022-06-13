@@ -30,34 +30,35 @@ def update_g(cls_lib:type, cls_project:type, name, value=None):
     setattr(cls_lib, name, cls_project.__dict__[name])
 
 _project_path = str(Path(__file__).parent.parent)
-def project_relpath(relpath):
+def project_path(relpath):
     return os.path.normpath(os.path.join(_project_path, relpath))
+
 class paths:
     class rel:
         class files:
+            script_data = 'data/project/script_data.json'
+            initial_script = 'backup.py' # loaded at start
+            template_script = 'backup.py'
             packfio_data = 'data/project/packfio_data.py'
         class dirs:
-            pass
+            packing = 'temp/packing'
+            logs = 'logs'
     class abs:
         class files:
-            script_data = project_relpath('data/project/script_data.json')
-            initial_script = project_relpath('backup.py') # loaded at start
-            template_script = project_relpath('backup.py')
-            packfio_data = project_relpath('data/project/packfio_data.py')
+            script_data = project_path('data/project/script_data.json')
+            initial_script = project_path('backup.py') # loaded at start
+            template_script = project_path('backup.py')
+            packfio_data = project_path('data/project/packfio_data.py')
         class dirs:
             project = _project_path
-            packing = project_relpath('temp/packing')
-            logs = project_relpath('logs')
-    files = abs.files
-    dirs = abs.dirs
+            packing = project_path('temp/packing')
+            logs = project_path('logs')\
 
 
-packfio_path_definition = {
-    (paths.dirs.project, paths.dirs.packing): [
-        paths.files.script_data
-    ]
+packfio_files_to_pack = {
+    paths.rel.files.script_data
 }
-packfio = PackFIO(packfio_path_definition, packfio_data)
+packfio = PackFIO(packfio_files_to_pack, packfio_data)
 
 
 # Variables

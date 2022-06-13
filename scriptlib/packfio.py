@@ -1,15 +1,12 @@
 import json
 import os.path
+from pathlib import Path
 
 class PackFIO:
-    def __init__(self, path_definition:dict[tuple[str,str],list[str]], packfio_data):
+    def __init__(self, paths, packfio_data, basepath=None):
         """PackFIO: Packaging File I/O"""
-        self.paths = []
-        self.base_paths = {} # base path -> packed base path
-        for (base, base_packed), paths in path_definition.items():
-            self.base_paths[base] = base_packed
-            for path in paths:
-                self.paths.append(path)
+        self.basepath = basepath
+        self.paths = paths
         self.packfio_data = packfio_data
 
 
@@ -18,6 +15,7 @@ class PackFIO:
 
 
     def read_file(self, path, require_known=True):
+        """path should be relative to project"""
         if self.is_packed():
             if path in self.packfio_data:
                 return self.packfio_data[path]
@@ -29,27 +27,20 @@ class PackFIO:
             text = file_in.read()
         return text
     def write_file(self, path, text):
+        """path should be relative to project"""
         if self.is_packed():
             raise RuntimeError('Tried to write to packed data')
         with open(path, 'w') as file_out:
             file_out.write(text)
 
 
-
-    def get_packing_path(self, packing_dir, path):
-        for base_path, base_path_packed in self.base_paths.items():
-            if path.startswith(base_path):
-                relpath = os.path.relpath(path, base_path)
-                packing_relpath = os.path.normpath(os.path.join(base_path_packed, relpath))
-                return os.path.normpath(os.path.join(packing_dir, packing_relpath))
-        raise RuntimeError('Failed to get packing path', path)
     def pack_files(self, packing_dir, packed_data_relpath):
         if self.is_packed():
             raise RuntimeError('Tried to pack when already packed')
         packed_data_path = os.path.normpath(os.path.join(packing_dir, packed_data_relpath))
         packed_files = {}
         for path in self.paths:
-            packing_path = self.get_packing_path(packing_dir, path)
+            packing_path = os.path.normpath(os.path.join(packing_dir, path))
             with open(packing_path, 'r') as file_in:
                 packed_files[path] = file_in.read()
         packed_text = 'packfio_data = ' + json.dumps(packed_files)

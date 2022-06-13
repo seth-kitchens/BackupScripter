@@ -52,12 +52,12 @@ def _create_script(script_data_manager:ScriptDataManagerBS, progress_func=None):
     def update_progress(msg=None, percent=None):
         if progress_func != None:
             progress_func(msg, percent)
-    def packing_relpath(path):
-        return os.path.normpath(os.path.join(g.paths.dirs.packing, path))
+    def packing_path(path):
+        return os.path.normpath(os.path.join(g.paths.abs.dirs.packing, path))
     def pack(proj_relpath, dest_relpath=None):
         dest_relpath = dest_relpath if dest_relpath != None else proj_relpath
-        src = g.project_relpath(proj_relpath)
-        dst = packing_relpath(dest_relpath)
+        src = g.project_path(proj_relpath)
+        dst = packing_path(dest_relpath)
         if os.path.isdir(src):
             shutil.copytree(src, dst)
         else:
@@ -69,7 +69,7 @@ def _create_script(script_data_manager:ScriptDataManagerBS, progress_func=None):
     
 
     update_progress('Copying Source', 0.6)
-    packing_dir = g.paths.dirs.packing
+    packing_dir = g.paths.abs.dirs.packing
     if os.path.exists(packing_dir):
         shutil.rmtree(packing_dir)
     os.mkdir(packing_dir)
@@ -78,7 +78,7 @@ def _create_script(script_data_manager:ScriptDataManagerBS, progress_func=None):
     pack('gplib')
     pack('scriptlib')
     pack('scripts/run_backup.py', '__main__.py')
-    script_data_manager.save_to_file(g.packfio.get_packing_path(packing_dir, g.paths.files.script_data))
+    script_data_manager.save_to_file(os.path.normpath(os.path.join(packing_dir, g.paths.rel.files.script_data)))
     
 
     update_progress('Packing Data Files', 0.8)

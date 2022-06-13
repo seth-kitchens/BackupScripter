@@ -86,10 +86,11 @@ class ScriptDataManager:
                 file_out.write(json.dumps(data))
     def load_save_file(self, path=None, require_known=True):
         path = path if path else self.script_data_file
-        if not os.path.exists(path):
-            raise ValueError('Cannot open, does not exist: "' + path + '"')
-        if not os.path.isfile(path):
-            raise ValueError('Cannot open, not a file: "' + path + '"')
+        if not self.packfio.is_packed():
+            if not os.path.exists(path):
+                raise ValueError('Cannot open, does not exist: "' + path + '"')
+            if not os.path.isfile(path):
+                raise ValueError('Cannot open, not a file: "' + path + '"')
         data = json.loads(self.packfio.read_file(path, require_known=require_known))
         for name, sv in self.svs.items():
             if name in data:

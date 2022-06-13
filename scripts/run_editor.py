@@ -20,7 +20,7 @@ argv_flags = project_utils.extract_argv_flags()
 if __name__ == "__main__":
     context = nss.WindowContext()
     WindowMain.open_loading_window(context, title='Backup Scripter')
-    #logging.init_logging('Starting Log: EDITOR', g.paths.dirs.logs)
+    #logging.init_logging('Starting Log: EDITOR', g.paths.abs.dirs.logs)
     #logging.info('flags: ' + str(argv_flags))
     
     if g.flags.DEBUG in argv_flags:

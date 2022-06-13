@@ -15,7 +15,7 @@ from bs.script_data import ScriptDataManagerBS as sdm_bs
 argv_flags = project_utils.extract_argv_flags()
 
 if __name__ == "__main__":
-    #logging.init_logging('Starting Log: BACKUP', g.paths.dirs.logs)
+    #logging.init_logging('Starting Log: BACKUP', g.paths.abs.dirs.logs)
     #logging.info('flags: ' + str(argv_flags))
     if g.flags.DEBUG in argv_flags:
         project_utils.print_current_time()

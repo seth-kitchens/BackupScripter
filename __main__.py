@@ -18,9 +18,9 @@ def run():
         argv_flags.append(g.flags.EDITOR)
 
     if g.flags.EDITOR in argv_flags:
-        exe = "run_editor.py"
+        exe = g.project_path("scripts/run_editor.py")
     elif g.flags.BACKUP in argv_flags or g.flags.GETDATA in argv_flags:
-        exe = "run_backup.py"
+        exe = g.project_path("scripts/run_backup.py")
 
     project_utils.open_in_terminal(exe, argv_flags)
 

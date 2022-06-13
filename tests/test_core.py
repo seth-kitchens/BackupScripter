@@ -11,7 +11,7 @@ from bs import create
 from bs import g
 from bs.fs.matching_group import MatchingGroup
 
-fio_path = g.project_relpath('temp/fio')
+fio_path = g.project_path('temp/fio')
 def fio_relpath(path):
     return os.path.normpath(os.path.join(fio_path, path))
 def clear_fio():
@@ -64,7 +64,7 @@ def make_sdm(sdm=None,
 class TestCaseBS(unittest.TestCase):
     def tearDown(self):
         clear_fio()
-        packing_dir = g.paths.abs.dirs.packing
+        packing_dir = g.paths.rel.dirs.packing
         if os.path.exists(packing_dir):
             shutil.rmtree(packing_dir)
 
