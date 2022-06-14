@@ -22,27 +22,6 @@ class VFSExplorerViewBS(nss.el.VFSExplorerView):
 
         if self.read_only:
             return
-        
-        @self.event(self.keys['AddFolder'])
-        def event_add_folder(context):
-            item_path = context.values[self.keys['AddFolder']]
-            if item_path == '':
-                return
-            self.vfs.add_path(item_path)
-            self.vfs.calc_root(item_path)
-            self.vfs_explorer.exit_to_root()
-            self.push(context.window)
-        
-        @self.event(self.keys['AddFiles'])
-        def event_add_files(context):
-            item_paths = context.values[self.keys['AddFiles']].split(';')
-            if len(item_paths) <= 0:
-                return
-            for item_path in item_paths:
-                self.vfs.add_path(item_path)
-            self.vfs.calc_all()
-            self.vfs_explorer.exit_to_root()
-            self.push(context.window)
 
         @self.event(self.keys['Remove'])
         def event_remove(context):

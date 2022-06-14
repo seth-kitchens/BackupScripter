@@ -22,6 +22,7 @@ Unimplemented
 - Implement compression settings
 - in assert_files_match_zip in test_core.py, implement compare_contents
 - add backup results (size of backup created, file deleted, current backups)
+- alert to statically included/excluded items that don't exist
 - in script/details.py add (# days old) text to backup-to-be-overwritten segment
 - in script/app.py add option to edit scripts with editor
 - in general/.../script_data.py:ScriptDataManager:verify_file_is_script(), make a more through check, perhaps by inserting data into the pyz
@@ -39,6 +40,8 @@ Design, Behavior, Error Prevention
 - folder browse button for StringContainer/TextList is currently a part of StringContainer (in the init), shouldn't it be a part of TextList instead?
 - are asyncwindows disabled from context.disable()?
 - gem.row/etc should be self.row in window classes. Maybe use a iGEManager interface for passing gem as param as well?
+- Error prevention needed. Try unintended actions to see what happens, and fix.
+- Every blocking window should have some way of exiting the entire program.
 
 Documentation
 - clean and document project/create.py
@@ -52,8 +55,6 @@ Inclusion Matching
 - Should inclusion require a 'within path' ?
 
 Info
-- add main page info
-- add manage included info
 - add matching groups info
 
 Project Organization, Version Control

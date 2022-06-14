@@ -16,13 +16,13 @@ class WindowEditMatchingGroups(nss.AbstractBlockingWindow):
     def get_layout(self):
         gem = self.gem
         column_file_size = sg.Column(expand_x=True, element_justification='center', layout=[
-            [sg.Text('Files Within Size')],
+            [sg.Text('Within Size (File)')],
             [sg.Sizer(0, 3)],
             gem.row(nss.el.InputUnits('max_file_size', 'Max', nss.units.Bytes, default_degree=nss.units.Bytes.MB, store_as_degree=nss.units.Bytes.B, negative_invalid=True)),
             gem.row(nss.el.InputUnits('min_file_size', 'Min', nss.units.Bytes, default_degree=nss.units.Bytes.MB, store_as_degree=nss.units.Bytes.B, negative_invalid=True))
         ])
         column_folder_size = sg.Column(expand_x=True, element_justification='center', layout=[
-            [sg.Text('Folders Within Size')],
+            [sg.Text('Within Size (Folder)')],
             [sg.Sizer(0, 3)],
             gem.row(nss.el.InputUnits('max_folder_size', 'Max', nss.units.Bytes, default_degree=nss.units.Bytes.MB, store_as_degree=nss.units.Bytes.B, negative_invalid=True)),
             gem.row(nss.el.InputUnits('min_folder_size', 'Min', nss.units.Bytes, default_degree=nss.units.Bytes.MB, store_as_degree=nss.units.Bytes.B, negative_invalid=True))
@@ -52,8 +52,12 @@ class WindowEditMatchingGroups(nss.AbstractBlockingWindow):
             *gem.row(nss.el.InputUnits('min_parent_folder_size', 'Min', nss.units.Bytes, default_degree=nss.units.Bytes.MB, store_as_degree=nss.units.Bytes.B, negative_invalid=True))
         ]
         row_apply_to_size = [
+            sg.Push(),
             column_file_size,
+            sg.Push(),
             column_folder_size,
+            sg.Push(),
+            sg.Sizer(200, 0)
         ]
         row_apply_group_if_size = [
             sg.Push(),
@@ -68,10 +72,10 @@ class WindowEditMatchingGroups(nss.AbstractBlockingWindow):
             [
                 gem.sge(nss.el.Checkbox('apply_to_files', 'Files')),
                 gem.sge(nss.el.Checkbox('apply_to_folders', 'Folders').sg_kwargs_checkbox(enable_events=True))
-            ],
-            row_apply_to_size
+            ]
         ])
         frame_apply_if = sg.Frame('Apply If', expand_x=True, layout=[
+            row_apply_to_size,
             [
                 *gem.row(nss.el.StringContainer('Within paths:',
                     nss.el.TextList('within_paths', delim=';', strip=(' .', ' ')),
