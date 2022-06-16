@@ -1,19 +1,18 @@
 import os
 
 from bs.script import archive
+from bs.script.data import PreExecutionData
 from gplib.text.utils import up
 
-def create_backup_zip(execution_data, script_data):
-    up.print('Backing up as: ZIP')
-    vfs_final = execution_data['VfsFinal']
+def create_archive(pe_data:PreExecutionData, script_data, compression_format):
+    up.print('Backing up as: {}'.format(compression_format))
 
-    archive_base_folder_path = script_data['BackupFileName'][0] + execution_data['ResolvedDateSuffix']
-    dest_path = execution_data['DestPath']
+    archive_base_folder_path = script_data['BackupFileName'][0] + pe_data.resolved_date_postfix
     dest_dir_path = script_data['BackupDestination']
-    archiver = archive.Archiver(vfs_final, dest_path, dest_dir_path, archive_base_folder_path)
+    archiver = archive.Archiver(pe_data.vfs_final, pe_data.dest_path, dest_dir_path, archive_base_folder_path, compression_format=compression_format)
     return archiver.archive_vfs(script_data)
 
-def create_backup(execution_data, script_data):
+def create_backup(pe_data:PreExecutionData, script_data):
     up.print_header('Backup Start')
 
     backup_dest = script_data['BackupDestination']
@@ -25,23 +24,22 @@ def create_backup(execution_data, script_data):
         up.print('Error: Backup destination is not a directory.')
         return False
 
-    backup_to_delete = execution_data['BackupToDelete']
-    if backup_to_delete:
-        backup_to_delete_temp = backup_to_delete + '.temp'
-        os.replace(backup_to_delete, backup_to_delete_temp)
+    if pe_data.backup_to_delete:
+        backup_to_delete_temp = pe_data.backup_to_delete + '.temp'
+        os.replace(pe_data.backup_to_delete, backup_to_delete_temp)
 
     archive_type = script_data['ArchiveType']
-    if archive_type == 'zip':
-        success = create_backup_zip(execution_data, script_data)
+    if archive_type in ['zip', '7z']:
+        success = create_archive(pe_data, script_data, compression_format=archive_type)
     else:
         up.print('ERROR: Unknown archive type: "' + archive_type + '"')
         success = False
 
-    if backup_to_delete:
+    if pe_data.backup_to_delete:
         if success:
             os.remove(backup_to_delete_temp)
         else:
-            os.replace(backup_to_delete_temp, backup_to_delete)
+            os.replace(backup_to_delete_temp, pe_data.backup_to_delete)
 
     up.print_footer('Backup End')
     return success

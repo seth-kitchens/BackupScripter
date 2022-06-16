@@ -13,7 +13,8 @@ button_size = nss.sg.button_size
 
 class WindowMain(nss.AbstractBlockingWindow):
     archive_exts = {
-            'zip': '.zip'
+            'zip': '.zip',
+            '7z': '.7z'
     }
     def __init__(self, script_manager) -> None:
         self.script_manager = script_manager

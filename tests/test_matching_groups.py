@@ -2,7 +2,7 @@ import sys
 from tests.test_core import *
 
 class TestMatchingGroupsExclude(unittest.TestCase):
-    def _test_matching_groups(self, fsdef_before, fsdef_zipped, included_relpaths, mgs_data, compare_zipped_contents=False):
+    def _test_matching_groups(self, fsdef_before, fsdef_zipped, included_relpaths, mgs_data, compare_file_contents=False):
         clear_fio()
         
         fsdef_before.create()
@@ -29,7 +29,7 @@ class TestMatchingGroupsExclude(unittest.TestCase):
         fsdef_before.assert_exists(self)
         self.assertTrue(os.path.exists(fio_relpath('test_backup.zip')))
 
-        fsdef_zipped.assert_files_match_zip(self, fio_relpath('test_backup.zip'), compare_contents=compare_zipped_contents)
+        fsdef_zipped.assert_files_match_zip(self, fio_relpath('test_backup.zip'), compare_file_contents=compare_file_contents)
 
         clear_fio()
     

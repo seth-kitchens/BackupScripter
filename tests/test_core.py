@@ -4,6 +4,7 @@ import os
 import shutil
 import copy
 import zipfile
+import py7zr
 
 from bs.fs.vfs import VFSBS
 from bs.script_data import ScriptDataManagerBS
@@ -155,8 +156,8 @@ class FSDef:
                     'file2.txt'
                 }
             })"""
-        self.files = {}
-        self.dirs = {}
+        self.files = {} # path -> TestFile
+        self.dirs = {} # path -> TestDir
         self.base_path = base_path
     
         self.unpack_fsdef_dict(base_path, fsdef_dict)
@@ -235,20 +236,50 @@ class FSDef:
         for f in self.files.keys():
             testcase.assertTrue(os.path.isfile(f))
     
-    def assert_files_match_zip(self, testcase, path, compare_contents=False):
-        if compare_contents:
-            raise NotImplementedError
-        zfiles = set()
-        with zipfile.ZipFile(path, 'r') as zf:
-            for zi in zf.infolist():
-                if not zi.is_dir():
-                    zfiles.add(os.path.normpath(zi.filename))
-        filenames = set(self.files.keys())
-        diff = filenames.symmetric_difference(zfiles)
+    def assert_filenames_match(self, testcase, archive_names):
+        filenames = list(self.files.keys())
+        fn_counts = {}
+        for f in filenames:
+            if not f in fn_counts:
+                fn_counts[f] = 1
+            else:
+                fn_counts[f] += 1
+        an_counts = {}
+        for a in archive_names:
+            if not a in an_counts:
+                an_counts[a] = 1
+            else:
+                an_counts[a] += 1
+
+        diff = set(filenames).symmetric_difference(archive_names)
         msg = ''.join((str(s) for s in (
-            'Zipped files do not match expected.\n',
+            'Archived filenames do not match expected names.\n',
             '  Expected: ', filenames, '\n',
-            '  Actual: ', zfiles, '\n',
+            '  Actual: ', archive_names, '\n',
             '  diff: ', diff
         )))
         testcase.assertTrue(len(diff) == 0, msg)
+        testcase.assertTrue(len(fn_counts) == len(an_counts), 'Archived filenames do not match expected names.')
+    
+    def assert_files_match_zip(self, testcase, path, compare_file_contents=False):
+        if compare_file_contents:
+            raise NotImplementedError
+        zfiles = []
+        with zipfile.ZipFile(path, 'r') as zf:
+            for zi in zf.infolist():
+                if not zi.is_dir():
+                    zfiles.append(os.path.normpath(zi.filename))
+        self.assert_filenames_match(testcase, zfiles)
+
+    def assert_files_match_7z(self, testcase:unittest.TestCase, path, compare_file_contents=False):
+        if compare_file_contents:
+            raise NotImplementedError
+        if not py7zr.is_7zfile(path):
+            testcase.fail('Not a 7z file: {}'.format(path))
+        archive_fileinfos = py7zr.SevenZipFile(path).list()
+        archive_filenames = []
+        for fi in archive_fileinfos:
+            if not fi.is_directory:
+                archive_filenames.append(os.path.normpath(fi.filename))
+        self.assert_filenames_match(testcase, archive_filenames)
+

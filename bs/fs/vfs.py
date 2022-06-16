@@ -435,6 +435,14 @@ class VirtualFSBS(nss.VirtualFS):
                 return entry.path
         return self.for_entries(func)
     
+    def collect_archive_lists(self):
+        """
+        Collect lists of files for each root
+        """
+        path_lists = {}
+        def func(entry):
+            path_lists[entry.path] = entry.get_all_paths
+    
     def calc_included_size(self):
         return sum(self.for_roots(VFSEntryBS.calc_included_size))
     def get_included_size(self):

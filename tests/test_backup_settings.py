@@ -276,3 +276,47 @@ class TestBackupSettings(TestCaseBS):
         assert_backup_times([t - 100, t - 1100, t - 1200])
 
         clear_fio()
+
+class TestCompressionSettings(TestCaseBS):
+    def test_7z(self):
+        clear_fio()
+
+        fsdef_before = FSDef(fio_path, {
+            'A': {
+                'a.dat': '',
+                'b.dat': ''
+            },
+            'B': {
+                'c.dat': ''
+            }
+        })
+
+        fsdef_before.create()
+        fsdef_before.assert_exists(self)
+
+        sdm = make_sdm(
+            script_filename=['test_script', '.pyz'],
+            backup_filename=['test_backup', '.7z'],
+            backup_filename_date='',
+            script_dest_rel='',
+            backup_dest_rel='',
+            archive_type='7z',
+            included_items=[fio_relpath('A')]
+        )
+
+        create._create_script(sdm)
+        self.assertTrue(os.path.exists(fio_relpath('test_script.pyz')))
+        self.assertFalse(os.path.exists(fio_relpath('test_backup.7z')))
+        
+        command_run_backup = sys.executable + ' ' + fio_relpath('test_script.pyz') + ' ' + g.flags.NOINPUT
+
+        os.system(command_run_backup)
+
+        self.assertTrue(os.path.exists(fio_relpath('test_backup.7z')))
+        fsdef_archived = FSDef('test_backup', {
+            'A': {
+                'a.dat': '',
+                'b.dat': ''
+            }
+        })
+        fsdef_archived.assert_files_match_7z(self, fio_relpath('test_backup.7z'))
