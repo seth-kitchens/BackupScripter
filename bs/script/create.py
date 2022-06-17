@@ -25,8 +25,8 @@ def create_backup(pe_data:PreExecutionData, script_data):
         return False
 
     if pe_data.backup_to_delete:
-        backup_to_delete_temp = pe_data.backup_to_delete + '.temp'
-        os.replace(pe_data.backup_to_delete, backup_to_delete_temp)
+        backup_to_delete_tempfile = pe_data.backup_to_delete + '.temp'
+        os.replace(pe_data.backup_to_delete, backup_to_delete_tempfile)
 
     archive_type = script_data['ArchiveType']
     if archive_type in ['zip', '7z']:
@@ -37,9 +37,11 @@ def create_backup(pe_data:PreExecutionData, script_data):
 
     if pe_data.backup_to_delete:
         if success:
-            os.remove(backup_to_delete_temp)
+            os.remove(backup_to_delete_tempfile)
         else:
-            os.replace(backup_to_delete_temp, pe_data.backup_to_delete)
+            os.replace(backup_to_delete_tempfile, pe_data.backup_to_delete)
+            if os.path.exists(pe_data.backup_to_delete):
+                os.remove(backup_to_delete_tempfile)
 
     up.print_footer('Backup End')
     return success

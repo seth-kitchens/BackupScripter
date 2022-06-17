@@ -14,8 +14,8 @@ Bugs, Poorly Implemented
 - stored script data is redundantly json encoded
 - make units dropdown from InputUnits ordered correctly
 - window flashes when being re-enabled
-- what happens when two included roots have the same name?
 - InfoButton and Info is messy
+- check on utility-print design
 
 Tests
 - Make test for 2+ roots included with identical names (after first, should be renamed with _2, _3, ... appended)

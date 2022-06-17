@@ -3,12 +3,20 @@ from typing import Iterable
 import zipfile
 import os
 import tempfile
-import re
+import stat
 
 import py7zr
 
 from bs.fs import vfs as bs_vfs
 
+def strip_extensions(name:str):
+    lstripped = name.lstrip('.')
+    if not len(lstripped):
+        return name, ''
+    i = name.find('.', name.find(lstripped[0]))
+    if i < 0:
+        return name, ''
+    return name[:i], name[i+1:]
     
 def unique_basename_dict(paths:Iterable):
     """Takes an Iterable of paths and makes a dict mapping the paths to their basenames modified to be unique
@@ -29,14 +37,22 @@ def unique_basename_dict(paths:Iterable):
             d[path] = name
             basenames.add(name)
         else:
+            l, r = strip_extensions(name)
             n = 2
-            unique_name = '{}_{}'.format(name, n)
+            unique_name = '{}_{}{}'.format(l, n, r)
             while unique_name in basenames:
                 n += 1
-                unique_name = '{}_{}'.format(name, n)
+                unique_name = '{}_{}{}'.format(l, n, r)
             d[path] = unique_name
             basenames.add(unique_name)
     return d
+
+def rmtree_readonly(path_to_remove):
+    """shutil.rmtree but also remove read only"""
+    def error_func(func, path, excinfo):
+        os.chmod(path, stat.S_IWRITE)
+        os.remove(path)
+    shutil.rmtree(path_to_remove, onerror=error_func)
 
 class Archiver:
     def __init__(self, vfs, dest_path, dest_dir_path, base_folder_name, compression_format) -> None:
@@ -89,18 +105,14 @@ class Archiver:
 
         temp_dir = tempfile.mkdtemp()
         files_to_backup = self.vfs.collect_included_files()
-        print('DBG files_to_backup:', files_to_backup)
         for f in files_to_backup:
             archive_path = self.vfs_path_to_archive_path(f, basename_dict)
-            print('  DBG archive_path:', archive_path)
             temp_path = os.path.normpath(os.path.join(temp_dir, archive_path))
             os.makedirs(os.path.dirname(temp_path), exist_ok=True)
             shutil.copy(f, temp_path)
         with py7zr.SevenZipFile(self.dest_path, 'w') as archive:
             archive.writeall(temp_dir, self.base_folder_name)
-        print('DBG dest_path:', self.dest_path)
-        print('DBG archived names:', py7zr.SevenZipFile(self.dest_path).getnames())
-        shutil.rmtree(temp_dir)
+        rmtree_readonly(temp_dir)
             
 
     def archive_vfs(self, script_data):
