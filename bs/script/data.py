@@ -31,13 +31,13 @@ class PreExecutionData:
         self.vfs_final = None
 
 
-def collect_pe_data(script_data):
+def collect_pre_execution_data(script_data):
     vfs_static = VFS()
-    pe_data = PreExecutionData()
+    pre_data = PreExecutionData()
 
-    pe_data.resolved_date_postfix = fs_utils.DateString.process(script_data['BackupFileNameDate'])
-    pe_data.dest_filename = script_data['BackupFileName'][0] + pe_data.resolved_date_postfix + script_data['BackupFileName'][1]
-    pe_data.dest_path = os.path.normpath(os.path.join(script_data['BackupDestination'], pe_data.dest_filename))
+    pre_data.resolved_date_postfix = fs_utils.DateString.process(script_data['BackupFileNameDate'])
+    pre_data.dest_filename = script_data['BackupFileName'][0] + pre_data.resolved_date_postfix + script_data['BackupFileName'][1]
+    pre_data.dest_path = os.path.normpath(os.path.join(script_data['BackupDestination'], pre_data.dest_filename))
 
     # Inclusion
 
@@ -46,19 +46,19 @@ def collect_pe_data(script_data):
     vfs_final.process_matching_groups_dict(script_data['MatchingGroupsList'])
     vfs_final.make_ie_lists(script_data)
     vfs_final.save_data_to_dict(script_data)
-    pe_data.vfs_final = vfs_final
+    pre_data.vfs_final = vfs_final
 
     backup_destination = script_data['BackupDestination']
     backup_basename = script_data['BackupFileName'][0]
     backup_date_string = script_data['BackupFileNameDate']
     backup_extension = script_data['BackupFileName'][1]
-    pe_data.existing_backups = []
+    pre_data.existing_backups = []
     if os.path.exists(backup_destination) and os.path.isdir(backup_destination):
         files = [f for f in os.listdir(backup_destination) if os.path.isfile(os.path.normpath(os.path.join(backup_destination, f)))]
         for filename in files:
             if b_util.is_file_backup(filename, backup_basename, backup_date_string, backup_extension):
                 filepath = os.path.normpath(os.path.join(backup_destination, filename))
-                pe_data.existing_backups.append(filepath)
+                pre_data.existing_backups.append(filepath)
 
 
     max_backups = script_data['MaxBackups']
@@ -76,20 +76,20 @@ def collect_pe_data(script_data):
             return os.path.getctime(path)
 
     if recent_age_secs != None:
-        eb_recent = [f for f in pe_data.existing_backups if fs_utils.is_within_age_seconds(f, upper=recent_age_secs, date_string=date_string)]
+        eb_recent = [f for f in pre_data.existing_backups if fs_utils.is_within_age_seconds(f, upper=recent_age_secs, date_string=date_string)]
     else:
         eb_recent = []
-    pe_data.existing_backups_recent = eb_recent
+    pre_data.existing_backups_recent = eb_recent
     
     if old_age_secs != None:
-        eb_old = [f for f in pe_data.existing_backups if fs_utils.is_within_age_seconds(f, lower=old_age_secs, date_string=date_string)]
+        eb_old = [f for f in pre_data.existing_backups if fs_utils.is_within_age_seconds(f, lower=old_age_secs, date_string=date_string)]
     else:
         eb_old = []
-    pe_data.existing_backups_old = eb_old
+    pre_data.existing_backups_old = eb_old
 
-    eb_normal = pe_data.existing_backups_normal = [f for f in pe_data.existing_backups if (not f in eb_recent) and (not f in eb_old)]
+    eb_normal = pre_data.existing_backups_normal = [f for f in pre_data.existing_backups if (not f in eb_recent) and (not f in eb_old)]
     
-    pe_data.backup_to_delete = None
+    pre_data.backup_to_delete = None
     if max_backups != None and max_backups >= 1 and max_backups <= (len(eb_normal) + len(eb_recent)):
         if eb_recent:
             eb_overwrite = eb_recent
@@ -102,12 +102,12 @@ def collect_pe_data(script_data):
             if f_date < oldest_date:
                 oldest = f
                 oldest_date = f_date
-        pe_data.backup_to_delete = oldest
+        pre_data.backup_to_delete = oldest
 
     most_recent = None
     most_recent_ctime = None
     eb_total_size = 0
-    for b in pe_data.existing_backups:
+    for b in pre_data.existing_backups:
         b_ctime = get_backup_age(b)
         eb_total_size += os.path.getsize(b)
         if most_recent == None:
@@ -116,7 +116,7 @@ def collect_pe_data(script_data):
         elif b_ctime > most_recent_ctime:
             most_recent = b
             most_recent_ctime = b_ctime
-    pe_data.existing_backups_most_recent = most_recent
-    pe_data.existing_backups_total_size = eb_total_size
+    pre_data.existing_backups_most_recent = most_recent
+    pre_data.existing_backups_total_size = eb_total_size
 
-    return pe_data
+    return pre_data

@@ -21,8 +21,8 @@ class window_main:
         'Archive Mode:\n',
         '    Compile: Copy all included items to a directory first, then archives that directory.',
         'This takes up more memory and time, but results in a better compression ratio.\n',
-        '    Append: Archive each included item directly into the archive. This is faster, but',
-        'results in a bigger backup file.\n'
+        '    Append: Archive each included item directly into the archive. This might be faster, but',
+        'results in a bigger backup file.'
         '\n\n',
         '- To Backup -\n',
         'Information about items included. "Static" only shows data for',

@@ -16,11 +16,11 @@ def run(script_manager):
 
     # Data Collection
 
-    pe_data = b_data.collect_pe_data(script_data)
+    pre_data = b_data.collect_pre_execution_data(script_data)
 
     # Display / Confirmation
 
-    if not b_details.confirm_pe_data(pe_data, script_data):
+    if not b_details.confirm_pre_execution_data(pre_data, script_data):
         up.print_line()
         up.print('Backup cancelled.')
         if not g.is_noinput():
@@ -30,7 +30,7 @@ def run(script_manager):
 
     # Backup Creation
     
-    success = b_create.create_backup(pe_data, script_data)
+    success = b_create.create_backup(pre_data, script_data)
     if not success:
         up.print_line()
         up.print('Backup failed.')

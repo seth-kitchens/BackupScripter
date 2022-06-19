@@ -301,6 +301,7 @@ class TestCompressionSettings(TestCaseBS):
             script_dest_rel='',
             backup_dest_rel='',
             archive_format='7z',
+            archive_mode='compile',
             included_items=[fio_relpath('A')]
         )
 

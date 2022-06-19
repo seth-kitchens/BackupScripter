@@ -74,7 +74,7 @@ class Archiver:
         archive_path = os.path.normpath(os.path.join(archive_root_basename, rel_path_to_vfs_root))
         return archive_path
 
-    def archive_vfs(self, script_data, mode='compile'):
+    def archive_vfs(self, script_data, mode):
         """
         mode:
             'compile' copies all roots to a temp folder then archives them
@@ -111,16 +111,19 @@ class Archiver:
         root_paths = [root.path for root in roots]
         basename_dict = unique_basename_dict(root_paths)
         files_to_backup = self.vfs.collect_included_files()
+        n_files = len(files_to_backup)
 
         if mode_is_compile:
             print('Archive Mode: Compile')
             temp_dir = tempfile.mkdtemp()
-            print('Copying {} files to temp directory...'.format(len(files_to_backup)))
-            for path in files_to_backup:
+            print('Copying {} files to temp directory...'.format(n_files))
+            for i, path in enumerate(files_to_backup):
                 archive_path = self.vfs_path_to_archive_path(path, basename_dict)
                 temp_path = os.path.normpath(os.path.join(temp_dir, archive_path))
                 os.makedirs(os.path.dirname(temp_path), exist_ok=True)
                 shutil.copy(path, temp_path)
+                print('\r{}/{} copied'.format(i+1, n_files), end='')
+            print('')
             print('Archiving compiled files...')
             if format_is_7z:
                 with py7zr.SevenZipFile(self.dest_path, 'w') as archive:
@@ -132,18 +135,21 @@ class Archiver:
         elif mode_is_append:
             print('Archive Mode: Append')
             if format_is_zip:
-                def append(path, archive_path):
+                def append(i_file, path, archive_path):
                     with zipfile.ZipFile(self.dest_path, 'a') as archive:
                         archive.write(path, archive_path)
             elif format_is_7z:
-                def append(path, archive_path):
-                    with py7zr.SevenZipFile(self.dest_path, 'a') as archive:
+                def append(i_file, path, archive_path):
+                    mode = 'w' if i_file == 0 else 'a'
+                    with py7zr.SevenZipFile(self.dest_path, mode) as archive:
                         archive.write(path, archive_path)
 
-            print('Archiving {} files...'.format(len(files_to_backup)))
-            for path in files_to_backup:
+            print('Archiving {} files...'.format(n_files))
+            for i, path in enumerate(files_to_backup):
                 archive_path = self.vfs_path_to_archive_path(path, basename_dict)
                 archive_path = os.path.normpath(os.path.join(self.base_folder_name, archive_path))
-                append(path, archive_path)
+                append(i, path, archive_path)
+                print('\r{}/{} archived'.format(i+1, n_files), end='')
+            print('')
 
         return True

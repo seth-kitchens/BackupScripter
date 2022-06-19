@@ -21,8 +21,8 @@ class ScriptDataManagerBS(ScriptDataManager):
                 SV('ExcludedItems', [])
             ]),
             ScriptDataGroup('Compression', [
-                SV('ArchiveFormat', ''),
-                SV('ArchiveMode', 'compile', info='compile | append')
+                SV('ArchiveFormat', 'zip'),
+                SV('ArchiveMode', 'append', info='compile | append')
             ]),
             ScriptDataGroup('Backup Settings', [
                 SV('MaxBackups', None),
