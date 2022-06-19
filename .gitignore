@@ -4,6 +4,7 @@ _backups/
 !_backups/README.md
 
 temp/
+output/
 
 ###############################################################################
 # Python .gitignore template provided by https://github.com/github/gitignore

@@ -55,12 +55,12 @@ def rmtree_readonly(path_to_remove):
     shutil.rmtree(path_to_remove, onerror=error_func)
 
 class Archiver:
-    def __init__(self, vfs, dest_path, dest_dir_path, base_folder_name, compression_format) -> None:
+    def __init__(self, vfs, dest_path, dest_dir_path, base_folder_name, archive_format) -> None:
         self.vfs:bs_vfs.VFSBS = vfs
         self.dest_path = dest_path
         self.dest_dir_path = dest_dir_path # will be same as dest_path if archiving to folder
         self.base_folder_name = base_folder_name
-        self.compression_format = compression_format
+        self.archive_format = archive_format
 
     def vfs_path_to_archive_path(self, path, basename_dict):
         """
@@ -74,48 +74,12 @@ class Archiver:
         archive_path = os.path.normpath(os.path.join(archive_root_basename, rel_path_to_vfs_root))
         return archive_path
 
-    def archive_vfs_to_zip(self, compression_mode='append'):
-        if compression_mode != 'append':
-            raise RuntimeError
-        roots = self.vfs.get_root_entries()
-        root_paths = [root.path for root in roots]
-        basename_dict = unique_basename_dict(root_paths)
-
-        files_to_backup = self.vfs.collect_included_files()
-        for f in files_to_backup:
-            archive_path = self.vfs_path_to_archive_path(f, basename_dict)
-            archive_path = os.path.normpath(os.path.join(self.base_folder_name, archive_path))
-            print('Archiving File: ' + f)
-            # append file
-            with zipfile.ZipFile(self.dest_path, 'a') as archive:
-                archive.write(f, archive_path)
-    
-    def archive_vfs_to_7z(self, compression_mode='compile'):
+    def archive_vfs(self, script_data, mode='compile'):
         """
-        compression_mode:
+        mode:
             'compile' copies all roots to a temp folder then archives them
-            'append' UNIMPLEMENTED appends roots one by one to the archive
+            'append' appends files one by one to the archive
         """
-        if compression_mode != 'compile':
-            raise RuntimeError
-
-        roots = self.vfs.get_root_entries()
-        root_paths = [root.path for root in roots]
-        basename_dict = unique_basename_dict(root_paths)
-
-        temp_dir = tempfile.mkdtemp()
-        files_to_backup = self.vfs.collect_included_files()
-        for f in files_to_backup:
-            archive_path = self.vfs_path_to_archive_path(f, basename_dict)
-            temp_path = os.path.normpath(os.path.join(temp_dir, archive_path))
-            os.makedirs(os.path.dirname(temp_path), exist_ok=True)
-            shutil.copy(f, temp_path)
-        with py7zr.SevenZipFile(self.dest_path, 'w') as archive:
-            archive.writeall(temp_dir, self.base_folder_name)
-        rmtree_readonly(temp_dir)
-            
-
-    def archive_vfs(self, script_data):
         if os.path.exists(self.dest_path):
             print('ERROR: Can\'t overwrite: ' + self.dest_path)
             return False
@@ -127,11 +91,59 @@ class Archiver:
         
         if os.path.exists(self.dest_path):
             os.remove(self.dest_path)
-        if self.compression_format == 'zip':
-            self.archive_vfs_to_zip()
-        elif self.compression_format == '7z':
-            self.archive_vfs_to_7z()
-        else:
-            raise RuntimeError
+        
+        mode_is_compile = (mode == 'compile')
+        mode_is_append = (mode == 'append')
+        if not (mode_is_compile or mode_is_append):
+            raise ValueError
+
+        format_is_zip = (self.archive_format == 'zip')
+        format_is_7z = (self.archive_format == '7z')
+        if not (format_is_zip or format_is_7z):
+            raise ValueError
+    
+        if mode_is_compile and format_is_zip:
+            print('Archive mode "Compile" unneccessary for zip format. Switching to "Append" mode...')
+            mode_is_compile = False
+            mode_is_append = True
+        
+        roots = self.vfs.get_root_entries()
+        root_paths = [root.path for root in roots]
+        basename_dict = unique_basename_dict(root_paths)
+        files_to_backup = self.vfs.collect_included_files()
+
+        if mode_is_compile:
+            print('Archive Mode: Compile')
+            temp_dir = tempfile.mkdtemp()
+            print('Copying {} files to temp directory...'.format(len(files_to_backup)))
+            for path in files_to_backup:
+                archive_path = self.vfs_path_to_archive_path(path, basename_dict)
+                temp_path = os.path.normpath(os.path.join(temp_dir, archive_path))
+                os.makedirs(os.path.dirname(temp_path), exist_ok=True)
+                shutil.copy(path, temp_path)
+            print('Archiving compiled files...')
+            if format_is_7z:
+                with py7zr.SevenZipFile(self.dest_path, 'w') as archive:
+                    archive.writeall(temp_dir, self.base_folder_name)
+            print('Removing temp directory...')
+            rmtree_readonly(temp_dir)
+        
+        
+        elif mode_is_append:
+            print('Archive Mode: Append')
+            if format_is_zip:
+                def append(path, archive_path):
+                    with zipfile.ZipFile(self.dest_path, 'a') as archive:
+                        archive.write(path, archive_path)
+            elif format_is_7z:
+                def append(path, archive_path):
+                    with py7zr.SevenZipFile(self.dest_path, 'a') as archive:
+                        archive.write(path, archive_path)
+
+            print('Archiving {} files...'.format(len(files_to_backup)))
+            for path in files_to_backup:
+                archive_path = self.vfs_path_to_archive_path(path, basename_dict)
+                archive_path = os.path.normpath(os.path.join(self.base_folder_name, archive_path))
+                append(path, archive_path)
 
         return True

@@ -9,7 +9,6 @@ QoL, Settings
 	- settings screen?
 
 Bugs, Poorly Implemented
-- backing up .git (with 7z) causes test to close automatically. need to add behavior for files that can't be read, other fs errors
 - in windows/manage_included.py, Resolve All does not remove root folders
 - stored script data is redundantly json encoded
 - make units dropdown from InputUnits ordered correctly
@@ -21,8 +20,6 @@ Tests
 - Make test for 2+ roots included with identical names (after first, should be renamed with _2, _3, ... appended)
 
 Unimplemented
-- add '(Repeat) until no changes' option to matching groups
-- Add 7z
 - Implement compression settings
 - in assert_files_match_zip in test_core.py, implement compare_contents
 - add backup results (size of backup created, file deleted, current backups)
@@ -33,7 +30,6 @@ Unimplemented
 - Increase performance by making a lazy init function in gem, as in gem.layout(class, *args, *kwargs) that calls init IF first call
 - add relative paths (might have to be explicit)
 - add matching option for age of file
-- 7z currently copies roots to a temp folder, then packs everything in one operation for a better compression ratio. This takes more memory and processing time. There should be an option for this in compression settings.
 
 Design, Behavior, Error Prevention
 - status messages? set defaults / load defaults need 'Loading...' or something

@@ -28,7 +28,7 @@ def make_sdm(sdm=None,
         backup_filename_date=None,
         included_items=None,
         excluded_items=None,
-        archive_type=None,
+        archive_format=None,
         max_backups=None,
         backup_old_age_secs=None,
         backup_recent_age_secs=None,
@@ -53,7 +53,7 @@ def make_sdm(sdm=None,
     update('BackupFileNameDate', backup_filename_date)
     update('IncludedItems', included_items)
     update('ExcludedItems', excluded_items)
-    update('ArchiveType', archive_type)
+    update('ArchiveFormat', archive_format)
     update('MaxBackups', max_backups)
     update('BackupOldAge', backup_old_age_secs)
     update('BackupRecentAge', backup_recent_age_secs)

@@ -6,7 +6,7 @@
     "BackupDestination": "\"C:\\\\Main\\\\Python\\\\MyPyApps\\\\apps\\\\BackupScripter\\\\output\\\\backups\"",
     "IncludedItems": "[\"C:\\\\Main\\\\Python\\\\MyPyApps\"]",
     "ExcludedItems": "[]",
-    "ArchiveType": "\"zip\"",
+    "ArchiveFormat": "\"zip\"",
     "MaxBackups": "null",
     "BackupOldAge": "null",
     "BackupRecentAge": "null",

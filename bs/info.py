@@ -17,7 +17,12 @@ class window_main:
         'Settings for the script file created',
         '\n\n',
         '- Backup File -\n',
-        'Settings for the backup file created by the script',
+        'Settings for the backup file created by the script.\n',
+        'Archive Mode:\n',
+        '    Compile: Copy all included items to a directory first, then archives that directory.',
+        'This takes up more memory and time, but results in a better compression ratio.\n',
+        '    Append: Archive each included item directly into the archive. This is faster, but',
+        'results in a bigger backup file.\n'
         '\n\n',
         '- To Backup -\n',
         'Information about items included. "Static" only shows data for',

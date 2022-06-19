@@ -14,7 +14,7 @@ class TestMatchingGroupsExclude(unittest.TestCase):
             script_dest_rel='',
             backup_filename_date='',
             backup_dest_rel='',
-            archive_type='zip',
+            archive_format='zip',
             included_items=[fio_relpath(ir) for ir in included_relpaths],
             matching_groups=mgs_data
         )

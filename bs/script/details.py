@@ -41,8 +41,8 @@ def print_pe_details(pe_data:PreExecutionData, script_data):
 
     up.print('Backup Settings')
 
-    archive_type = script_data['ArchiveType']
-    up.print('Archive Type: ' + archive_type)
+    archive_format = script_data['ArchiveFormat']
+    up.print('Archive Type: ' + archive_format)
     
     max_backups = script_data['MaxBackups']
     old_age_secs = script_data['BackupOldAge']

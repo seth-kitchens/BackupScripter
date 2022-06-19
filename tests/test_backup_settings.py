@@ -83,7 +83,7 @@ class TestBackupSettings(TestCaseBS):
             backup_filename_date=date_string,
             script_dest_rel='',
             backup_dest_rel='',
-            archive_type='zip',
+            archive_format='zip',
             included_items=[fio_relpath('A')],
             max_backups=3,
             pull_age_from_postfix=True
@@ -144,7 +144,7 @@ class TestBackupSettings(TestCaseBS):
             backup_filename_date=date_string,
             script_dest_rel='',
             backup_dest_rel='',
-            archive_type='zip',
+            archive_format='zip',
             included_items=[fio_relpath('A')],
             max_backups=1,
             backup_old_age_secs=1000,
@@ -209,7 +209,7 @@ class TestBackupSettings(TestCaseBS):
             backup_filename_date=date_string,
             script_dest_rel='',
             backup_dest_rel='',
-            archive_type='zip',
+            archive_format='zip',
             included_items=[fio_relpath('A')],
             max_backups=3,
             backup_recent_age_secs=1000,
@@ -300,7 +300,7 @@ class TestCompressionSettings(TestCaseBS):
             backup_filename_date='',
             script_dest_rel='',
             backup_dest_rel='',
-            archive_type='7z',
+            archive_format='7z',
             included_items=[fio_relpath('A')]
         )
 

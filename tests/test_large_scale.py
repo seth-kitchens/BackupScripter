@@ -21,7 +21,7 @@ class TestLargeScale(TestCaseBS):
             script_dest_rel='',
             backup_filename_date='',
             backup_dest_rel='',
-            archive_type='zip'
+            archive_format='zip'
         )
         
         create._create_script(sdm)
@@ -57,7 +57,7 @@ class TestLargeScale(TestCaseBS):
             script_dest_rel='',
             backup_filename_date='',
             backup_dest_rel='',
-            archive_type='zip',
+            archive_format='zip',
             included_items=[fio_relpath('A')]
         )
 

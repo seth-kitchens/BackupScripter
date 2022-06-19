@@ -49,10 +49,8 @@ class WindowMain(nss.AbstractBlockingWindow):
                 nss.el.Info(gem, info.backup_filename_date, header='Date Postfix')
             ],
             gem.row(nss.el.Path('BackupDestination', 'Destination').sg_kwargs_path(expand_x=True)),
-            [
-                *gem.row(nss.el.Dropdown('ArchiveType', 'Archive Type', list(WindowMain.archive_exts.keys()))),
-                sg.Button('Compression Settings', 'CompressionSettings', disabled=True)
-            ]
+            gem.row(nss.el.Dropdown('ArchiveFormat', 'Archive Format', list(WindowMain.archive_exts.keys()))),
+            gem.row(nss.el.Radio('ArchiveMode', 'Archive Mode:', {'append': 'Append', 'compile': 'Compile'}))
         ])
         frame_backup_settings = nss.sg.FrameColumn('Backup Settings', expand_y=True, layout=[
             [
@@ -161,11 +159,18 @@ class WindowMain(nss.AbstractBlockingWindow):
             self.load(self.data)
             self.push(context.window)
 
-        @self.event(self.gem['ArchiveType'].keys['Dropdown'])
+        @self.event(self.gem['ArchiveFormat'].keys['Dropdown'])
         def event_compression_type_chosen(context):
-            selection = context.values[self.gem['ArchiveType'].keys['Dropdown']]
+            selection = context.values[self.gem['ArchiveFormat'].keys['Dropdown']]
             archive_ext = WindowMain.archive_exts[selection]
             self.gem['BackupFileName'].update(context.window, extension=archive_ext)
+            if selection == 'zip':
+                self.gem['ArchiveMode'].disable_button(context.window, 'compile')
+                if self.gem['ArchiveMode'].is_selected('compile'):
+                    self.gem['ArchiveMode'].update(context.window, value='append')
+            elif selection == '7z':
+                self.gem['ArchiveMode'].enable_button(context.window, 'compile')
+                self.gem['ArchiveMode'].update(context.window, value='compile')
 
         @self.event('ExportQuit')
         def event_export_quit(context):
@@ -227,6 +232,9 @@ class WindowMain(nss.AbstractBlockingWindow):
     def init_window(self, window):
         super().init_window(window)
         self.refresh_ie(window)
+        archive_mode = self.gem['ArchiveMode']
+        archive_mode.disable_button(window, 'compile')
+        archive_mode.update(window, value='append')
 
     ### WindowMain
 
