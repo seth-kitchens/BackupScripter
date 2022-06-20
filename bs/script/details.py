@@ -1,7 +1,7 @@
 import os
 from bs.script.data import PreExecutionData
 import nssgui as nss
-from gplib.text.utils import up
+from gplib.text.utils import uprint
 from gplib.cmd import utils as cmd_utils
 from bs import g
 
@@ -21,60 +21,55 @@ def print_pre_execution_details(pre_data:PreExecutionData, script_data):
             s += '\n' + ' ' * len_s + '... ] (' + str(remaining) + ' more)'
         else:
             s += ']'
-        up.print(s)
-    up.print_header('Backup Details')
+        print(s)
 
-    up.print('To Backup:')
+    print('To Backup:')
     s = '  Included Items: '
     included_items = script_data['IncludedItems']
     if included_items:
         up_print_list(s, included_items)
     else:
-        up.print(s + 'None')
+        print(s + 'None')
     s = '  Excluded Items: '
     excluded_items = script_data['ExcludedItems']
     if excluded_items:
         up_print_list(s, excluded_items)
     else:
-        up.print(s + 'None')
-    up.print()
+        print(s + 'None')
+    print()
 
-    up.print('Backup Settings')
+    print('Backup Settings')
 
     archive_format = script_data['ArchiveFormat']
-    up.print('Archive Type: ' + archive_format)
+    print('Archive Type: ' + archive_format)
     
     max_backups = script_data['MaxBackups']
     old_age_secs = script_data['BackupOldAge']
     recent_age_secs = script_data['BackupRecentAge']
 
     if max_backups != None and max_backups > 0:
-        up.print('  Max Backups:', max_backups)
+        print('  Max Backups:', max_backups)
     else:
-        up.print('  Max Backups: Unlimited')
+        print('  Max Backups: Unlimited')
     if old_age_secs != None:
-        up.print('  Old Age:', nss.units.Time(old_age_secs, degree_name=nss.units.Time.SECOND).get_best())
+        print('  Old Age:', nss.units.Time(old_age_secs, degree_name=nss.units.Time.SECOND).get_best())
     if recent_age_secs != None:
-        up.print('  Recent Age:', nss.units.Time(recent_age_secs, degree_name=nss.units.Time.SECOND).get_best())
+        print('  Recent Age:', nss.units.Time(recent_age_secs, degree_name=nss.units.Time.SECOND).get_best())
 
 def print_pre_execution_key_details(pre_data:PreExecutionData, script_data):
-    up.print_line()
-    up.print('Key Details')
-    up.print_thin_line()
-
-    up.print('Backup File Name:', pre_data.dest_filename)
-    up.print('Backup Destination:', script_data['BackupDestination'])
-    up.print()
+    print('Backup File Name:', pre_data.dest_filename)
+    print('Backup Destination:', script_data['BackupDestination'])
+    print()
 
     i_size = nss.units.Bytes(script_data['IncludedSize'], degree_name='byte').get_best(decimal_digits=1)
     i_files = str(script_data['IncludedFileCount'])
     i_folders = str(script_data['IncludedFolderCount'])
-    up.print('Backing up: {0} (Files: {1}, Folders: {2})'.format(i_size.rjust(9), i_files.rjust(3), i_folders.rjust(2)))
+    print('Backing up: {0} (Files: {1}, Folders: {2})'.format(i_size.rjust(9), i_files.rjust(3), i_folders.rjust(2)))
 
     e_size = nss.units.Bytes(script_data['ExcludedSize'], degree_name='byte').get_best(decimal_digits=1)
     e_files = str(script_data['ExcludedFileCount'])
     e_folders = str(script_data['ExcludedFolderCount'])
-    up.print('      Excl. {0} (Files: {1}, Folders: {2})'.format(e_size.rjust(9), e_files.rjust(3), e_folders.rjust(2)))
+    print('      Excl. {0} (Files: {1}, Folders: {2})'.format(e_size.rjust(9), e_files.rjust(3), e_folders.rjust(2)))
 
     old_age_secs = script_data['BackupOldAge']
     recent_age_secs = script_data['BackupRecentAge']
@@ -89,32 +84,37 @@ def print_pre_execution_key_details(pre_data:PreExecutionData, script_data):
         most_recent_backup_size_bytes = 0
     most_recent_backup_size = nss.units.Bytes(most_recent_backup_size_bytes, degree_name='byte').get_best(decimal_digits=1)
     eb_total_size = nss.units.Bytes(pre_data.existing_backups_total_size, degree_name='byte').get_best(decimal_digits=1)
-    up.print('Existing Backups: ' + str(len(eb_all)), end='')
+    print('Existing Backups: ' + str(len(eb_all)), end='')
     if old_age_secs != None or recent_age_secs != None:
-        up.print(' (Normal: ' + str(len(eb_normal)), end='')
+        print(' (Normal: ' + str(len(eb_normal)), end='')
         if recent_age_secs != None:
-            up.print(', Recent: ' + str(len(eb_recent)), end='')
+            print(', Recent: ' + str(len(eb_recent)), end='')
         if old_age_secs != None:
-            up.print(', Old: ' + str(len(eb_old)), end='')
-        up.print(')', end='')
-    up.print(' (Last: ' + most_recent_backup_size + ', Total: ' + eb_total_size + ')')
+            print(', Old: ' + str(len(eb_old)), end='')
+        print(')', end='')
+    print(' (Last: ' + most_recent_backup_size + ', Total: ' + eb_total_size + ')')
 
-    up.print('Backup to be Overwritten: ', end='')
+    print('Backup to be Overwritten: ', end='')
     backup_to_delete = pre_data.backup_to_delete
     if backup_to_delete:
         if backup_to_delete in eb_recent:
-            up.print('(Recent) ', end='')
-        up.print(os.path.basename(backup_to_delete), end='')
+            print('(Recent) ', end='')
+        print(os.path.basename(backup_to_delete), end='')
     else:
-        up.print('None')
-    up.print()
-
-    up.print_line()
+        print('None')
 
 def confirm_pre_execution_data(pre_data:PreExecutionData, script_data):
+    uprint.line()
+    print('Backup Details')
+    uprint.thin_line()
     print_pre_execution_details(pre_data, script_data)
+    
+    uprint.line()
+    print('Key Details')
+    uprint.thin_line()
     print_pre_execution_key_details(pre_data, script_data)
     if not g.is_noinput():
+        uprint.line()
         do_continue = cmd_utils.prompt_do_continue('Continue with backup?')
     else:
         do_continue = True

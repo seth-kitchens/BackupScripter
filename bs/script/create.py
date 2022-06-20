@@ -2,10 +2,10 @@ import os
 
 from bs.script import archive
 from bs.script.data import PreExecutionData
-from gplib.text.utils import up
+from gplib.text.utils import uprint
 
 def create_archive(pre_data:PreExecutionData, script_data, archive_format):
-    up.print('Backing up as: {}'.format(archive_format))
+    print('Backing up as: {}'.format(archive_format))
 
     archive_base_folder_path = script_data['BackupFileName'][0] + pre_data.resolved_date_postfix
     dest_dir_path = script_data['BackupDestination']
@@ -13,15 +13,13 @@ def create_archive(pre_data:PreExecutionData, script_data, archive_format):
     return archiver.archive_vfs(script_data, script_data['ArchiveMode'])
 
 def create_backup(pre_data:PreExecutionData, script_data):
-    up.print_header('Backup Start')
-
     backup_dest = script_data['BackupDestination']
     if not os.path.exists(backup_dest):
-        up.print('Error: Backup destination does not exist.')
-        up.print('Backup destination: ' + '"' + backup_dest + '"')
+        print('Error: Backup destination does not exist.')
+        print('Backup destination: ' + '"' + backup_dest + '"')
         return False
     elif not os.path.isdir(backup_dest):
-        up.print('Error: Backup destination is not a directory.')
+        print('Error: Backup destination is not a directory.')
         return False
 
     if pre_data.backup_to_delete:
@@ -32,7 +30,7 @@ def create_backup(pre_data:PreExecutionData, script_data):
     if archive_format in ['zip', '7z']:
         success = create_archive(pre_data, script_data, archive_format=archive_format)
     else:
-        up.print('ERROR: Unknown archive type: "' + archive_format + '"')
+        print('ERROR: Unknown archive type: "' + archive_format + '"')
         success = False
 
     if pre_data.backup_to_delete:
@@ -43,5 +41,4 @@ def create_backup(pre_data:PreExecutionData, script_data):
             if os.path.exists(pre_data.backup_to_delete):
                 os.remove(backup_to_delete_tempfile)
 
-    up.print_footer('Backup End')
     return success

@@ -1,7 +1,7 @@
 import os.path
 
 from gplib.cmd import utils as cmd_utils
-from gplib.text.utils import up
+from gplib.text.utils import uprint
 from gplib.fs import utils as fs_utils
 from bs.script import data as b_data, details as b_details, create as b_create
 from bs import g
@@ -21,34 +21,41 @@ def run(script_manager):
     # Display / Confirmation
 
     if not b_details.confirm_pre_execution_data(pre_data, script_data):
-        up.print_line()
-        up.print('Backup cancelled.')
+        uprint.line()
+        print('Backup cancelled.')
         if not g.is_noinput():
             cmd_utils.prompt_any_input('Enter anything to exit')
         return
-    up.print()
+    print()
 
     # Backup Creation
     
+    uprint.line()
+    print('Backup Start')
+    uprint.thin_line()
     success = b_create.create_backup(pre_data, script_data)
+    uprint.thin_line()
+    print('Backup End')
+    uprint.line()
     if not success:
-        up.print_line()
-        up.print('Backup failed.')
+        print('Backup failed.')
         if not g.is_noinput():
             cmd_utils.prompt_any_input('Enter anything to exit')
         return
 
     # Post Execution Testing
 
-    up.print('Post Backup Testing...')
+    print('Post Backup Testing...')
 
     # Results
 
-    up.print('Backup Finished!')
-    up.print_line()
-    up.print('Backup Results')
-    up.print()
+    print('Backup Finished!')
+    uprint.line()
+    print('Backup Results')
+    uprint.thin_line()
+    print()
+    uprint.line()
     if not g.is_noinput():
         cmd_utils.prompt_any_input('Enter anything to exit.')
-    up.print_line()
+        uprint.line()
     return
