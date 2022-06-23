@@ -12,7 +12,7 @@ from gplib.project import utils as project_utils
 
 from bs.app import app
 from bs import g
-from bs.script_data import ScriptDataManagerBS as sdm_bs
+from bs.script_data import ScriptDataBS
 from bs.windows.main import WindowMain
 
 argv_flags = project_utils.extract_argv_flags()
@@ -25,5 +25,6 @@ if __name__ == "__main__":
     
     if g.flags.DEBUG in argv_flags:
         project_utils.print_current_time()
-    script_manager = sdm_bs()
-    app(script_manager, context)
+    script_data = ScriptDataBS()
+    script_data.load_save_file()
+    app(script_data, context)

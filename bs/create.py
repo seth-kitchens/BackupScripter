@@ -4,18 +4,18 @@ import zipapp
 import re
 import nssgui as nss
 from bs import g
-from bs.script_data import ScriptDataManagerBS
+from bs.script_data import ScriptDataBS
 from gplib.fs import utils as fs_utils
 
 
-def create_script(context, script_data_manager:ScriptDataManagerBS, progress_func):
+def create_script(context:nss.WindowContext, script_data:ScriptDataBS, progress_func):
     """progress func should be: func(args[0]:str|None, args[1]:float|None=None)\n
     args[0]: update text to show\n
     args[1]: update percent, a value between 0.0 and 1.0"""
 
 
-    script_file_name = ''.join(script_data_manager['ScriptFileName'])
-    script_destination = script_data_manager['ScriptDestination']
+    script_file_name = ''.join(script_data.ScriptFilename)
+    script_destination = script_data.ScriptDestination
     script_path = os.path.normpath(os.path.join(script_destination, script_file_name))
 
     progress_func('Checking Script Destination', 0.3)
@@ -31,7 +31,7 @@ def create_script(context, script_data_manager:ScriptDataManagerBS, progress_fun
     
     progress_func('Checking Script File', 0.45)
     if os.path.exists(script_path):
-        if ScriptDataManagerBS.verify_file_is_script(script_path):
+        if ScriptDataBS.verify_file_is_script(script_path):
             do_continue = nss.PopupBuilder.T.warning().text((
                 'Script file "' + script_file_name + '" already exists. Continue?',
                 'Full path: ' + script_path
@@ -45,10 +45,10 @@ def create_script(context, script_data_manager:ScriptDataManagerBS, progress_fun
             )).open(context)
             return False
 
-    return _create_script(script_data_manager, progress_func)
+    return _create_script(script_data, progress_func)
 
 
-def _create_script(script_data_manager:ScriptDataManagerBS, progress_func=None):
+def _create_script(script_data:ScriptDataBS, progress_func=None):
     def update_progress(msg=None, percent=None):
         if progress_func != None:
             progress_func(msg, percent)
@@ -63,8 +63,8 @@ def _create_script(script_data_manager:ScriptDataManagerBS, progress_func=None):
         else:
             shutil.copyfile(src, dst)
 
-    script_file_name = ''.join(script_data_manager['ScriptFileName'])
-    script_destination = script_data_manager['ScriptDestination']
+    script_file_name = ''.join(script_data.ScriptFilename)
+    script_destination = script_data.ScriptDestination
     script_path = os.path.normpath(os.path.join(script_destination, script_file_name))
     
 
@@ -78,7 +78,7 @@ def _create_script(script_data_manager:ScriptDataManagerBS, progress_func=None):
     pack('gplib')
     pack('scriptlib')
     pack('scripts/run_backup.py', '__main__.py')
-    script_data_manager.save_to_file(os.path.normpath(os.path.join(packing_dir, g.paths.rel.files.script_data)))
+    script_data.save_to_file(os.path.normpath(os.path.join(packing_dir, g.paths.rel.files.script_data)))
     
 
     update_progress('Packing Data Files', 0.8)

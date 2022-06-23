@@ -10,11 +10,9 @@ QoL, Settings
 
 Bugs, Poorly Implemented
 - in windows/manage_included.py, Resolve All does not remove root folders
-- stored script data is redundantly json encoded
 - make units dropdown from InputUnits ordered correctly
 - window flashes when being re-enabled
 - InfoButton and Info is messy
-- check on utility-print design
 
 Tests
 - Make test for 2+ roots included with identical names (after first, should be renamed with _2, _3, ... appended)
@@ -26,7 +24,7 @@ Unimplemented
 - alert to statically included/excluded items that don't exist
 - in script/details.py add (# days old) text to backup-to-be-overwritten segment
 - in script/app.py add option to edit scripts with editor
-- in general/.../script_data.py:ScriptDataManager:verify_file_is_script(), make a more through check, perhaps by inserting data into the pyz
+- in scriptlib/.../script_data.py:ScriptData:verify_file_is_script(), make a more through check, perhaps by inserting data into the pyz
 - Increase performance by making a lazy init function in gem, as in gem.layout(class, *args, *kwargs) that calls init IF first call
 - add relative paths (might have to be explicit)
 - add matching option for age of file

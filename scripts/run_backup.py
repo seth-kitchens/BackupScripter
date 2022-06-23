@@ -10,7 +10,7 @@ from gplib.project import utils as project_utils
 
 from bs.script.app import app
 from bs import g
-from bs.script_data import ScriptDataManagerBS as sdm_bs
+from bs.script_data import ScriptDataBS
 
 argv_flags = project_utils.extract_argv_flags()
 
@@ -19,8 +19,9 @@ if __name__ == "__main__":
     #logging.info('flags: ' + str(argv_flags))
     if g.flags.DEBUG in argv_flags:
         project_utils.print_current_time()
-    script_manager = sdm_bs()
+    script_data = ScriptDataBS()
+    script_data.load_save_file()
     if g.flags.GETDATA in argv_flags:
-        script_manager.get_data()
+        script_data.get_data()
     else:
-        app(script_manager)
+        app(script_data)

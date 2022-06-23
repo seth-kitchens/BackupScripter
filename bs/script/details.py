@@ -1,11 +1,12 @@
 import os
-from bs.script.data import PreExecutionData
+from bs.script.data import PreExecutionData, PostExecutionData
+from bs.script_data import ScriptDataBS
 import nssgui as nss
 from gplib.text.utils import uprint
 from gplib.cmd import utils as cmd_utils
 from bs import g
 
-def print_pre_execution_details(pre_data:PreExecutionData, script_data):
+def print_pre_execution_details(pre_data:PreExecutionData, script_data:ScriptDataBS):
     def up_print_list(label, l, max_elements=4):
         """Print list items one per line, indenting up to the opening bracket.
         If over 'max_elements' in list, line after max will be: '... ] (# more)' """
@@ -25,54 +26,48 @@ def print_pre_execution_details(pre_data:PreExecutionData, script_data):
 
     print('To Backup:')
     s = '  Included Items: '
-    included_items = script_data['IncludedItems']
-    if included_items:
-        up_print_list(s, included_items)
+    if script_data.IncludedItems:
+        up_print_list(s, script_data.IncludedItems)
     else:
         print(s + 'None')
     s = '  Excluded Items: '
-    excluded_items = script_data['ExcludedItems']
-    if excluded_items:
-        up_print_list(s, excluded_items)
+    if script_data.ExcludedItems:
+        up_print_list(s, script_data.ExcludedItems)
     else:
         print(s + 'None')
     print()
 
     print('Backup Settings')
 
-    archive_format = script_data['ArchiveFormat']
-    print('Archive Type: ' + archive_format)
-    
-    max_backups = script_data['MaxBackups']
-    old_age_secs = script_data['BackupOldAge']
-    recent_age_secs = script_data['BackupRecentAge']
+    print('Archive Type: ' + script_data.ArchiveFormat)
 
-    if max_backups != None and max_backups > 0:
-        print('  Max Backups:', max_backups)
+    if script_data.MaxBackups != None and script_data.MaxBackups > 0:
+        print('  Max Backups:', script_data.MaxBackups)
     else:
         print('  Max Backups: Unlimited')
-    if old_age_secs != None:
-        print('  Old Age:', nss.units.Time(old_age_secs, degree_name=nss.units.Time.SECOND).get_best())
-    if recent_age_secs != None:
-        print('  Recent Age:', nss.units.Time(recent_age_secs, degree_name=nss.units.Time.SECOND).get_best())
+    if script_data.BackupOldAge != None:
+        print('  Old Age:', nss.units.Time(script_data.BackupOldAge, degree_name=nss.units.Time.SECOND).get_best())
+    if script_data.BackupRecentAge != None:
+        print('  Recent Age:', nss.units.Time(script_data.BackupRecentAge, degree_name=nss.units.Time.SECOND).get_best())
 
-def print_pre_execution_key_details(pre_data:PreExecutionData, script_data):
+def print_pre_execution_key_details(pre_data:PreExecutionData, script_data:ScriptDataBS):
     print('Backup File Name:', pre_data.dest_filename)
-    print('Backup Destination:', script_data['BackupDestination'])
+    print('Backup Destination:', script_data.BackupDestination)
     print()
 
-    i_size = nss.units.Bytes(script_data['IncludedSize'], degree_name='byte').get_best(decimal_digits=1)
-    i_files = str(script_data['IncludedFileCount'])
-    i_folders = str(script_data['IncludedFolderCount'])
+    vfsdata = pre_data.vfsdata_final
+    i_size = nss.units.Bytes(vfsdata.included_size, degree_name='byte').get_best(decimal_digits=1)
+    i_files = str(vfsdata.included_file_count)
+    i_folders = str(vfsdata.included_folder_count)
     print('Backing up: {0} (Files: {1}, Folders: {2})'.format(i_size.rjust(9), i_files.rjust(3), i_folders.rjust(2)))
 
-    e_size = nss.units.Bytes(script_data['ExcludedSize'], degree_name='byte').get_best(decimal_digits=1)
-    e_files = str(script_data['ExcludedFileCount'])
-    e_folders = str(script_data['ExcludedFolderCount'])
+    e_size = nss.units.Bytes(vfsdata.excluded_size, degree_name='byte').get_best(decimal_digits=1)
+    e_files = str(vfsdata.excluded_file_count)
+    e_folders = str(vfsdata.excluded_folder_count)
     print('      Excl. {0} (Files: {1}, Folders: {2})'.format(e_size.rjust(9), e_files.rjust(3), e_folders.rjust(2)))
 
-    old_age_secs = script_data['BackupOldAge']
-    recent_age_secs = script_data['BackupRecentAge']
+    old_age_secs = script_data.BackupOldAge
+    recent_age_secs = script_data.BackupRecentAge
     eb_all = pre_data.existing_backups
     eb_normal = pre_data.existing_backups_normal
     eb_old = pre_data.existing_backups_old
@@ -103,7 +98,7 @@ def print_pre_execution_key_details(pre_data:PreExecutionData, script_data):
     else:
         print('None')
 
-def confirm_pre_execution_data(pre_data:PreExecutionData, script_data):
+def confirm_pre_execution_data(pre_data:PreExecutionData, script_data:ScriptDataBS):
     uprint.line()
     print('Backup Details')
     uprint.thin_line()
@@ -119,3 +114,7 @@ def confirm_pre_execution_data(pre_data:PreExecutionData, script_data):
     else:
         do_continue = True
     return do_continue
+
+def print_post_execution_details(post_data:PostExecutionData, script_data:ScriptDataBS):
+    print('')
+    pass # TODO

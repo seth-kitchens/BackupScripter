@@ -1,5 +1,6 @@
 import os
 from pprint import pprint
+from bs.script_data import ScriptDataBS
 
 import nssgui as nss
 import PySimpleGUI as sg
@@ -16,13 +17,13 @@ class WindowMain(nss.AbstractBlockingWindow):
             'zip': '.zip',
             '7z': '.7z'
     }
-    def __init__(self, script_manager) -> None:
-        self.script_manager = script_manager
-        data = script_manager.to_dict()
-        self.vfs_static = VFS(data['IncludedItems'], data['ExcludedItems'])
+    def __init__(self, script_data:ScriptDataBS) -> None:
+        self.script_data:ScriptDataBS = script_data
+        sd_dict = script_data.to_dict()
+        self.vfs_static = VFS(sd_dict['IncludedItems'], sd_dict['ExcludedItems'])
         self.vfs_final = self.vfs_static.clone()
-        self.vfs_final.process_matching_groups_dict(data['MatchingGroupsList'])
-        super().__init__('WindowMain', data)
+        self.vfs_final.process_matching_groups_dict(sd_dict['MatchingGroupsList'])
+        super().__init__('WindowMain', sd_dict)
         #self.gem.load_all(self.data)
     
     ### Window
@@ -33,7 +34,7 @@ class WindowMain(nss.AbstractBlockingWindow):
         gem = self.gem
 
         frame_script_file = nss.sg.FrameColumn('Script File', expand_x=True, layout=[
-            gem.row(nss.el.Filename('ScriptFileName', 'Filename').sg_kwargs_name(expand_x=True)),
+            gem.row(nss.el.Filename('ScriptFilename', 'Filename').sg_kwargs_name(expand_x=True)),
             gem.row(nss.el.Path('ScriptDestination', 'Destination').sg_kwargs_path(expand_x=True)),
             [
                 sg.Button('Load Script', key='LoadScript', size=10),
@@ -43,9 +44,9 @@ class WindowMain(nss.AbstractBlockingWindow):
             ]
         ])
         frame_backup_file = nss.sg.FrameColumn('Backup File', expand_x=True, layout=[
-            gem.row(nss.el.Filename('BackupFileName', 'Filename').sg_kwargs_name(expand_x=True)),
+            gem.row(nss.el.Filename('BackupFilename', 'Filename').sg_kwargs_name(expand_x=True)),
             [
-                *gem.row(nss.el.Input('BackupFileNameDate', 'Date Postfix').sg_kwargs_in(expand_x=True)),
+                *gem.row(nss.el.Input('BackupDatePostfix', 'Date Postfix').sg_kwargs_in(expand_x=True)),
                 nss.el.Info(gem, info.backup_filename_date, header='Date Postfix')
             ],
             gem.row(nss.el.Path('BackupDestination', 'Destination').sg_kwargs_path(expand_x=True)),
@@ -150,12 +151,12 @@ class WindowMain(nss.AbstractBlockingWindow):
         def event_set_defaults(context):
             self.pull(context.values)
             self.save(self.data)
-            self.script_manager.load_dict(self.data)
-            self.script_manager.save_to_file(force_save=True)
+            self.script_data.load_dict(self.data)
+            self.script_data.save_to_file(force_save=True)
 
         @self.event(self.key_menubar('Editor', 'LoadDefaults'))
         def event_load_defaults(context):
-            self.script_manager.load_save_file()
+            self.script_data.load_save_file()
             self.load(self.data)
             self.push(context.window)
 
@@ -163,7 +164,7 @@ class WindowMain(nss.AbstractBlockingWindow):
         def event_compression_type_chosen(context):
             selection = context.values[self.gem['ArchiveFormat'].keys['Dropdown']]
             archive_ext = WindowMain.archive_exts[selection]
-            self.gem['BackupFileName'].update(context.window, extension=archive_ext)
+            self.gem['BackupFilename'].update(context.window, extension=archive_ext)
             if selection == 'zip':
                 self.gem['ArchiveMode'].disable_button(context.window, 'compile')
                 if self.gem['ArchiveMode'].is_selected('compile'):
@@ -190,11 +191,10 @@ class WindowMain(nss.AbstractBlockingWindow):
             script_to_load = nss.sg.browse_file(context.window)
             if not script_to_load:
                 return
-            sm = self.script_manager
-            sm.load_pyz(script_to_load)
+            self.script_data.load_pyz(script_to_load)
             name = os.path.basename(script_to_load)
             i = name.rfind('.')
-            sm['ScriptFileName'] = [name[:i], name[i:]]
+            self.script_data.ScriptFilename = [name[:i], name[i:]]
             self.load(self.data)
             self.push(context.window)
         
@@ -220,7 +220,7 @@ class WindowMain(nss.AbstractBlockingWindow):
         super().save(data)
         data['IncludedItems'], data['ExcludedItems'] = self.vfs_static.make_ie_lists()
     def load(self, data):
-        data = self.script_manager.to_dict()
+        data = self.script_data.to_dict()
         super().load(data)
         self.vfs_static.remove_all()
         self.vfs_static.build_from_ie_lists(data['IncludedItems'], data['ExcludedItems'])
@@ -240,13 +240,12 @@ class WindowMain(nss.AbstractBlockingWindow):
 
     def create_script(self, context, auto_close=True):
         popup_title = 'Create Script'
-        self.script_manager.load_dict(self.data)
-        self.script_manager.set_read_only()
+        self.script_data.load_dict(self.data)
         popup_progress = nss.ProgressWindow('Progress', header='Creating Script')
         progress_function = popup_progress.get_progress_function()
         popup_progress.open(context)
         try:
-            success = create_script(context, self.script_manager, progress_function)
+            success = create_script(context, self.script_data, progress_function)
         except Exception as e:
             success = False
             nss.PopupBuilder().text(('Script Creation Failed!', 'Exception: ' + str(e))).title(popup_title).ok().open(context)
@@ -258,28 +257,27 @@ class WindowMain(nss.AbstractBlockingWindow):
             if auto_close:
                 popup.auto_ok()
             popup.open(context)
-        self.script_manager.set_read_only(False)
         return success
     
     def refresh_ie(self, window):
         data_static = {}
         data_final = {}
-        self.vfs_static.save_data_to_dict(data_static)
-        self.vfs_final.save_data_to_dict(data_final)
+        vfsdata_static = self.vfs_static.calc_vfsdata()
+        vfsdata_final = self.vfs_final.calc_vfsdata()
 
-        if_static = data_static['IncludedFileCount']
-        iF_static = data_static['IncludedFolderCount']
-        isz_static = nss.units.Bytes(data_static['IncludedSize'], nss.units.Bytes.B).get_best(1, 0.1)
-        ef_static = data_static['ExcludedFileCount']
-        eF_static = data_static['ExcludedFolderCount']
-        esz_static = nss.units.Bytes(data_static['ExcludedSize'], nss.units.Bytes.B).get_best(1, 0.1)
+        if_static = vfsdata_static.included_file_count
+        iF_static = vfsdata_static.included_folder_count
+        isz_static = nss.units.Bytes(vfsdata_static.included_size, nss.units.Bytes.B).get_best(1, 0.1)
+        ef_static = vfsdata_static.excluded_file_count
+        eF_static = vfsdata_static.excluded_folder_count
+        esz_static = nss.units.Bytes(vfsdata_static.excluded_size, nss.units.Bytes.B).get_best(1, 0.1)
 
-        if_final = data_final['IncludedFileCount']
-        iF_final = data_final['IncludedFolderCount']
-        isz_final = nss.units.Bytes(data_final['IncludedSize'], nss.units.Bytes.B).get_best(1, 0.1)
-        ef_final = data_final['ExcludedFileCount']
-        eF_final = data_final['ExcludedFolderCount']
-        esz_final = nss.units.Bytes(data_final['ExcludedSize'], nss.units.Bytes.B).get_best(1, 0.1)
+        if_final = vfsdata_final.included_file_count
+        iF_final = vfsdata_final.included_folder_count
+        isz_final = nss.units.Bytes(vfsdata_final.included_size, nss.units.Bytes.B).get_best(1, 0.1)
+        ef_final = vfsdata_final.excluded_file_count
+        eF_final = vfsdata_final.excluded_folder_count
+        esz_final = nss.units.Bytes(vfsdata_final.excluded_size, nss.units.Bytes.B).get_best(1, 0.1)
 
         def sbs(a, b):
             return str(a) + ' / ' + str(b)

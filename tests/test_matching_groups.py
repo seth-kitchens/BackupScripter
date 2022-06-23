@@ -1,4 +1,10 @@
 import sys
+import unittest
+import os
+import copy
+from bs import create
+from bs import g
+from bs.fs.matching_group import MatchingGroup
 from tests.test_core import *
 
 class TestMatchingGroupsExclude(unittest.TestCase):
@@ -8,7 +14,7 @@ class TestMatchingGroupsExclude(unittest.TestCase):
         fsdef_before.create()
         fsdef_before.assert_exists(self)
 
-        sdm = make_sdm(
+        sd = make_sd(
             script_filename=['test_script', '.pyz'],
             backup_filename=['test_backup', '.zip'],
             script_dest_rel='',
@@ -19,7 +25,7 @@ class TestMatchingGroupsExclude(unittest.TestCase):
             matching_groups=mgs_data
         )
 
-        create._create_script(sdm)
+        create._create_script(sd)
         self.assertTrue(os.path.exists(fio_relpath('test_script.pyz')))
         self.assertFalse(os.path.exists(fio_relpath('test_backup.zip')))
 

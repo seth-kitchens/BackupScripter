@@ -2,15 +2,23 @@ from typing import Iterable
 import unittest
 import os
 import shutil
-import copy
 import zipfile
 import py7zr
 
 from bs.fs.vfs import VFSBS
-from bs.script_data import ScriptDataManagerBS
-from bs import create
+from bs.script_data import ScriptDataBS
 from bs import g
-from bs.fs.matching_group import MatchingGroup
+
+__all__ = [
+    'fio_path',
+    'fio_relpath',
+    'clear_fio',
+    'make_sd',
+    'TestCaseBS',
+    'TestFile',
+    'TestDir',
+    'FSDef'
+]
 
 fio_path = g.project_path('temp/fio')
 def fio_relpath(path):
@@ -20,7 +28,7 @@ def clear_fio():
         shutil.rmtree(fio_path)
     os.mkdir(fio_path)
 
-def make_sdm(sdm=None,
+def make_sd(sd=None,
         script_filename=None,
         script_dest_rel=None,
         backup_filename=None,
@@ -35,23 +43,23 @@ def make_sdm(sdm=None,
         backup_recent_age_secs=None,
         pull_age_from_postfix=None,
         matching_groups=None):
-    sdm = copy.deepcopy(sdm) if sdm != None else ScriptDataManagerBS(script_data_file=None)
+    sd_dict = sd.to_dict() if sd != None else ScriptDataBS(data_file=None).to_dict()
     def update(name, val):
         if val != None:
-            sdm[name] = val
+            sd_dict[name] = val
 
     if script_dest_rel != None:
-        sdm['ScriptDestination'] = fio_relpath(script_dest_rel)
-    elif not sdm['ScriptDestination'].startswith(fio_path):
+        sd_dict['ScriptDestination'] = fio_relpath(script_dest_rel)
+    elif not sd_dict['ScriptDestination'].startswith(fio_path):
         raise RuntimeError
     if backup_dest_rel != None:
-        sdm['BackupDestination'] = fio_relpath(backup_dest_rel)
-    elif not sdm['BackupDestination'].startswith(fio_path):
+        sd_dict['BackupDestination'] = fio_relpath(backup_dest_rel)
+    elif not sd_dict['BackupDestination'].startswith(fio_path):
         raise RuntimeError
     
-    update('ScriptFileName', script_filename)
-    update('BackupFileName', backup_filename)
-    update('BackupFileNameDate', backup_filename_date)
+    update('ScriptFilename', script_filename)
+    update('BackupFilename', backup_filename)
+    update('BackupDatePostfix', backup_filename_date)
     update('IncludedItems', included_items)
     update('ExcludedItems', excluded_items)
     update('ArchiveFormat', archive_format)
@@ -62,7 +70,7 @@ def make_sdm(sdm=None,
     update('PullAgeFromPostfix', pull_age_from_postfix)
     update('MatchingGroupsList', matching_groups)
 
-    return sdm
+    return ScriptDataBS.from_dict(sd_dict)
 
 class TestCaseBS(unittest.TestCase):
     def tearDown(self):

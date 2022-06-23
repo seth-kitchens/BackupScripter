@@ -8,6 +8,7 @@ import stat
 import py7zr
 
 from bs.fs import vfs as bs_vfs
+from bs.script_data import ScriptDataBS
 
 def strip_extensions(name:str):
     lstripped = name.lstrip('.')
@@ -74,7 +75,7 @@ class Archiver:
         archive_path = os.path.normpath(os.path.join(archive_root_basename, rel_path_to_vfs_root))
         return archive_path
 
-    def archive_vfs(self, script_data, mode):
+    def archive_vfs(self, script_data:ScriptDataBS, mode):
         """
         mode:
             'compile' copies all roots to a temp folder then archives them
@@ -87,7 +88,7 @@ class Archiver:
             print('ERROR: Parent dir doesn\'t exist: ' + self.dest_dir_path)
             return False
         self.vfs.calc_all()
-        self.vfs.make_ie_lists(script_data)
+        #script_data.IncludedItems, script_data.ExcludedItems = self.vfs.make_ie_lists()
         
         if os.path.exists(self.dest_path):
             os.remove(self.dest_path)

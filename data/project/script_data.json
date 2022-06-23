@@ -1,15 +1,27 @@
 {
-    "ScriptFileName": "[\"test_script\", \".pyz\"]",
-    "ScriptDestination": "\"C:\\\\Main\\\\Python\\\\MyPyApps\\\\apps\\\\BackupScripter\\\\output\\\\scripts\"",
-    "BackupFileName": "[\"test_backup\", \".zip\"]",
-    "BackupFileNameDate": "\"_YYYYMMDD_HHmm\"",
-    "BackupDestination": "\"C:\\\\Main\\\\Python\\\\MyPyApps\\\\apps\\\\BackupScripter\\\\output\\\\backups\"",
-    "IncludedItems": "[\"C:\\\\Main\\\\Python\\\\MyPyApps\"]",
-    "ExcludedItems": "[]",
-    "ArchiveFormat": "\"zip\"",
-    "MaxBackups": "null",
-    "BackupOldAge": "null",
-    "BackupRecentAge": "null",
-    "PullAgeFromPostfix": "true",
-    "MatchingGroupsList": "{\"E: pycache\": {\"max_backup_size_after\": null, \"do_not_apply_if_extensions\": [], \"min_backup_size_before\": null, \"apply_if_extensions\": [], \"ie_action\": \"exclude\", \"not_within_paths\": [], \"min_file_size\": null, \"within_paths\": [], \"apply_to_folders\": true, \"patterns\": [\"__pycache__\"], \"max_folder_size\": null, \"min_backup_size_after\": null, \"match_all\": false, \"max_backup_size_before\": null, \"min_parent_folder_size\": null, \"min_total_size_diff\": null, \"max_total_size_diff\": null, \"match_case\": false, \"apply_recursive\": true, \"apply_to_files\": false, \"strip_extensions\": false, \"use_regex\": false, \"max_file_size\": null, \"whole_name\": false, \"min_folder_size\": null, \"max_parent_folder_size\": null}, \"E: idea\": {\"max_backup_size_after\": null, \"do_not_apply_if_extensions\": [], \"min_backup_size_before\": null, \"apply_if_extensions\": [], \"ie_action\": \"exclude\", \"not_within_paths\": [], \"min_file_size\": null, \"within_paths\": [], \"apply_to_folders\": true, \"patterns\": [\".idea\"], \"max_folder_size\": null, \"min_backup_size_after\": null, \"match_all\": false, \"max_backup_size_before\": null, \"min_parent_folder_size\": null, \"min_total_size_diff\": null, \"max_total_size_diff\": null, \"match_case\": false, \"apply_recursive\": true, \"apply_to_files\": false, \"strip_extensions\": false, \"use_regex\": false, \"max_file_size\": null, \"whole_name\": false, \"min_folder_size\": null, \"max_parent_folder_size\": null}, \"E: exts\": {\"max_backup_size_after\": null, \"do_not_apply_if_extensions\": [], \"min_backup_size_before\": null, \"apply_if_extensions\": [\"txt\", \"lnk\"], \"ie_action\": \"exclude\", \"not_within_paths\": [], \"min_file_size\": null, \"within_paths\": [], \"apply_to_folders\": false, \"patterns\": [], \"max_folder_size\": null, \"min_backup_size_after\": null, \"match_all\": false, \"max_backup_size_before\": null, \"min_parent_folder_size\": null, \"min_total_size_diff\": null, \"max_total_size_diff\": null, \"match_case\": false, \"apply_recursive\": true, \"apply_to_files\": true, \"strip_extensions\": false, \"use_regex\": false, \"max_file_size\": null, \"whole_name\": false, \"min_folder_size\": null, \"max_parent_folder_size\": null}}"
+    "ScriptFilename": [
+        "test_script",
+        ".pyz"
+    ],
+    "ScriptDestination": "C:\\Main\\Python\\MyPyApps\\apps\\BackupScripter\\output\\scripts",
+    "BackupFilename": [
+        "test_backup",
+        ".zip"
+    ],
+    "BackupDatePostfix": "_YYYYMMDD_HHmm",
+    "BackupDestination": "C:\\Main\\Python\\MyPyApps\\apps\\BackupScripter\\output\\backups",
+    "IncludedItems": [
+        "C:\\Main\\Python\\MyPyApps\\apps\\BackupScripter"
+    ],
+    "ExcludedItems": [
+        "C:\\Main\\Python\\MyPyApps\\apps\\BackupScripter\\temp",
+        "C:\\Main\\Python\\MyPyApps\\apps\\BackupScripter\\.git"
+    ],
+    "ArchiveFormat": "zip",
+    "ArchiveMode": "append",
+    "MaxBackups": null,
+    "BackupOldAge": null,
+    "BackupRecentAge": null,
+    "PullAgeFromPostfix": true,
+    "MatchingGroupsList": {}
 }

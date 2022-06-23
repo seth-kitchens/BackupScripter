@@ -1,3 +1,4 @@
+from __future__ import annotations
 import os
 import re
 import nssgui as nss
@@ -481,33 +482,21 @@ class VirtualFSBS(nss.VirtualFS):
 
     # calc
 
-    def get_counts(self, data=None):
-        if data == None:
-            data = {}
-        data['RootFolderCount'] = self.get_root_folder_count()
-        data['RootFileCount'] = self.get_root_file_count()
-        data['IncludedFolderCount'] = self.get_included_folder_count()
-        data['IncludedFileCount'] = self.get_included_file_count()
-        data['ExcludedFolderCount'] = self.get_excluded_folder_count()
-        data['ExcludedFileCount'] = self.get_excluded_file_count()
-        data['IncludedSize'] = self.get_included_size()
-        data['ExcludedSize'] = self.get_excluded_size()
-        return data
+    class vfsdata:
+        def __init__(self, vfs:VirtualFSBS):
+            # counts
+            self.root_folder_count = vfs.get_root_folder_count()
+            self.root_file_count = vfs.get_root_file_count()
+            self.included_folder_count = vfs.get_included_folder_count()
+            self.included_file_count = vfs.get_included_file_count()
+            self.excluded_folder_count = vfs.get_excluded_folder_count()
+            self.excluded_file_count = vfs.get_excluded_file_count()
+            self.included_size = vfs.get_included_size()
+            self.excluded_size = vfs.get_excluded_size()
 
-    def calc_counts(self, data=None):
-        if data == None:
-            data = {}
-        data['RootFolderCount'] = self.get_root_folder_count()
-        data['RootFileCount'] = self.get_root_file_count()
-        data['IncludedFolderCount'] = self.calc_included_folder_count()
-        data['IncludedFileCount'] = self.calc_included_file_count()
-        data['ExcludedFolderCount'] = self.calc_excluded_folder_count()
-        data['ExcludedFileCount'] = self.calc_excluded_file_count()
-        data['IncludedSize'] = self.calc_included_size()
-        data['ExcludedSize'] = self.calc_excluded_size()
-        return data
+            self.included_items, self.excluded_items = vfs.make_ie_lists()
 
-    def make_ie_lists(self, data=None):
+    def make_ie_lists(self):
         i_list = []
         e_list = []
 
@@ -524,13 +513,9 @@ class VirtualFSBS(nss.VirtualFS):
                 elif entry.parent.is_included():
                     e_list.append(path)
                 # else: entry will be excluded by parent
-        
-        if data != None:
-            data["IncludedItems"] = i_list
-            data["ExcludedItems"] = e_list
 
         return i_list, e_list
-    
+
     def calc_root(self, path):
         root_entry = self.find_root_entry(path)
         root_entry.calc_all()
@@ -543,13 +528,8 @@ class VirtualFSBS(nss.VirtualFS):
     def calc_all(self):
         for root_entry in self.root_entries.values():
             root_entry.calc_all()
-        self.calc_counts()
 
-    def save_data_to_dict(self, data=None):
-        if data == None:
-            data = {}
+    def calc_vfsdata(self):
         self.calc_all()
-        self.get_counts(data)
-        self.make_ie_lists(data)
-        return data
+        return self.vfsdata(self)
 VFSBS = VirtualFSBS

@@ -1,4 +1,7 @@
 import sys
+import os
+from bs import create
+from bs import g
 from tests.test_core import *
 
 class TestLargeScale(TestCaseBS):
@@ -15,7 +18,7 @@ class TestLargeScale(TestCaseBS):
     def test_create_script(self):
         clear_fio()
 
-        sdm = make_sdm(
+        sd = make_sd(
             script_filename=['test_script', '.pyz'],
             backup_filename=['test_backup', '.zip'],
             script_dest_rel='',
@@ -24,7 +27,7 @@ class TestLargeScale(TestCaseBS):
             archive_format='zip'
         )
         
-        create._create_script(sdm)
+        create._create_script(sd)
         self.assertTrue(os.path.exists(fio_relpath('test_script.pyz')))
         clear_fio()
     
@@ -51,7 +54,7 @@ class TestLargeScale(TestCaseBS):
         fsdef_to_backup.create()
         fsdef_to_backup.assert_exists(self)
 
-        sdm = make_sdm(
+        sd = make_sd(
             script_filename=['test_script', '.pyz'],
             backup_filename=['test_backup', '.zip'],
             script_dest_rel='',
@@ -61,7 +64,7 @@ class TestLargeScale(TestCaseBS):
             included_items=[fio_relpath('A')]
         )
 
-        create._create_script(sdm)
+        create._create_script(sd)
         self.assertTrue(os.path.exists(fio_relpath('test_script.pyz')))
         self.assertFalse(os.path.exists(fio_relpath('test_backup.zip')))
 

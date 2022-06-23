@@ -37,7 +37,6 @@ class WindowManageIncluded(nss.AbstractBlockingWindow):
         super().define_events()
         self.em.true_event('Return')
         self.em.false_event(sg.WIN_CLOSED)
-        self.em.save_function(self.vfs_static.save_data_to_dict, self.data)
     
         @self.event(self.gem['MatchingGroupsList'].keys['PreviewHere'])
         @self.event(self.gem['MatchingGroupsList'].key_rcm('ListboxItem', 'PreviewHere'))
@@ -82,6 +81,13 @@ class WindowManageIncluded(nss.AbstractBlockingWindow):
             self.gem.push_all(context.window)
     
     # Data
+
+    def save(self, data):
+        super().save(data)
+        vfsdata = self.vfs_static.calc_vfsdata()
+        data['vfsdata_static'] = vfsdata
+        data['IncludedItems'] = vfsdata.included_items
+        data['ExcludedItems'] = vfsdata.excluded_items
 
     # Other
 

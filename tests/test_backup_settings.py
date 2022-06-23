@@ -1,9 +1,13 @@
 import re
 import time
 import sys
+import os
+import unittest
 from datetime import datetime
 from tests.test_core import *
 from gplib.fs import utils as fs_utils
+from bs import create
+from bs import g
 
 def listdir_match(dirpath, pattern):
     if not os.path.isdir(dirpath):
@@ -77,7 +81,7 @@ class TestBackupSettings(TestCaseBS):
 
         date_string = '_UU'
 
-        sdm = make_sdm(
+        sd = make_sd(
             script_filename=['test_script', '.pyz'],
             backup_filename=['test_backup', '.zip'],
             backup_filename_date=date_string,
@@ -89,7 +93,7 @@ class TestBackupSettings(TestCaseBS):
             pull_age_from_postfix=True
         )
 
-        create._create_script(sdm)
+        create._create_script(sd)
         self.assertTrue(os.path.exists(fio_relpath('test_script.pyz')))
         self.assertFalse(os.path.exists(fio_relpath('test_backup.zip')))
 
@@ -138,7 +142,7 @@ class TestBackupSettings(TestCaseBS):
 
         date_string = '_UU'
 
-        sdm = make_sdm(
+        sd = make_sd(
             script_filename=['test_script', '.pyz'],
             backup_filename=['test_backup', '.zip'],
             backup_filename_date=date_string,
@@ -151,7 +155,7 @@ class TestBackupSettings(TestCaseBS):
             pull_age_from_postfix=True
         )
 
-        create._create_script(sdm)
+        create._create_script(sd)
         self.assertTrue(os.path.exists(fio_relpath('test_script.pyz')))
         self.assertFalse(os.path.exists(fio_relpath('test_backup.zip')))
 
@@ -203,7 +207,7 @@ class TestBackupSettings(TestCaseBS):
 
         date_string = '_UU'
 
-        sdm = make_sdm(
+        sd = make_sd(
             script_filename=['test_script', '.pyz'],
             backup_filename=['test_backup', '.zip'],
             backup_filename_date=date_string,
@@ -216,7 +220,7 @@ class TestBackupSettings(TestCaseBS):
             pull_age_from_postfix=True
         )
 
-        create._create_script(sdm)
+        create._create_script(sd)
         self.assertTrue(os.path.exists(fio_relpath('test_script.pyz')))
         self.assertFalse(os.path.exists(fio_relpath('test_backup.zip')))
 
@@ -294,7 +298,7 @@ class TestCompressionSettings(TestCaseBS):
         fsdef_before.create()
         fsdef_before.assert_exists(self)
 
-        sdm = make_sdm(
+        sd = make_sd(
             script_filename=['test_script', '.pyz'],
             backup_filename=['test_backup', '.7z'],
             backup_filename_date='',
@@ -305,7 +309,7 @@ class TestCompressionSettings(TestCaseBS):
             included_items=[fio_relpath('A')]
         )
 
-        create._create_script(sdm)
+        create._create_script(sd)
         self.assertTrue(os.path.exists(fio_relpath('test_script.pyz')))
         self.assertFalse(os.path.exists(fio_relpath('test_backup.7z')))
         
