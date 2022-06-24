@@ -2,9 +2,9 @@ import json
 import os
 import sys
 from pprint import pprint
-from abc import ABC, abstractmethod
 
-from gplib.fs import utils as fs_utils
+from gplib import utils as gp_utils
+from gplib import DateString
 from scriptlib.packfio import PackFIO
 
 __all__ = [
@@ -127,7 +127,7 @@ class ScriptData:
         if not self.__class__.verify_file_is_script(path):
             raise ValueError('File is not a .pyz script')
         stripped_name = path[:-4]
-        comm_file = stripped_name + fs_utils.DateString.process('_YYYYMMDD_HHmm') + '.temp'
+        comm_file = stripped_name + DateString.process('_YYYYMMDD_HHmm') + '.temp'
         command = '{} "{}" {} {}'.format(sys.executable, path, self.GETDATA, comm_file)
         os.system(command)
         self.load_save_file(comm_file, require_known=False)
@@ -137,7 +137,7 @@ class ScriptData:
         comm_file = sys.argv[i_flag+1]
         if os.path.exists(comm_file):
             raise FileExistsError(comm_file)
-        parent_dir = fs_utils.parent_dir(comm_file)
+        parent_dir = gp_utils.parent_dir(comm_file)
         if not os.path.isdir(parent_dir):
             raise Exception('Bad parent folder', parent_dir)
         self.save_to_file(comm_file)

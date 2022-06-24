@@ -7,8 +7,11 @@ from typing import Iterable
 
 from bs.fs.matching_group import MatchingGroup
 from bs.fs.vfs_entry import VFSEntryBS
-from gplib.fs import utils as fs_utils
-from gplib.text import utils as text_utils
+from gplib import utils
+
+def is_path_in_path(subpath: str, path: str):
+    subpath = os.path.normpath(subpath)
+    return subpath.startswith(os.path.abspath(path)+os.sep)
 
 class VirtualFSBS(nss.VirtualFS):
     MATCHING_PATTERN_BANNED_CHARS = ['\r\n']
@@ -179,7 +182,7 @@ class VirtualFSBS(nss.VirtualFS):
                 if os.path.samefile(nwpath, path):
                     do_continue = True
                     break
-                if fs_utils.is_path_in_path(path, nwpath):
+                if is_path_in_path(path, nwpath):
                     do_continue = True
                     break
             if do_continue:
@@ -220,7 +223,7 @@ class VirtualFSBS(nss.VirtualFS):
             match_found = False
             for pattern in d.patterns:
                 match_found = False
-                if text_utils.has_chars(banned_chars, pattern):
+                if utils.has_chars(banned_chars, pattern):
                     continue
                 if not (d.use_regex or d.match_case):
                     pattern = pattern.lower()
@@ -337,7 +340,7 @@ class VirtualFSBS(nss.VirtualFS):
         
         roots_in_path = {}
         for root_path, root_entry in self.root_entries.items():
-            if fs_utils.is_path_in_path(root_path, abs_path):
+            if is_path_in_path(root_path, abs_path):
                 roots_in_path[root_path] = root_entry
         
         new_root = VFSEntryBS(abs_path, 'included')

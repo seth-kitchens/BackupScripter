@@ -5,7 +5,7 @@ import os
 import unittest
 from datetime import datetime
 from tests.test_core import *
-from gplib.fs import utils as fs_utils
+from gplib import DateString
 from bs import create
 from bs import g
 
@@ -44,7 +44,7 @@ def find_most_recent_backup(date_string):
     most_recent = None
     most_recent_timestamp = None
     for f in files:
-        timestamp = fs_utils.DateString.extract_timestamp(date_string, f)
+        timestamp = DateString.extract_timestamp(date_string, f)
         if most_recent_timestamp == None or timestamp > most_recent_timestamp:
             most_recent_timestamp = timestamp
             most_recent = f
@@ -55,8 +55,8 @@ def set_most_recent_backup_date(date_string, timestamp):
     most_recent = find_most_recent_backup(date_string)
     parentdir = os.path.dirname(most_recent)
     basename = os.path.basename(most_recent)
-    name, postfix, ext = fs_utils.DateString.split(date_string, basename)
-    new_postfix = fs_utils.DateString.process(date_string, dt)
+    name, postfix, ext = DateString.split(date_string, basename)
+    new_postfix = DateString.process(date_string, dt)
     new_path = os.path.normpath(os.path.join(parentdir, name + new_postfix + ext))
     os.rename(most_recent, new_path)
 
@@ -231,7 +231,7 @@ class TestBackupSettings(TestCaseBS):
         t = int(time.time())
 
         def assert_backup_of_time_exists(timestamp, fail_msg=None):
-            postfix = fs_utils.DateString.process(date_string, datetime.fromtimestamp(timestamp))
+            postfix = DateString.process(date_string, datetime.fromtimestamp(timestamp))
             fn = 'test_backup' + postfix + '.zip'
             if fail_msg:
                 self.assertTrue(os.path.isfile(fio_relpath(fn)), msg=fail_msg)
@@ -240,7 +240,7 @@ class TestBackupSettings(TestCaseBS):
         def assert_backup_times(timestamps):
             expected_reltimes = [('t - ' + str(t - int(ts))) for ts in timestamps]
             backup_files = listdir_match(fio_path, backup_pattern)
-            backup_timestamps = [fs_utils.DateString.extract_timestamp(date_string, f) for f in backup_files]
+            backup_timestamps = [DateString.extract_timestamp(date_string, f) for f in backup_files]
             backup_reltimes = [('t - ' + str(t - int(ts))) for ts in backup_timestamps]
             fail_msg = '\n  Expected Times: ' + str(expected_reltimes) + '\n  Actual Times: ' + str(backup_reltimes)
             assert_n_files_in_dir(self, len(timestamps), fio_path, backup_pattern)

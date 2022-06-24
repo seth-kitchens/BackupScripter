@@ -1,4 +1,4 @@
-from gplib.data.utils import PackableDict, Dictable
+from gplib import PackableDict, Dictable
 
 class MatchingGroup(Dictable):
     class _d(PackableDict):

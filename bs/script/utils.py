@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from gplib.fs import utils as fs_utils
+from gplib import DateString
 
 def is_file_backup(filename:str, backup_basename:str, backup_date_string:str, backup_extension:str):
     if not filename.startswith(backup_basename):
@@ -14,7 +14,7 @@ def is_file_backup(filename:str, backup_basename:str, backup_date_string:str, ba
     if len(fn) < len(backup_date_string):
         return False
     
-    if not fs_utils.DateString.matches(backup_date_string, fn):
+    if not DateString.matches(backup_date_string, fn):
         return False
 
     return True

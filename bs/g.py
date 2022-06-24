@@ -2,7 +2,6 @@ import sys
 import os
 from pathlib import Path
 
-from gplib.misc import utils as misc_utils
 from scriptlib.packfio import PackFIO
 from data.project.packfio_data import packfio_data
 
@@ -67,6 +66,10 @@ class variables:
     pass
 gv = variables
 
+def update_member(obj, d, name):
+    if name in d and name in dir(obj):
+        obj.__dict__[name] = d[name]
+
 class style:
     name = 'py'
     sg_theme = 'DarkBlue3'
@@ -82,12 +85,12 @@ class style:
         else:
             d_style = st
         def load(name):
-            misc_utils.update_member(style, d_style, name)
+            update_member(style, d_style, name)
         load('name')
         load('sg_theme')
         if 'colors' in d_style:
             def load_color(name):
-                misc_utils.update_member(style.colors, d_style['colors'], name)
+                update_member(style.colors, d_style['colors'], name)
             load_color('error')
             load_color('warning')
             load_color('header')

@@ -3,7 +3,6 @@ import os
 from bs.script import archive
 from bs.script.data import PreExecutionData
 from bs.script_data import ScriptDataBS
-from gplib.text.utils import uprint
 
 def create_archive(pre_data:PreExecutionData, script_data:ScriptDataBS, archive_format):
     print('Backing up as: {}'.format(archive_format))

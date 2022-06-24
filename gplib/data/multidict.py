@@ -1,5 +1,9 @@
 from typing import Any
 
+__all__ = [
+    'Multidict'
+]
+
 # Works like a dict, but keeps old values
 # allows multiple of same key, but not multiple key-value pairs
 class Multidict:

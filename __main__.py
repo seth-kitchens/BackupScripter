@@ -1,11 +1,11 @@
 import sys
 from bs import g
-from gplib.project import utils as project_utils
+from gplib import utils as gp_utils
 
 if __name__ != '__main__':
     sys.exit()
 
-argv_flags = project_utils.extract_argv_flags()
+argv_flags = gp_utils.extract_argv_flags()
 
 
 def run():
@@ -22,11 +22,11 @@ def run():
     elif g.flags.BACKUP in argv_flags or g.flags.GETDATA in argv_flags:
         exe = g.project_path("scripts/run_backup.py")
 
-    project_utils.open_in_terminal(exe, argv_flags)
+    gp_utils.open_in_terminal(exe, argv_flags)
 
 
 if g.flags.DBGCMD in argv_flags and not g.flags.DBGCMD in argv_flags:
     argv_flags.append(g.flags.DBGCMD)
-    project_utils.open_in_terminal(sys.argv[0], argv_flags)
+    gp_utils.open_in_terminal(sys.argv[0], argv_flags)
 else:
     run()

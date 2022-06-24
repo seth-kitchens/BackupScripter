@@ -5,7 +5,7 @@ import re
 import nssgui as nss
 from bs import g
 from bs.script_data import ScriptDataBS
-from gplib.fs import utils as fs_utils
+from gplib import utils as gp_utils
 
 
 def create_script(context:nss.WindowContext, script_data:ScriptDataBS, progress_func):
@@ -21,7 +21,7 @@ def create_script(context:nss.WindowContext, script_data:ScriptDataBS, progress_
     progress_func('Checking Script Destination', 0.3)
     do_make_path = False
     if (not os.path.exists(script_destination)) and (not do_make_path):
-        ne_dir = fs_utils.find_nonexistent_dir(script_destination)
+        ne_dir = gp_utils.find_nonexistent_dir(script_destination)
         nss.PopupBuilder.T.error().text((
             'Script destination does not exist.',
             'Path: ' + script_destination,
