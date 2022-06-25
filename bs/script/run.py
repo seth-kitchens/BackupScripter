@@ -1,11 +1,9 @@
-import os.path
 from bs.script_data import ScriptDataBS
 
 from gplib import uprint
 from gplib import utils as gp_utils
 from bs.script import data as b_data, create as b_create
 from bs import g
-from bs.fs.matching_group import MatchingGroup
 
 def run(script_data:ScriptDataBS):
     # Preparation
@@ -29,24 +27,35 @@ def run(script_data:ScriptDataBS):
     uprint.line()
     print('Backup Start')
     uprint.thin_line()
-    success = b_create.create_backup(pre_data, script_data)
+    backup_success = b_create.create_backup(pre_data, script_data)
     uprint.thin_line()
     print('Backup End')
     uprint.line()
-    if not success:
-        print('Backup failed.')
+    
+    # Results
+
+    if not backup_success:
+        print('Result: FAILURE')
+        print('Backup execution returned with failure')
+        print('')
         if not g.is_noinput():
             gp_utils.prompt_any_input('Enter anything to exit')
         return
 
-    print('Backup Finished!')
+    post_data = b_data.PostExecutionData(script_data, pre_data)
+    
+    if not post_data.backup_success:
+        print('Result: FAILURE')
+        if not g.is_noinput():
+            gp_utils.prompt_any_input('Enter anything to exit')
+        return
+
+    print('Result: SUCCESS')
+
     uprint.line()
 
-    # Results
 
-    post_data = b_data.PostExecutionData(script_data, pre_data)
-
-    print('Backup Results')
+    print('Created Backup Details')
     uprint.thin_line()
     post_data.print_details(script_data, pre_data)
     uprint.line()

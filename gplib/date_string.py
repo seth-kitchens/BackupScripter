@@ -58,6 +58,8 @@ class DateString:
 
     @classmethod
     def postfix_to_datetime(cls, date_string:str, postfix:str):
+        if not isinstance(postfix, str):
+            return None
         match = re.search('UU', date_string)
         if match != None:
             l = match.start(0)
@@ -78,6 +80,8 @@ class DateString:
         year = pull('YYYY')
         month = pull('MM')
         day = pull('DD')
+        if 0 in [year, month, day]:
+            return None
         if 'HH' in date_string:
             hour = pull('HH')
         else:
