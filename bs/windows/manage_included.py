@@ -22,12 +22,15 @@ class WindowManageIncluded(nss.AbstractBlockingWindow):
             layout=gem.layout(bs.el.MatchingGroupsList('MatchingGroupsList', self.vfs_static)))
         frame_system = nss.sg.FrameColumn('Window', expand_y=True, layout=[
             [sg.Button('Return', size=(12, 2), expand_x=True)],
+            [sg.Button('Cancel', size=(12, 2), expand_x=True)],
             [nss.el.Info(gem, info.window, bt='Info', header='Manage Included', sg_kwargs={'size': (16, 2)})],
             [sg.VPush()]
         ])
         layout = [
             [frame_explorer],
-            [frame_iepatterns, frame_system]
+            [frame_iepatterns, frame_system],
+            [sg.Sizer(0, 5)],
+            [self.status_bar(nss.el.StatusBar('StatusBar'))]
         ]
         return layout
     
@@ -36,6 +39,7 @@ class WindowManageIncluded(nss.AbstractBlockingWindow):
     def define_events(self):
         super().define_events()
         self.em.true_event('Return')
+        self.em.false_event('Cancel')
         self.em.false_event(sg.WIN_CLOSED)
     
         @self.event(self.gem['MatchingGroupsList'].keys['PreviewHere'])

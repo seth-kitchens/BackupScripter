@@ -1,7 +1,5 @@
-import json
 import PySimpleGUI as sg
 import nssgui as nss
-import bs
 
 from bs.info import matching_groups_list as info
 from bs.fs.matching_group import MatchingGroup
@@ -134,10 +132,12 @@ class WindowEditMatchingGroups(nss.AbstractBlockingWindow):
         layout = [
             [column_left, column_right],
             [
-                nss.el.Info(gem, info.window, bt='Info'), 
+                nss.el.Info(gem, info.window, bt='Info', sg_kwargs={'size': 10}), 
                 sg.Push(),
                 sg.OK(size=10),
-                sg.Cancel(size=10)]
+                sg.Cancel(size=10)],
+            [sg.Sizer(0, 5)],
+            [self.status_bar(nss.el.StatusBar('StatusBar'))]
         ]
         return layout
 

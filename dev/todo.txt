@@ -2,60 +2,63 @@ Backup Scripter
 
 Todo
 ---
+NSS: nssgui
+BS: BackupScripter
+SL: scriptlib (still a part of BackupScripter, BS may include SL)
 
 QoL, Settings
-- add default locations for main page file browsing
-- consider settings for editor, particularly default browse locations
+- BS: add default locations for main page file browsing
+- BS: consider settings for editor, particularly default browse locations
 	- settings screen?
 
 Bugs, Poorly Implemented
-- in windows/manage_included.py, Resolve All does not remove root folders
-- make units dropdown from InputUnits ordered correctly
-- window flashes when being re-enabled
-- InfoButton and Info is messy
+- BS: 'Load Script' is not working
+- BS: in windows/manage_included.py, Resolve All does not remove root folders
+- NSS: make units dropdown from InputUnits ordered correctly
+- NSS: window flashes when being re-enabled
+- NSS: InfoButton and Info is messy
 
 Tests
-- Make test for 2+ roots included with identical names (after first, should be renamed with _2, _3, ... appended)
+- BS: Make test for 2+ roots included with identical names (after first, should be renamed with _2, _3, ... appended)
 
 Unimplemented
-- Implement compression settings
-- in assert_files_match_zip in test_core.py, implement compare_contents
-- add backup results (size of backup created, file deleted, current backups)
-- alert to statically included/excluded items that don't exist
-- in script/details.py add (# days old) text to backup-to-be-overwritten segment
-- in script/app.py add option to edit scripts with editor
-- in scriptlib/.../script_data.py:ScriptData:verify_file_is_script(), make a more through check, perhaps by inserting data into the pyz
-- Increase performance by making a lazy init function in gem, as in gem.layout(class, *args, *kwargs) that calls init IF first call
-- add relative paths (might have to be explicit)
-- add matching option for age of file
+- NSS: A ToolBar class would be nice
+- BS: Implement compression settings
+- BS: in assert_files_match_zip in test_core.py, implement compare_contents
+- BS: alert to statically included/excluded items that don't exist
+- BS: in script/details.py add (# days old) text to backup-to-be-overwritten segment
+- BS: in script/app.py add option to edit scripts with editor
+- BS: in scriptlib/.../script_data.py:ScriptData:verify_file_is_script(), make a more through check, perhaps by inserting data into the pyz
+- NSS: Increase performance by making a lazy init function in gem, as in gem.layout(class, *args, *kwargs) that calls init IF first call
+- BS: add relative paths (might have to be explicit)
+- BS: add matching option for age of file
 
 Design, Behavior, Error Prevention
-- status messages? set defaults / load defaults need 'Loading...' or something
-- improve consistency with 'folder' vs 'dir'
-- pulling date from files only works if no periods in file name or date string, enforce this with GUI
-- making the edit window for ListContainer was messy and poorly documented. This needs to be easier to understand.
-- how do changes to code affect backwards compatibility with existing pyz scripts? how to prevent the functions from breaking when accessing pyz script generated from older code?
-- should the event_loop() function really be in the event_manager class?
-- folder browse button for StringContainer/TextList is currently a part of StringContainer (in the init), shouldn't it be a part of TextList instead?
-- are asyncwindows disabled from context.disable()?
-- gem.row/etc should be self.row in window classes. Maybe use a iGEManager interface for passing gem as param as well?
-- Error prevention needed. Try unintended actions to see what happens, and fix.
-- Every blocking window should have some way of exiting the entire program.
+- BS: The default matching groups are automatically processed upon program start, which affects loading time. Something should be done about this.
+- NSS: em should be pulled into window and ge as a base class
+- NSS/BS: Every blocking window should have some way of exiting the entire program.
+- NSS: Should nss.el be nss.ge?
+- NSS/BS: improve consistency with 'folder' vs 'dir'
+- BS: pulling date from files only works if no periods in file name or date string, enforce this with GUI
+- NSS: making the edit window for ListContainer was messy and poorly documented. This needs to be easier to understand.
+- SL: how do changes to code affect backwards compatibility with existing pyz scripts? how to prevent the functions from breaking when accessing pyz script generated from older code?
+- NSS: should the event_loop() function really be in the event_manager class?
+- NSS: folder browse button for StringContainer/TextList is currently a part of StringContainer (in the init), shouldn't it be a part of TextList instead?
+- NSS: are asyncwindows disabled from context.disable()?
+- NSS: gem.row/etc should be self.row in window classes. Maybe use a iGEManager interface for passing gem as param as well?
+- NSS/BS: Error prevention needed. Try unintended actions to see what happens, and fix.
 
 Documentation
-- clean and document project/create.py
-- convert above-function comments to docstrings so that they can be seen in ide
-- look over and update existing documentation
-- update FSDef in test_core.py with correct documentation of TestFile and TestDir
+- BS: clean and document project/create.py
+- NSS/BS: convert above-function comments to docstrings so that they can be seen in ide
+- NSS/BS: look over and update existing documentation
+- BS: update FSDef in test_core.py with correct documentation of TestFile and TestDir
 
 Inclusion Matching
-- Implement Inclusion Matching
-- Does including with pattern matching include appropriate parent folders
-- Should inclusion require a 'within path' ?
-
-Info
-- add matching groups info
+- BS: Implement Inclusion Matching
+- BS: Does including with pattern matching include appropriate parent folders
+- BS: Should inclusion require a 'within path' ?
 
 Project Organization, Version Control
-- vfs explorer view is still somewhat project specific
-- move EmbedText from nssgui.sg.utils to somewhere better
+- NSS: vfs explorer view is still somewhat project specific
+- NSS: move EmbedText from nssgui.sg.utils to somewhere better

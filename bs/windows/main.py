@@ -56,6 +56,7 @@ class WindowMain(nss.AbstractBlockingWindow):
         frame_backup_settings = nss.sg.FrameColumn('Backup Settings', expand_y=True, layout=[
             [
                 *gem.row(nss.el.Input('MaxBackups', 'Max Backups', type='int', negative_invalid=True)),
+                sg.Push(),
                 nss.el.Info(gem, info.backup_settings, '?', header='Backup Settings')
             ],
             gem.row(nss.el.InputUnits('BackupRecentAge', 'Recent Age', nss.units.Time, nss.units.Time.DAY, store_as_degree=nss.units.Time.SECOND, negative_invalid=True)),
@@ -107,11 +108,22 @@ class WindowMain(nss.AbstractBlockingWindow):
             frame_ie,
             frame_backup_settings
         ]
+        system_button_size = 10
+        row_system = [
+            nss.el.Info(self.gem, info.window, 'Info', header='Backup Scripter', subheader='Make custom backup scripts', sg_kwargs={'size': system_button_size}),
+            sg.Button('Set Defaults', key='SetDefaults', size=system_button_size),
+            sg.Button('Load Defaults', key='LoadDefaults', size=system_button_size),
+            sg.Push()
+        ]
         layout = [
-            [sg.Menu(self.menubar.get_def())],
+            #[sg.Menu(self.menubar.get_def())],
+            [sg.Sizer(0, 2)],
+            row_system,
             [frame_script_file],
             [frame_backup_file],
-            [row_items]
+            [row_items],
+            [sg.Sizer(0, 5)],
+            [self.status_bar(nss.el.StatusBar('StatusBar'))]
         ]
         return layout
     
@@ -135,33 +147,31 @@ class WindowMain(nss.AbstractBlockingWindow):
 
         radio_button_keys = self.gem['IENumbers'].get_button_keys()
         @self.events(radio_button_keys)
-        def event_radio_ie_numbers(context):
+        def event_radio_ie_numbers(context:nss.WindowContext):
             self.gem['IENumbers'].pull(context.values)
             self.refresh_ie(context.window)
             self.gem['IENumbers'].push(context.window)
 
-        @self.event(self.key_menubar('Info', 'EditorInfo'))
-        def event_editor_info(context):
-            title = 'Info'
-            header = 'Backup Scripter'
-            subheader = 'Make custom backup scripts'
-            nss.PopupBuilder().ok().title(title).header(header).subheader(subheader).textwrap(info.window).open(context)
-
-        @self.event(self.key_menubar('Editor', 'SetDefaults'))
-        def event_set_defaults(context):
+        @self.event('SetDefaults')
+        def event_set_defaults(context:nss.WindowContext):
+            self.update_status_bar('Setting defaults...')
+            context.window.refresh()
             self.pull(context.values)
             self.save(self.data)
             self.script_data.load_dict(self.data)
             self.script_data.save_to_file(force_save=True)
+            self.update_status_bar('')
 
-        @self.event(self.key_menubar('Editor', 'LoadDefaults'))
-        def event_load_defaults(context):
+        @self.event('LoadDefaults')
+        def event_load_defaults(context:nss.WindowContext):
+            self.update_status_bar('Loading defaults...')
             self.script_data.load_save_file()
             self.load(self.data)
             self.push(context.window)
+            self.update_status_bar('')
 
         @self.event(self.gem['ArchiveFormat'].keys['Dropdown'])
-        def event_compression_type_chosen(context):
+        def event_compression_type_chosen(context:nss.WindowContext):
             selection = context.values[self.gem['ArchiveFormat'].keys['Dropdown']]
             archive_ext = WindowMain.archive_exts[selection]
             self.gem['BackupFilename'].update(context.window, extension=archive_ext)
@@ -174,20 +184,23 @@ class WindowMain(nss.AbstractBlockingWindow):
                 self.gem['ArchiveMode'].update(context.window, value='compile')
 
         @self.event('ExportQuit')
-        def event_export_quit(context):
+        def event_export_quit(context:nss.WindowContext):
             self.pull(context.values)
             self.save(self.data)
             success = self.create_script(context, auto_close=True)
             return True if success else None
         
         @self.event('ExportScript')
-        def event_export_script(context):
+        def event_export_script(context:nss.WindowContext):
+            self.update_status_bar('Exporting script...')
             self.pull(context.values)
             self.save(self.data)
             self.create_script(context, auto_close=False)
+            self.update_status_bar('')
         
         @self.event('LoadScript')
-        def event_load_script(context):
+        def event_load_script(context:nss.WindowContext):
+            self.update_status_bar('')
             script_to_load = nss.sg.browse_file(context.window)
             if not script_to_load:
                 return
@@ -199,11 +212,11 @@ class WindowMain(nss.AbstractBlockingWindow):
             self.push(context.window)
         
         @self.event('CompressionSettings')
-        def event_compression_settings(context):
+        def event_compression_settings(context:nss.WindowContext):
             pass
 
         @self.event('ManageIncluded')
-        def event_manage_included(context):
+        def event_manage_included(context:nss.WindowContext):
             window_manage_included = WindowManageIncluded(self.data, self.vfs_static)
             rv = window_manage_included.open(context)
             if not rv:
@@ -238,7 +251,7 @@ class WindowMain(nss.AbstractBlockingWindow):
 
     ### WindowMain
 
-    def create_script(self, context, auto_close=True):
+    def create_script(self, context:nss.WindowContext, auto_close=True):
         popup_title = 'Create Script'
         self.script_data.load_dict(self.data)
         popup_progress = nss.ProgressWindow('Progress', header='Creating Script')
@@ -260,8 +273,6 @@ class WindowMain(nss.AbstractBlockingWindow):
         return success
     
     def refresh_ie(self, window):
-        data_static = {}
-        data_final = {}
         vfsdata_static = self.vfs_static.calc_vfsdata()
         vfsdata_final = self.vfs_final.calc_vfsdata()
 
