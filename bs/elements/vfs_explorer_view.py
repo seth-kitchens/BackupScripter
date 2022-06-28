@@ -3,7 +3,7 @@ import nssgui as nss
 
 __all__ = ['VFSExplorerViewBS']
 
-class VFSExplorerViewBS(nss.el.VFSExplorerView):
+class VFSExplorerViewBS(nss.ge.VFSExplorerView):
     def __init__(self, object_id, vfs_explorer, read_only=False) -> None:
         super().__init__(object_id, vfs_explorer, read_only=read_only)
 

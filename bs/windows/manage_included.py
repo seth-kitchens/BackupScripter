@@ -23,14 +23,14 @@ class WindowManageIncluded(nss.AbstractBlockingWindow):
         frame_system = nss.sg.FrameColumn('Window', expand_y=True, layout=[
             [sg.Button('Return', size=(12, 2), expand_x=True)],
             [sg.Button('Cancel', size=(12, 2), expand_x=True)],
-            [nss.el.Info(gem, info.window, bt='Info', header='Manage Included', sg_kwargs={'size': (16, 2)})],
+            [nss.ge.Info(gem, info.window, bt='Info', header='Manage Included', sg_kwargs={'size': (16, 2)})],
             [sg.VPush()]
         ])
         layout = [
             [frame_explorer],
             [frame_iepatterns, frame_system],
             [sg.Sizer(0, 5)],
-            [self.status_bar(nss.el.StatusBar('StatusBar'))]
+            [self.status_bar(nss.ge.StatusBar('StatusBar'))]
         ]
         return layout
     
