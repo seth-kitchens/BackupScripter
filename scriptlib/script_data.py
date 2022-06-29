@@ -85,11 +85,14 @@ class ScriptData:
         for k, v in d.items():
             if self.is_var(k):
                 self.var(k).set(v)
-    def to_serializable_dict(self, d:dict=None, force_save=False):
+    def to_serializable_dict(self, d:dict=None, save_all=False):
+        """
+        save_all: saves all script variables, including those with do_save=False
+        """
         if d == None:
             d = {}
         for k, v in self.__dict__.items():
-            if self.is_var(private_name=k) and (v.do_save or force_save):
+            if self.is_var(private_name=k) and (v.do_save or save_all):
                 d[self.to_public_name(k)] = v.to_serializable()
         return d
     def load_serializable_dict(self, d:dict):
@@ -97,13 +100,17 @@ class ScriptData:
             if self.is_var(public_name=k):
                 self.var(k).load_serializable(v)
     
-    def save_to_file(self, path=None, force_save=False, override_packfio=False):
-        """path defaults to self.data_file if None"""
+    def save_to_file(self, path=None, save_all=False, bypass_packfio=False):
+        """
+        path: defaults to self.data_file if None
+        save_all: force save script variables with do_save=False
+        bypass_packfio: write to file directly
+        """
         path = path if path != None else self.data_file
         if not path:
             raise ValueError('Save file has not been specified')
-        sdata = self.to_serializable_dict(force_save=force_save)
-        if override_packfio:
+        sdata = self.to_serializable_dict(save_all=save_all)
+        if bypass_packfio:
             with open(path, 'w') as file_out:
                 file_out.write(json.dumps(sdata))
         else:
@@ -140,6 +147,6 @@ class ScriptData:
         parent_dir = gp_utils.parent_dir(comm_file)
         if not os.path.isdir(parent_dir):
             raise Exception('Bad parent folder', parent_dir)
-        self.save_to_file(comm_file)
+        self.save_to_file(comm_file, bypass_packfio=True)
     def print(self):
         pprint(self.to_dict())

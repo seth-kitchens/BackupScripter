@@ -1,6 +1,11 @@
 
-# join list of strs with sep=space if no whitespace already at end of line
 def join(ss:list[str]):
+    """
+    join list of strs with sep=space if no whitespace already at end of line\n
+    ['a', 'b', 'c'] -> 'a b c'       \n
+    ['a\\n', 'b ', 'c'] -> 'a\\nb c'   \n
+    ['a' 'b', 'c' 'd'] -> 'ab cd'
+    """
     if not ss:
         return ''
     len_ss = len(ss)
@@ -70,8 +75,9 @@ class window_manage_included:
     window = join([
         '- Static Inclusion -\n',
         'Include or exclude files and folders here by manually selecting them. Excluding a root item',
-        'will remove it from the explorer. Removing a nested item will exclude it. Data shown in',
-        'the file explorer includes:\n\n',
+        'will remove it from the explorer. Removing a nested item will exclude it. Files or folders',
+        'included or excluded will be ',
+        'Data shown in the file explorer includes:\n\n',
         'Status: Included/Excluded\n',
         'Inc Size: Recursive size included\n',
         'Exc Size: Recursive size excluded\n',

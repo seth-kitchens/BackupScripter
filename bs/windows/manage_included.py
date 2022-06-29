@@ -1,4 +1,5 @@
 import bs
+from bs.script_data import ScriptDataBS
 import nssgui as nss
 import PySimpleGUI as sg
 from bs.fs.vfs import VFSBS as VFS
@@ -7,7 +8,8 @@ from bs.info import window_manage_included as info
 button_size = nss.sg.button_size
 
 class WindowManageIncluded(nss.AbstractBlockingWindow):
-    def __init__(self, data:dict, vfs_static:VFS) -> None:
+    def __init__(self, script_data:ScriptDataBS, vfs_static:VFS) -> None:
+        data = script_data.to_dict()
         self.vfs_static = vfs_static.clone()
         self.vfs_explorer = nss.VFSExplorer(self.vfs_static, data.copy())
         super().__init__('WindowManageIncluded', data)
@@ -40,7 +42,11 @@ class WindowManageIncluded(nss.AbstractBlockingWindow):
         super().define_events()
         self.em.true_event('Return')
         self.em.false_event('Cancel')
-        self.em.false_event(sg.WIN_CLOSED)
+
+        @self.event(sg.WIN_CLOSED)
+        def event_win_closed(context):
+            self.is_exit = True
+            return False
     
         @self.event(self.gem['MatchingGroupsList'].keys['PreviewHere'])
         @self.event(self.gem['MatchingGroupsList'].key_rcm('ListboxItem', 'PreviewHere'))

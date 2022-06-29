@@ -2,9 +2,15 @@ Backup Scripter
 
 Todo
 ---
+Legend
+
 NSS: nssgui
 BS: BackupScripter
 SL: scriptlib (still a part of BackupScripter, BS may include SL)
+
+- Normal
+* Important
+---
 
 QoL, Settings
 - BS: add default locations for main page file browsing
@@ -12,11 +18,12 @@ QoL, Settings
 	- settings screen?
 
 Bugs, Poorly Implemented
-- BS: 'Load Script' is not working
-- BS: in windows/manage_included.py, Resolve All does not remove root folders
+* BS: window_edit_matching_groups quits on X pressed, even though there is no code. The event is falling through into window_manage_included's event loop some how, and that window thinks its X was pressed, then calling event_win_closed().
+* BS: in windows/manage_included.py, Resolve All does not remove root folders
 - NSS: make units dropdown from InputUnits ordered correctly
-- NSS: window flashes when being re-enabled
 - NSS: InfoButton and Info is messy
+* BS: Check behavior of scripts where static inclusion has mismatch at script runtime, i.e. something specified as included/excluded
+does not exist. This should be reported during script execution.
 
 Tests
 - BS: Make test for 2+ roots included with identical names (after first, should be renamed with _2, _3, ... appended)
@@ -25,19 +32,19 @@ Unimplemented
 - NSS: A ToolBar class would be nice
 - BS: Implement compression settings
 - BS: in assert_files_match_zip in test_core.py, implement compare_contents
-- BS: alert to statically included/excluded items that don't exist
 - BS: in script/details.py add (# days old) text to backup-to-be-overwritten segment
 - BS: in script/app.py add option to edit scripts with editor
 - BS: in scriptlib/.../script_data.py:ScriptData:verify_file_is_script(), make a more through check, perhaps by inserting data into the pyz
 - NSS: Increase performance by making a lazy init function in gem, as in gem.layout(class, *args, *kwargs) that calls init IF first call
 - BS: add relative paths (might have to be explicit)
 - BS: add matching option for age of file
+- BS: should there be a way to see the include>exclude>include>... structure in vfs explorer?
 
 Design, Behavior, Error Prevention
+- BS: rename bs.el package/alias
 - BS: The default matching groups are automatically processed upon program start, which affects loading time. Something should be done about this.
-- NSS: em should be pulled into window and ge as a base class
-- NSS/BS: Every blocking window should have some way of exiting the entire program.
-- NSS: Should nss.el be nss.ge?
+* NSS: em should be pulled into window and ge as a base class
+* NSS/BS: Every blocking window should have some way of exiting the entire program.
 - NSS/BS: improve consistency with 'folder' vs 'dir'
 - BS: pulling date from files only works if no periods in file name or date string, enforce this with GUI
 - NSS: making the edit window for ListContainer was messy and poorly documented. This needs to be easier to understand.
@@ -47,6 +54,7 @@ Design, Behavior, Error Prevention
 - NSS: are asyncwindows disabled from context.disable()?
 - NSS: gem.row/etc should be self.row in window classes. Maybe use a iGEManager interface for passing gem as param as well?
 - NSS/BS: Error prevention needed. Try unintended actions to see what happens, and fix.
+- NSS: currently every element saves data, shouldn't there be an option, especially for output elements?
 
 Documentation
 - BS: clean and document project/create.py

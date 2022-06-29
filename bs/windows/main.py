@@ -24,7 +24,6 @@ class WindowMain(nss.AbstractBlockingWindow):
         self.vfs_final = self.vfs_static.clone()
         self.vfs_final.process_matching_groups_dict(sd_dict['MatchingGroupsList'])
         super().__init__('WindowMain', sd_dict)
-        #self.gem.load_all(self.data)
     
     ### Window
 
@@ -159,7 +158,7 @@ class WindowMain(nss.AbstractBlockingWindow):
             self.pull(context.values)
             self.save(self.data)
             self.script_data.load_dict(self.data)
-            self.script_data.save_to_file(force_save=True)
+            self.script_data.save_to_file(save_all=True)
             self.update_status_bar('')
 
         @self.event('LoadDefaults')
@@ -200,16 +199,17 @@ class WindowMain(nss.AbstractBlockingWindow):
         
         @self.event('LoadScript')
         def event_load_script(context:nss.WindowContext):
-            self.update_status_bar('')
             script_to_load = nss.sg.browse_file(context.window)
             if not script_to_load:
                 return
+            self.update_status_bar('Loading script...')
             self.script_data.load_pyz(script_to_load)
             name = os.path.basename(script_to_load)
             i = name.rfind('.')
             self.script_data.ScriptFilename = [name[:i], name[i:]]
             self.load(self.data)
             self.push(context.window)
+            self.update_status_bar('')
         
         @self.event('CompressionSettings')
         def event_compression_settings(context:nss.WindowContext):
@@ -217,11 +217,16 @@ class WindowMain(nss.AbstractBlockingWindow):
 
         @self.event('ManageIncluded')
         def event_manage_included(context:nss.WindowContext):
-            window_manage_included = WindowManageIncluded(self.data, self.vfs_static)
+            self.script_data.load_dict(self.data)
+            window_manage_included = WindowManageIncluded(self.script_data, self.vfs_static)
             rv = window_manage_included.open(context)
+            if window_manage_included.is_exit:
+                return False
             if not rv:
                 return
-            self.data.update(window_manage_included.get_data())
+            wmi_data = window_manage_included.get_data()
+            self.script_data.load_dict(wmi_data)
+            self.data.update(self.script_data.to_dict())
             self.vfs_static.copy_from_vfs(window_manage_included.vfs_static)
             self.vfs_final.copy_from_vfs(self.vfs_static)
             self.vfs_final.process_matching_groups_dict(self.data['MatchingGroupsList'])
