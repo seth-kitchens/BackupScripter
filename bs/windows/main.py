@@ -165,7 +165,7 @@ class WindowMain(nss.AbstractBlockingWindow):
         def event_load_defaults(context:nss.WindowContext):
             self.update_status_bar('Loading defaults...')
             self.script_data.load_save_file()
-            self.load(self.data)
+            self.load()
             self.push(context.window)
             self.update_status_bar('')
 
@@ -207,7 +207,7 @@ class WindowMain(nss.AbstractBlockingWindow):
             name = os.path.basename(script_to_load)
             i = name.rfind('.')
             self.script_data.ScriptFilename = [name[:i], name[i:]]
-            self.load(self.data)
+            self.load()
             self.push(context.window)
             self.update_status_bar('')
         
@@ -237,8 +237,10 @@ class WindowMain(nss.AbstractBlockingWindow):
     def save(self, data):
         super().save(data)
         data['IncludedItems'], data['ExcludedItems'] = self.vfs_static.make_ie_lists()
-    def load(self, data):
-        data = self.script_data.to_dict()
+    def load(self, data=None):
+        """data: defaults to self.script_data.to_dict() if None"""
+        if data == None:
+            data = self.script_data.to_dict()
         super().load(data)
         self.vfs_static.remove_all()
         self.vfs_static.build_from_ie_lists(data['IncludedItems'], data['ExcludedItems'])

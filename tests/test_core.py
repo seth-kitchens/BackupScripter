@@ -42,7 +42,7 @@ def make_sd(sd=None,
         backup_old_age_secs=None,
         backup_recent_age_secs=None,
         pull_age_from_postfix=None,
-        matching_groups=None):
+        matching_groups=None) -> ScriptDataBS:
     sd_dict = sd.to_dict() if sd != None else ScriptDataBS(data_file=None).to_dict()
     def update(name, val):
         if val != None:
