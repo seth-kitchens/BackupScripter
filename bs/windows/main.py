@@ -207,6 +207,7 @@ class WindowMain(nss.AbstractBlockingWindow):
             name = os.path.basename(script_to_load)
             i = name.rfind('.')
             self.script_data.ScriptFilename = [name[:i], name[i:]]
+            self.script_data.ScriptDestination = os.path.dirname(script_to_load)
             self.load()
             self.push(context.window)
             self.update_status_bar('')

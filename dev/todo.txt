@@ -18,12 +18,13 @@ QoL, Settings
 	- settings screen?
 
 Bugs, Poorly Implemented
-* BS: window_edit_matching_groups quits on X pressed, even though there is no code. The event is falling through into window_manage_included's event loop some how, and that window thinks its X was pressed, then calling event_win_closed().
+* BS: script destination not updated when loading script
+* BS: window_edit_matching_groups quits on X pressed, even though there is no code. The event is falling through into window_manage_included's event loop somehow, and that window thinks its X was pressed, then calling event_win_closed().
 * BS: in windows/manage_included.py, Resolve All does not remove root folders
 - NSS: make units dropdown from InputUnits ordered correctly
 - NSS: InfoButton and Info is messy
 * BS: Check behavior of scripts where static inclusion has mismatch at script runtime, i.e. something specified as included/excluded
-does not exist. This should be reported during script execution.
+does not exist. This should be reported during script execution. Also when loading a script or loading defaults.
 
 Tests
 - BS: Make test for 2+ roots included with identical names (after first, should be renamed with _2, _3, ... appended)
@@ -39,8 +40,10 @@ Unimplemented
 - BS: add relative paths (might have to be explicit)
 - BS: add matching option for age of file
 - BS: should there be a way to see the include>exclude>include>... structure in vfs explorer?
+- BS: implement opening script with backupscripter
 
 Design, Behavior, Error Prevention
+- NSS: event manager handle_event_function() is confusing. Why are the rv's ignored?
 - BS: rename bs.el package/alias
 - BS: The default matching groups are automatically processed upon program start, which affects loading time. Something should be done about this.
 * NSS: em should be pulled into window and ge as a base class
@@ -55,6 +58,7 @@ Design, Behavior, Error Prevention
 - NSS: gem.row/etc should be self.row in window classes. Maybe use a iGEManager interface for passing gem as param as well?
 - NSS/BS: Error prevention needed. Try unintended actions to see what happens, and fix.
 - NSS: currently every element saves data, shouldn't there be an option, especially for output elements?
+- BS: Add color to vfs explorer for included/excluded (very pale red/green)w
 
 Documentation
 - BS: clean and document project/create.py

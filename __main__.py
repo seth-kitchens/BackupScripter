@@ -25,7 +25,7 @@ def run():
     gp_utils.open_in_terminal(exe, argv_flags)
 
 
-if g.flags.DBGCMD in argv_flags and not g.flags.DBGCMD in argv_flags:
+if g.flags.DEBUG in argv_flags and not g.flags.DBGCMD in argv_flags:
     argv_flags.append(g.flags.DBGCMD)
     gp_utils.open_in_terminal(sys.argv[0], argv_flags)
 else:
