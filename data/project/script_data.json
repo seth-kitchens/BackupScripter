@@ -11,7 +11,8 @@
     "BackupDatePostfix": "_YYYYMMDD_HHmm",
     "BackupDestination": "C:\\Main\\Python\\MyPyApps\\apps\\BackupScripter\\output\\backups",
     "IncludedItems": [
-        "C:\\Main\\Python\\MyPyApps\\apps\\BackupScripter"
+        "C:\\Main\\Python\\MyPyApps\\apps\\BackupScripter",
+        "C:\\Main\\Python\\Test\\A"
     ],
     "ExcludedItems": [
         "C:\\Main\\Python\\MyPyApps\\apps\\BackupScripter\\temp",
@@ -23,5 +24,36 @@
     "BackupOldAge": null,
     "BackupRecentAge": null,
     "PullAgeFromPostfix": true,
-    "MatchingGroupsList": {}
+    "MatchingGroupsList": {
+        "E: A": {
+            "use_regex": false,
+            "max_file_size": null,
+            "max_parent_folder_size": null,
+            "within_paths": [],
+            "whole_name": true,
+            "min_folder_size": null,
+            "apply_to_files": false,
+            "ie_action": "exclude",
+            "max_backup_size_before": null,
+            "patterns": [
+                "A"
+            ],
+            "max_folder_size": null,
+            "min_file_size": null,
+            "match_case": false,
+            "apply_to_folders": true,
+            "strip_extensions": false,
+            "apply_recursive": true,
+            "max_backup_size_after": null,
+            "apply_if_extensions": [],
+            "do_not_apply_if_extensions": [],
+            "min_total_size_diff": null,
+            "min_parent_folder_size": null,
+            "match_all": false,
+            "max_total_size_diff": null,
+            "not_within_paths": [],
+            "min_backup_size_before": null,
+            "min_backup_size_after": null
+        }
+    }
 }

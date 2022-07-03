@@ -18,14 +18,17 @@ QoL, Settings
 	- settings screen?
 
 Bugs, Poorly Implemented
-* BS: in windows/manage_included.py, Resolve All does not remove root folders
 - NSS: make units dropdown from InputUnits ordered correctly
 - NSS: InfoButton and Info is messy
 * BS: Check behavior of scripts where static inclusion has mismatch at script runtime, i.e. something specified as included/excluded
 does not exist. This should be reported during script execution. Also when loading a script or loading defaults.
 
-Tests
-- BS: Make test for 2+ roots included with identical names (after first, should be renamed with _2, _3, ... appended)
+Incomplete
+* BS: Needs to be fully tested on a second Windows environment, including a clean install
+- NSS/BS: Needs to be tested on Linux
+- NSS/BS: Needs to be tested on Mac
+* NSS/BS: Installation process incomplete, requirements etc must be finished
+- NSS/BS: Proper library version control for nssgui not acheived. nssgui should be able to be independently updated alongside BackupScripter, with an otherwise useable version available elsewhere. Git branches should achieve much of this. There is then the question of where the version number is maintained, and how it is changed with pulls and commits from branched development.
 
 Unimplemented
 - NSS: A ToolBar class would be nice
@@ -56,6 +59,9 @@ Design, Behavior, Error Prevention
 - BS: Add color to vfs explorer for included/excluded (very pale red/green)w
 - NSS: rework Popup to use EventManager, adding Popup's unique code to EventManager's event loop
 - NSS: add multiple handler binding to EventManager/EventLoop (one event -> multiple handlers)
+
+Tests
+- BS: Make test for 2+ roots included with identical names (after first, should be renamed with _2, _3, ... appended)
 
 Documentation
 - BS: clean and document project/create.py

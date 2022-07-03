@@ -40,8 +40,8 @@ class WindowManageIncluded(nss.AbstractBlockingWindow):
 
     def define_events(self):
         super().define_events()
-        self.event_value_close_save('Return')
-        self.event_value_close_discard('Cancel')
+        self.event_value_close_success('Return')
+        self.event_value_close('Cancel')
         self.event_value_exit(sg.WIN_CLOSED)
     
         @self.eventmethod(self.gem['MatchingGroupsList'].keys['PreviewHere'])
@@ -116,7 +116,7 @@ class WindowManageIncluded(nss.AbstractBlockingWindow):
             return layout
         def define_events(self):
             super().define_events()
-            self.event_value_close_discard('OK', sg.WIN_CLOSED)
+            self.event_value_close('OK', sg.WIN_CLOSED)
 
     def preview_match_groups(self, context, mgs):
         w = self.WindowPreviewMatchGroups('Preview', self.vfs_static, mgs)
