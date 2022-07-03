@@ -145,7 +145,9 @@ class WindowEditMatchingGroups(nss.AbstractBlockingWindow):
 
     def define_events(self):
         super().define_events()
-        self.em.bool_events(['OK'], ['Cancel', sg.WIN_CLOSED])
+        self.event_value_close_save('OK')
+        self.event_value_close_discard('Cancel')
+        self.event_value_exit(sg.WIN_CLOSED)
 
     # Data
 

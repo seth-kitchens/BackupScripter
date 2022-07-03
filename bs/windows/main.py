@@ -129,29 +129,23 @@ class WindowMain(nss.AbstractBlockingWindow):
     def define_menus(self):
         mb = self.menubar = nss.sg.MenuBar()
         mb.unlock()
-        mb['File']['Quit']('Quit')
-
-        mb['Editor']['SetDefaults']('Set Defaults')
-        mb['Editor']['LoadDefaults']('Load Defaults')
-
-        mb['Info']['EditorInfo']('Backup Scripter')
+        pass
         mb.lock()
     
     # Events
 
     def define_events(self):
         super().define_events()
-        self.em.false_event(sg.WIN_CLOSED)
-        self.em.true_event(self.key_menubar('File', 'Quit'))
+        self.event_value_exit(sg.WIN_CLOSED)
 
         radio_button_keys = self.gem['IENumbers'].get_button_keys()
-        @self.events(radio_button_keys)
+        @self.eventmethod(*radio_button_keys)
         def event_radio_ie_numbers(context:nss.WindowContext):
             self.gem['IENumbers'].pull(context.values)
             self.refresh_ie(context.window)
             self.gem['IENumbers'].push(context.window)
 
-        @self.event('SetDefaults')
+        @self.eventmethod('SetDefaults')
         def event_set_defaults(context:nss.WindowContext):
             self.update_status_bar('Setting defaults...')
             context.window.refresh()
@@ -161,7 +155,7 @@ class WindowMain(nss.AbstractBlockingWindow):
             self.script_data.save_to_file(save_all=True)
             self.update_status_bar('')
 
-        @self.event('LoadDefaults')
+        @self.eventmethod('LoadDefaults')
         def event_load_defaults(context:nss.WindowContext):
             self.update_status_bar('Loading defaults...')
             self.script_data.load_save_file()
@@ -169,7 +163,7 @@ class WindowMain(nss.AbstractBlockingWindow):
             self.push(context.window)
             self.update_status_bar('')
 
-        @self.event(self.gem['ArchiveFormat'].keys['Dropdown'])
+        @self.eventmethod(self.gem['ArchiveFormat'].keys['Dropdown'])
         def event_compression_type_chosen(context:nss.WindowContext):
             selection = context.values[self.gem['ArchiveFormat'].keys['Dropdown']]
             archive_ext = WindowMain.archive_exts[selection]
@@ -182,14 +176,14 @@ class WindowMain(nss.AbstractBlockingWindow):
                 self.gem['ArchiveMode'].enable_button(context.window, 'compile')
                 self.gem['ArchiveMode'].update(context.window, value='compile')
 
-        @self.event('ExportQuit')
+        @self.eventmethod('ExportQuit')
         def event_export_quit(context:nss.WindowContext):
             self.pull(context.values)
             self.save(self.data)
             success = self.create_script(context, auto_close=True)
             return True if success else None
         
-        @self.event('ExportScript')
+        @self.eventmethod('ExportScript')
         def event_export_script(context:nss.WindowContext):
             self.update_status_bar('Exporting script...')
             self.pull(context.values)
@@ -197,7 +191,7 @@ class WindowMain(nss.AbstractBlockingWindow):
             self.create_script(context, auto_close=False)
             self.update_status_bar('')
         
-        @self.event('LoadScript')
+        @self.eventmethod('LoadScript')
         def event_load_script(context:nss.WindowContext):
             script_to_load = nss.sg.browse_file(context.window)
             if not script_to_load:
@@ -212,18 +206,18 @@ class WindowMain(nss.AbstractBlockingWindow):
             self.push(context.window)
             self.update_status_bar('')
         
-        @self.event('CompressionSettings')
+        @self.eventmethod('CompressionSettings')
         def event_compression_settings(context:nss.WindowContext):
             pass
 
-        @self.event('ManageIncluded')
+        @self.eventmethod('ManageIncluded')
         def event_manage_included(context:nss.WindowContext):
             self.script_data.load_dict(self.data)
             window_manage_included = WindowManageIncluded(self.script_data, self.vfs_static)
-            rv = window_manage_included.open(context)
-            if window_manage_included.is_exit:
-                return False
-            if not rv:
+            rv = nss.WRC(window_manage_included.open(context))
+            if rv.check_exit():
+                return rv
+            if not rv.check_success():
                 return
             wmi_data = window_manage_included.get_data()
             self.script_data.load_dict(wmi_data)

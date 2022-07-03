@@ -222,11 +222,11 @@ class MatchingGroupsList(DetailListBS):
     def edit_data(self, context:sg.Window, item, data):
         mg = data if data != None else MatchingGroup()
         window_edit_matching_groups = WindowEditMatchingGroups('Matching Group "' + item + '"', mg.to_dict())
-        rv = window_edit_matching_groups.open(context)
-        if rv:
+        rv = nss.WRC(window_edit_matching_groups.open(context))
+        if rv.check_success():
             mg.load_dict(window_edit_matching_groups.get_data())
-            return mg
-        return data
+            return rv, mg
+        return rv, data
 
     def pack_data(self, data):
         mg = data if data != None else MatchingGroup()

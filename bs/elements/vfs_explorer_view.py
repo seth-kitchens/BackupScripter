@@ -23,7 +23,7 @@ class VFSExplorerViewBS(nss.ge.VFSExplorerView):
         if self.read_only:
             return
 
-        @self.event(self.keys['Remove'])
+        @self.eventmethod(self.keys['Remove'])
         def event_remove(context):
             if not self.selection:
                 return
@@ -41,7 +41,7 @@ class VFSExplorerViewBS(nss.ge.VFSExplorerView):
 
         # VFSExplorerViewBS
 
-        @self.event(self.keys['Include'])
+        @self.eventmethod(self.keys['Include'])
         def event_include(context):
             if not self.selection:
                 return
@@ -50,7 +50,7 @@ class VFSExplorerViewBS(nss.ge.VFSExplorerView):
             root.calc_ie()
             self.push(context.window)
 
-        @self.event(self.keys['Exclude'])
+        @self.eventmethod(self.keys['Exclude'])
         def event_exclude(context):
             if not self.selection:
                 return

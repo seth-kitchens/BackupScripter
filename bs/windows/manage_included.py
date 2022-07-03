@@ -40,16 +40,12 @@ class WindowManageIncluded(nss.AbstractBlockingWindow):
 
     def define_events(self):
         super().define_events()
-        self.em.true_event('Return')
-        self.em.false_event('Cancel')
-
-        @self.event(sg.WIN_CLOSED)
-        def event_win_closed(context):
-            self.is_exit = True
-            return False
+        self.event_value_close_save('Return')
+        self.event_value_close_discard('Cancel')
+        self.event_value_exit(sg.WIN_CLOSED)
     
-        @self.event(self.gem['MatchingGroupsList'].keys['PreviewHere'])
-        @self.event(self.gem['MatchingGroupsList'].key_rcm('ListboxItem', 'PreviewHere'))
+        @self.eventmethod(self.gem['MatchingGroupsList'].keys['PreviewHere'])
+        @self.eventmethod(self.gem['MatchingGroupsList'].key_rcm('ListboxItem', 'PreviewHere'))
         def event_preview_here(context):
             mglist = self.gem['MatchingGroupsList']
             mgs = mglist.get_through_selection().values()
@@ -57,8 +53,8 @@ class WindowManageIncluded(nss.AbstractBlockingWindow):
                 return
             self.preview_match_groups(context, mgs)
 
-        @self.event(self.gem['MatchingGroupsList'].keys['ResolveHere'])
-        @self.event(self.gem['MatchingGroupsList'].key_rcm('ListboxItem', 'ResolveHere'))
+        @self.eventmethod(self.gem['MatchingGroupsList'].keys['ResolveHere'])
+        @self.eventmethod(self.gem['MatchingGroupsList'].key_rcm('ListboxItem', 'ResolveHere'))
         def event_resolve_here(context):
             mglist = self.gem['MatchingGroupsList']
             mgs = mglist.get_through_selection().values()
@@ -70,7 +66,7 @@ class WindowManageIncluded(nss.AbstractBlockingWindow):
             mglist.remove_through_selection()
             self.gem.push_all(context.window)
 
-        @self.event(self.gem['MatchingGroupsList'].keys['PreviewAll'])
+        @self.eventmethod(self.gem['MatchingGroupsList'].keys['PreviewAll'])
         def event_preview_all(context):
             mglist = self.gem['MatchingGroupsList']
             mgs = mglist.get_dict().values()
@@ -78,7 +74,7 @@ class WindowManageIncluded(nss.AbstractBlockingWindow):
                 return
             self.preview_match_groups(context, mgs)
 
-        @self.event(self.gem['MatchingGroupsList'].keys['ResolveAll'])
+        @self.eventmethod(self.gem['MatchingGroupsList'].keys['ResolveAll'])
         def event_resolve_all(context):
             mglist = self.gem['MatchingGroupsList']
             mgs = mglist.get_dict().values()
@@ -120,8 +116,7 @@ class WindowManageIncluded(nss.AbstractBlockingWindow):
             return layout
         def define_events(self):
             super().define_events()
-            self.em.true_event('OK')
-            self.em.false_event(sg.WIN_CLOSED)
+            self.event_value_close_discard('OK', sg.WIN_CLOSED)
 
     def preview_match_groups(self, context, mgs):
         w = self.WindowPreviewMatchGroups('Preview', self.vfs_static, mgs)

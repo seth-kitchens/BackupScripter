@@ -18,8 +18,6 @@ QoL, Settings
 	- settings screen?
 
 Bugs, Poorly Implemented
-* BS: script destination not updated when loading script
-* BS: window_edit_matching_groups quits on X pressed, even though there is no code. The event is falling through into window_manage_included's event loop somehow, and that window thinks its X was pressed, then calling event_win_closed().
 * BS: in windows/manage_included.py, Resolve All does not remove root folders
 - NSS: make units dropdown from InputUnits ordered correctly
 - NSS: InfoButton and Info is messy
@@ -43,11 +41,8 @@ Unimplemented
 - BS: implement opening script with backupscripter
 
 Design, Behavior, Error Prevention
-- NSS: event manager handle_event_function() is confusing. Why are the rv's ignored?
 - BS: rename bs.el package/alias
 - BS: The default matching groups are automatically processed upon program start, which affects loading time. Something should be done about this.
-* NSS: em should be pulled into window and ge as a base class
-* NSS/BS: Every blocking window should have some way of exiting the entire program.
 - NSS/BS: improve consistency with 'folder' vs 'dir'
 - BS: pulling date from files only works if no periods in file name or date string, enforce this with GUI
 - NSS: making the edit window for ListContainer was messy and poorly documented. This needs to be easier to understand.
@@ -59,6 +54,8 @@ Design, Behavior, Error Prevention
 - NSS/BS: Error prevention needed. Try unintended actions to see what happens, and fix.
 - NSS: currently every element saves data, shouldn't there be an option, especially for output elements?
 - BS: Add color to vfs explorer for included/excluded (very pale red/green)w
+- NSS: rework Popup to use EventManager, adding Popup's unique code to EventManager's event loop
+- NSS: add multiple handler binding to EventManager/EventLoop (one event -> multiple handlers)
 
 Documentation
 - BS: clean and document project/create.py
