@@ -44,7 +44,6 @@ Unimplemented
 - BS: implement opening script with backupscripter
 
 Design, Behavior, Error Prevention
-- BS: rename bs.el package/alias
 - BS: The default matching groups are automatically processed upon program start, which affects loading time. Something should be done about this.
 - NSS/BS: improve consistency with 'folder' vs 'dir'
 - BS: pulling date from files only works if no periods in file name or date string, enforce this with GUI

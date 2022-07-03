@@ -5,9 +5,9 @@ import shutil
 import zipfile
 import py7zr
 
-from bs.fs.vfs import VFSBS
-from bs.script_data import ScriptDataBS
-from bs import g
+from src.bs.fs.vfs import VFSBS
+from src.bs.script_data import ScriptDataBS
+from src.bs import g
 
 __all__ = [
     'fio_path',

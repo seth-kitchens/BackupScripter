@@ -5,9 +5,9 @@ import os
 import unittest
 from datetime import datetime
 from tests.test_core import *
-from gplib import DateString
-from bs import create
-from bs import g
+from src.gp import DateString
+from src.bs import create
+from src.bs import g
 
 def listdir_match(dirpath, pattern):
     if not os.path.isdir(dirpath):

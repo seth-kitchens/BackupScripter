@@ -2,9 +2,9 @@ import sys
 import unittest
 import os
 import copy
-from bs import create
-from bs import g
-from bs.fs.matching_group import MatchingGroup
+from src.bs import create
+from src.bs import g
+from src.bs.fs.matching_group import MatchingGroup
 from tests.test_core import *
 
 class TestMatchingGroupsExclude(unittest.TestCase):

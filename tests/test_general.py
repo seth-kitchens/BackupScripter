@@ -1,8 +1,8 @@
 import sys
 import os
-from bs import create
-from bs.script_data import ScriptDataBS
-from bs import g
+from src.bs import create
+from src.bs.script_data import ScriptDataBS
+from src.bs import g
 from tests.test_core import *
 
 class TestGeneral(TestCaseBS):

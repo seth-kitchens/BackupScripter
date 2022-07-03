@@ -5,12 +5,12 @@ project_dir = str(Path(__file__).parent.parent)
 os.chdir(project_dir)
 sys.path.append(project_dir)
 
-from gplib import utils as gp_utils
-#from gplib.project import logging
+from src.gp import utils as gp_utils
+#from src.gp.project import logging
 
-from bs.script.app import app
-from bs import g
-from bs.script_data import ScriptDataBS
+from src.bs.script.app import app
+from src.bs import g
+from src.bs.script_data import ScriptDataBS
 
 argv_flags = gp_utils.extract_argv_flags()
 

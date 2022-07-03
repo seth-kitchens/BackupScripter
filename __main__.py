@@ -1,6 +1,6 @@
 import sys
-from bs import g
-from gplib import utils as gp_utils
+from src.bs import g
+from src.gp import utils as gp_utils
 
 if __name__ != '__main__':
     sys.exit()

@@ -7,13 +7,13 @@ sys.path.append(project_dir)
 
 import nssgui as nss
 
-from gplib import utils as gp_utils
-#from gplib.project import logging
+from src.gp import utils as gp_utils
+#from src.gp.project import logging
 
-from bs.app import app
-from bs import g
-from bs.script_data import ScriptDataBS
-from bs.windows.main import WindowMain
+from src.bs.app import app
+from src.bs import g
+from src.bs.script_data import ScriptDataBS
+from src.bs.windows.main import WindowMain
 
 argv_flags = gp_utils.extract_argv_flags()
 
