@@ -4,6 +4,7 @@ import os
 import shutil
 import zipfile
 import py7zr
+import sys
 
 from src.bs.fs.vfs import VFSBS
 from src.bs.script_data import ScriptDataBS
@@ -17,7 +18,8 @@ __all__ = [
     'TestCaseBS',
     'TestFile',
     'TestDir',
-    'FSDef'
+    'FSDef',
+    'run_backup_script'
 ]
 
 fio_path = g.project_path('temp/fio')
@@ -27,6 +29,19 @@ def clear_fio():
     if os.path.exists(fio_path):
         shutil.rmtree(fio_path)
     os.mkdir(fio_path)
+
+def run_backup_script(relpath, no_input=True, redirect_stdout=True):
+    """Runs script at fio relpath given, redirecting and returning stdout"""
+    args = [sys.executable, fio_relpath(relpath)]
+    if no_input:
+        args.append(g.flags.NOINPUT)
+    if redirect_stdout:
+        args.append('> {}'.format(fio_relpath('stdout.txt')))
+    command = ' '.join(str(a) for a in args)
+    os.system(command)
+    with open(fio_relpath('stdout.txt'), 'r') as file_in:
+        s = file_in.read()
+    return s
 
 def make_sd(sd=None,
         script_filename=None,
@@ -56,7 +71,7 @@ def make_sd(sd=None,
         sd_dict['BackupDestination'] = fio_relpath(backup_dest_rel)
     elif not sd_dict['BackupDestination'].startswith(fio_path):
         raise RuntimeError
-    
+
     update('ScriptFilename', script_filename)
     update('BackupFilename', backup_filename)
     update('BackupDatePostfix', backup_filename_date)
@@ -135,7 +150,7 @@ class TestDir:
     def path(self, value):
         self.parent_dir = os.path.dirname(value)
         self.name = os.path.basename(value)
-    
+
     def create(self, path=None):
         path = path if path != None else self.path
         os.makedirs(path)

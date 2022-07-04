@@ -29,8 +29,7 @@ class TestMatchingGroupsExclude(unittest.TestCase):
         self.assertTrue(os.path.exists(fio_relpath('test_script.pyz')))
         self.assertFalse(os.path.exists(fio_relpath('test_backup.zip')))
 
-        command = sys.executable + ' ' + fio_relpath('test_script.pyz') + ' ' + g.flags.NOINPUT
-        os.system(command)
+        run_backup_script('test_script.pyz')
 
         fsdef_before.assert_exists(self)
         self.assertTrue(os.path.exists(fio_relpath('test_backup.zip')))

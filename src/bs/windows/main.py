@@ -46,7 +46,7 @@ class WindowMain(nss.AbstractBlockingWindow):
             gem.row(nss.ge.Filename('BackupFilename', 'Filename').sg_kwargs_name(expand_x=True)),
             [
                 *gem.row(nss.ge.Input('BackupDatePostfix', 'Date Postfix').sg_kwargs_in(expand_x=True)),
-                nss.ge.Info(gem, info.backup_filename_date, header='Date Postfix')
+                nss.ge.Info(gem, info.date_postfix)
             ],
             gem.row(nss.ge.Path('BackupDestination', 'Destination').sg_kwargs_path(expand_x=True)),
             gem.row(nss.ge.Dropdown('ArchiveFormat', 'Archive Format', list(WindowMain.archive_exts.keys()))),
@@ -109,7 +109,7 @@ class WindowMain(nss.AbstractBlockingWindow):
         ]
         system_button_size = 10
         row_system = [
-            nss.ge.Info(self.gem, info.window, 'Info', header='Backup Scripter', subheader='Make custom backup scripts', sg_kwargs={'size': system_button_size}),
+            nss.ge.Info(self.gem, info.backup_scripter, 'Info', header='Backup Scripter', subheader='Make custom backup scripts', sg_kwargs={'size': system_button_size}),
             sg.Button('Set Defaults', key='SetDefaults', size=system_button_size),
             sg.Button('Load Defaults', key='LoadDefaults', size=system_button_size),
             sg.Push()

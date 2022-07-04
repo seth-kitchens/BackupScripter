@@ -97,27 +97,25 @@ class TestBackupSettings(TestCaseBS):
         self.assertTrue(os.path.exists(fio_relpath('test_script.pyz')))
         self.assertFalse(os.path.exists(fio_relpath('test_backup.zip')))
 
-        command_run_backup = sys.executable + ' ' + fio_relpath('test_script.pyz') + ' ' + g.flags.NOINPUT
-        run_backup = lambda : os.system(command_run_backup)
         backup_pattern = 'test_backup_[0-9]+\\.zip'
             
         t = time.time()
         
         assert_n_files_in_dir(self, 0, fio_path, backup_pattern)
 
-        run_backup()
+        run_backup_script('test_script.pyz')
         assert_n_files_in_dir(self, 1, fio_path, backup_pattern)
         set_most_recent_backup_date(date_string, t - 2)
 
-        run_backup()
+        run_backup_script('test_script.pyz')
         assert_n_files_in_dir(self, 2, fio_path, backup_pattern)
         set_most_recent_backup_date(date_string, t - 4)
 
-        run_backup()
+        run_backup_script('test_script.pyz')
         assert_n_files_in_dir(self, 3, fio_path, backup_pattern)
         set_most_recent_backup_date(date_string, t - 6)
 
-        run_backup()
+        run_backup_script('test_script.pyz')
         assert_n_files_in_dir(self, 3, fio_path, backup_pattern)
 
         clear_fio()
@@ -159,27 +157,25 @@ class TestBackupSettings(TestCaseBS):
         self.assertTrue(os.path.exists(fio_relpath('test_script.pyz')))
         self.assertFalse(os.path.exists(fio_relpath('test_backup.zip')))
 
-        command_run_backup = sys.executable + ' ' + fio_relpath('test_script.pyz') + ' ' + g.flags.NOINPUT
-        run_backup = lambda : os.system(command_run_backup)
         backup_pattern = 'test_backup_[0-9]+\\.zip'
 
         t = time.time()
         
         assert_n_files_in_dir(self, 0, fio_path, backup_pattern)
 
-        run_backup()
+        run_backup_script('test_script.pyz')
         assert_n_files_in_dir(self, 1, fio_path, backup_pattern)
         set_most_recent_backup_date(date_string, t - 500)
 
-        run_backup()
+        run_backup_script('test_script.pyz')
         assert_n_files_in_dir(self, 1, fio_path, backup_pattern)
         set_most_recent_backup_date(date_string, t - 1005)
 
-        run_backup()
+        run_backup_script('test_script.pyz')
         assert_n_files_in_dir(self, 2, fio_path, backup_pattern)
         set_most_recent_backup_date(date_string, t - 900)
 
-        run_backup()
+        run_backup_script('test_script.pyz')
         assert_n_files_in_dir(self, 2, fio_path, backup_pattern)
 
         clear_fio()
@@ -224,8 +220,6 @@ class TestBackupSettings(TestCaseBS):
         self.assertTrue(os.path.exists(fio_relpath('test_script.pyz')))
         self.assertFalse(os.path.exists(fio_relpath('test_backup.zip')))
 
-        command_run_backup = sys.executable + ' ' + fio_relpath('test_script.pyz') + ' ' + g.flags.NOINPUT
-        run_backup = lambda : os.system(command_run_backup)
         backup_pattern = 'test_backup_[0-9]+\\.zip'
 
         t = int(time.time())
@@ -250,22 +244,22 @@ class TestBackupSettings(TestCaseBS):
         # Expect 0/3 backups
         assert_n_files_in_dir(self, 0, fio_path, backup_pattern)
 
-        run_backup()
+        run_backup_script('test_script.pyz')
         set_most_recent_backup_date(date_string, t - 500)
         # Expect 1/3 backups, nothing overwritten
         assert_backup_times([t - 500])
 
-        run_backup()
+        run_backup_script('test_script.pyz')
         set_most_recent_backup_date(date_string, t - 600)
         # Expect 2/3 backups, nothing overwritten
         assert_backup_times([t - 500, t - 600])
 
-        run_backup()
+        run_backup_script('test_script.pyz')
         set_most_recent_backup_date(date_string, t - 1100)
         # Expect 3/3 backups, nothing overwritten
         assert_backup_times([t - 500, t - 600, t - 1100])
 
-        run_backup()
+        run_backup_script('test_script.pyz')
         set_most_recent_backup_date(date_string, t - 900)
         # Expect 3/3 backups, oldest out of most recent overwritten
         assert_backup_times([t - 500, t - 900, t - 1100])
@@ -274,7 +268,7 @@ class TestBackupSettings(TestCaseBS):
         set_most_recent_backup_date(date_string, t - 1300)
         assert_backup_times([t - 1100, t - 1200, t - 1300])
 
-        run_backup()
+        run_backup_script('test_script.pyz')
         set_most_recent_backup_date(date_string, t - 100)
         # Expect 3/3 backups, oldest overwritten
         assert_backup_times([t - 100, t - 1100, t - 1200])
@@ -312,10 +306,8 @@ class TestCompressionSettings(TestCaseBS):
         create._create_script(sd)
         self.assertTrue(os.path.exists(fio_relpath('test_script.pyz')))
         self.assertFalse(os.path.exists(fio_relpath('test_backup.7z')))
-        
-        command_run_backup = sys.executable + ' ' + fio_relpath('test_script.pyz') + ' ' + g.flags.NOINPUT
 
-        os.system(command_run_backup)
+        run_backup_script('test_script.pyz')
 
         self.assertTrue(os.path.exists(fio_relpath('test_backup.7z')))
         fsdef_archived = FSDef('test_backup', {
