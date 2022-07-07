@@ -1,27 +1,57 @@
 import sys
 import os
+import argparse
+
 from pathlib import Path
 
 from src.scriptlib.packfio import PackFIO
 from data.project.packfio_data import packfio_data
+from src.gp import utils as gp_utils
 
+class cli:
+    class parsed:
+        file_in:str|None = None
+        debug:bool = None
+        noterm:bool = None
+        backup:bool = None
+        getdata:tuple[str, str] = None
+        noinput:bool = None
 
-class flags:
-    DEBUG = '--debug'
-    DBGCMD = '--dbgcmd'
-    EDITOR = '--editor'
-    BACKUP = '--backup'
-    GETDATA = '--getdata'
-    NOINPUT = '--noinput'
-def exe_mode():
-    if flags.EDITOR in sys.argv:
-        return 'editor'
-    elif flags.BACKUP in sys.argv:
-        return 'backup'
-def is_editor(): return flags.EDITOR in sys.argv
-def is_backup(): return flags.BACKUP in sys.argv
-def is_debug(): return flags.DEBUG in sys.argv
-def is_noinput(): return flags.NOINPUT in sys.argv
+    def get_file_in():
+        return cli.parsed.file_in
+    def getdata_file():
+        if not cli.parsed.getdata:
+            raise RuntimeError('no --getdata in args')
+        return cli.parsed.getdata[0]
+    def open_new_terminal(src:str):
+        args = list(cli.argv)
+        if not cli.parsed.noterm:
+            args.append('--noterm')
+        gp_utils.open_in_terminal(src, args)
+    
+    argv:tuple = None
+    arg_parser:argparse.ArgumentParser = None
+
+    def parse_args(args:tuple):
+        cli.argv = args
+        cli.arg_parser.parse_args(cli.argv[1:], cli.parsed)
+        getdata = cli.parsed.getdata
+        if getdata:
+            getdata[0] = os.path.normpath(getdata[0])
+
+    def __init__(self):
+        raise RuntimeError('Class is not instantiatable')
+
+arg_parser = cli.arg_parser = argparse.ArgumentParser(prog='BackupScripter')
+arg_parser.add_argument('file_in', nargs='?', default=None)
+arg_parser.add_argument('--noterm', action='store_true',
+    help='Without this, --debug will cause program to be reopened in terminal')
+arg_parser.add_argument('--debug', action='store_true')
+arg_parser.add_argument('--backup', action='store_true')
+arg_parser.add_argument('--getdata', nargs=1, action='store')
+arg_parser.add_argument('--noinput', action='store_true')
+# call parse_args in __main__.py
+
 
 def update_g(cls_lib:type, cls_project:type, name, value=None):
     if value != None:

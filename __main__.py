@@ -1,32 +1,36 @@
 import sys
+argv = tuple(sys.argv)
+
+import nssgui as nss
+
 from src.bs import g
+from src.bs.app import app
+from src.bs.script.main import run_script
+from src.bs.script_data import ScriptDataBS
+from src.bs.windows.main import WindowMain
 from src.gp import utils as gp_utils
 
 if __name__ != '__main__':
     sys.exit()
 
-argv_flags = gp_utils.extract_argv_flags()
-
+g.cli.parse_args(argv)
+if g.cli.parsed.debug and not g.cli.parsed.noterm:
+    g.cli.open_new_terminal(__file__)
 
 def run():
-    action_flags = [g.flags.GETDATA, g.flags.EDITOR, g.flags.BACKUP]
-    actions = [f for f in action_flags if f in argv_flags]
-    if len(actions) > 1:
-        print("Only one action may be specified.")
-        sys.exit()
-    if len(actions) < 1:
-        argv_flags.append(g.flags.EDITOR)
+    if g.cli.parsed.backup or g.cli.parsed.getdata:
+        run_script()
+    else:
+        run_editor()
 
-    if g.flags.EDITOR in argv_flags:
-        exe = g.project_path("scripts/run_editor.py")
-    elif g.flags.BACKUP in argv_flags or g.flags.GETDATA in argv_flags:
-        exe = g.project_path("scripts/run_backup.py")
+def run_editor():
+    context = nss.WindowContext()
+    WindowMain.open_loading_window(context, title='Backup Scripter')
+    
+    if g.cli.parsed.debug:
+        gp_utils.print_current_time()
+    script_data = ScriptDataBS()
+    script_data.load_save_file()
+    app(script_data, context)
 
-    gp_utils.open_in_terminal(exe, argv_flags)
-
-
-if g.flags.DEBUG in argv_flags and not g.flags.DBGCMD in argv_flags:
-    argv_flags.append(g.flags.DBGCMD)
-    gp_utils.open_in_terminal(sys.argv[0], argv_flags)
-else:
-    run()
+run()

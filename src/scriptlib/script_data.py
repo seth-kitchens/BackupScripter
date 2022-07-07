@@ -2,6 +2,7 @@ import json
 import os
 import sys
 from pprint import pprint
+from abc import ABC, abstractmethod
 
 from src.gp import utils as gp_utils
 from src.gp import DateString
@@ -40,8 +41,7 @@ def ScriptMetadata(*args, **kwargs):
     return ScriptVariable(*args, **kwargs)
 
 
-class ScriptData:
-    GETDATA = '--getdata'
+class ScriptData(ABC):
     def __init__(self, packfio, data_file):
         self.packfio:PackFIO = packfio
         self.data_file:str = data_file
@@ -130,18 +130,24 @@ class ScriptData:
         if not path.endswith('.pyz'):
             return False
         return True
+    @abstractmethod
+    def make_load_pyz_command(self, path, comm_file):
+        command = '{} "{}" {} {}'.format(sys.executable, path, '--getdata', comm_file)
+        return command
     def load_pyz(self, path):
         if not self.__class__.verify_file_is_script(path):
             raise ValueError('File is not a .pyz script')
         stripped_name = path[:-4]
         comm_file = stripped_name + DateString.process('_YYYYMMDD_HHmm') + '.temp'
-        command = '{} "{}" {} {}'.format(sys.executable, path, self.GETDATA, comm_file)
+        command = self.make_load_pyz_command(path, comm_file)
         os.system(command)
         self.load_save_file(comm_file, require_known=False)
         os.remove(comm_file)
+    @abstractmethod
+    def fetch_comm_file(self):
+        pass
     def get_data(self):
-        i_flag = sys.argv.index(self.GETDATA)
-        comm_file = sys.argv[i_flag+1]
+        comm_file = self.fetch_comm_file()
         if os.path.exists(comm_file):
             raise FileExistsError(comm_file)
         parent_dir = gp_utils.parent_dir(comm_file)

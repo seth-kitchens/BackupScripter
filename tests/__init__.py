@@ -4,11 +4,13 @@ import pstats
 from pstats import SortKey
 
 from . import test_core
-from . import test_general
+from . import test_bs
 from . import test_matching_groups
 from . import test_backup_settings
+from . import test_gp
+from . import test_scriptlib
 
-# Testing Options
+# Testing Options (Do not commit toggled bools, commented statements, etc)
 
 # Profiling options
 class prf:
@@ -17,12 +19,13 @@ class prf:
     sort          = SortKey.CUMULATIVE
     results_count = 50
 
+# Comment out to disable
 test_modules = []
-test_modules.append(test_core)
-test_modules.append(test_general)
+test_modules.append(test_bs)
 test_modules.append(test_matching_groups)
 test_modules.append(test_backup_settings)
-
+test_modules.append(test_gp)
+test_modules.append(test_scriptlib)
 
 
 def run():

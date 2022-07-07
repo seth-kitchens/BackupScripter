@@ -34,7 +34,7 @@ def run_backup_script(relpath, no_input=True, redirect_stdout=True):
     """Runs script at fio relpath given, redirecting and returning stdout"""
     args = [sys.executable, fio_relpath(relpath)]
     if no_input:
-        args.append(g.flags.NOINPUT)
+        args.append('--noinput')
     if redirect_stdout:
         args.append('> {}'.format(fio_relpath('stdout.txt')))
     command = ' '.join(str(a) for a in args)

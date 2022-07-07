@@ -17,7 +17,7 @@ def run(script_data:ScriptDataBS):
     if not pre_data.confirm_data(script_data):
         uprint.line()
         print('Backup cancelled.')
-        if not g.is_noinput():
+        if not g.cli.parsed.noinput:
             gp_utils.prompt_any_input('Enter anything to exit')
         return
     print()
@@ -38,7 +38,7 @@ def run(script_data:ScriptDataBS):
         print('Result: FAILURE')
         print('Backup execution returned with failure')
         print('')
-        if not g.is_noinput():
+        if not g.cli.parsed.noinput:
             gp_utils.prompt_any_input('Enter anything to exit')
         return
 
@@ -46,7 +46,7 @@ def run(script_data:ScriptDataBS):
     
     if not post_data.backup_success:
         print('Result: FAILURE')
-        if not g.is_noinput():
+        if not g.cli.parsed.noinput:
             gp_utils.prompt_any_input('Enter anything to exit')
         return
 
@@ -59,7 +59,7 @@ def run(script_data:ScriptDataBS):
     uprint.thin_line()
     post_data.print_details(script_data, pre_data)
     uprint.line()
-    if not g.is_noinput():
+    if not g.cli.parsed.noinput:
         gp_utils.prompt_any_input('Enter anything to exit.')
         uprint.line()
     return

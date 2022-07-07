@@ -2,7 +2,7 @@ import os
 import re
 import sys
 from datetime import datetime
-from typing import Iterable
+from typing import Any, Iterable
 
 import nssgui as nss
 
@@ -122,15 +122,17 @@ def parent_dir(path, repeat_times=0):
 
 ### project
 
-def extract_argv_flags():
-    return [f for f in sys.argv if re.search('^--\S+$', f)]
 def print_current_time():
     print('Current Time:', datetime.today().strftime('%m/%d'), datetime.now().strftime('%H:%M:%S'))
-def open_in_terminal(exe, flags=None, close_on_success=True):
+
+
+def open_in_terminal(exe, args:Iterable=None, close_on_success=True):
+    if args == None:
+        args = []
     command = 'start cmd /k {} {}'.format(sys.executable, exe)
-    if flags:
-        for f in flags:
-            command += ' ' + f
     if close_on_success:
-        command += ' ^&^& exit'
+        args.append('^&^& exit')
+    if args:
+        command += ' {}'.format(' '.join(args))
     os.system(command)
+    

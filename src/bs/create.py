@@ -75,7 +75,7 @@ def _create_script(script_data:ScriptDataBS, progress_func=None):
     os.mkdir(packing_dir)
     pack('src')
     pack('data') # is this needed with PackFIO?
-    pack('scripts/run_backup.py', '__main__.py')
+    pack('src/bs/script/main.py', '__main__.py')
     script_data.save_to_file(os.path.normpath(os.path.join(packing_dir, g.paths.rel.files.script_data)))
     
 

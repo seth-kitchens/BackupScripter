@@ -1,0 +1,16 @@
+dev tools
+---
+VSCode
+
+Noted settings
+
+Disable: Python>Analysis:Auto Search Paths
+- so that auto-import uses "from src.module import thing" instead of "from module import thing"
+
+add to settings.json or workspace.json>"settings"
+    "files.exclude": {
+        "_[a-z]*/": true,
+        "**/__pycache__/": true,
+        "**/.idea/": true,
+        "**/.vscode/": true
+    },

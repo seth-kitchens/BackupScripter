@@ -17,8 +17,10 @@ class WindowMain(nss.AbstractBlockingWindow):
             'zip': '.zip',
             '7z': '.7z'
     }
-    def __init__(self, script_data:ScriptDataBS) -> None:
+    def __init__(self, script_data:ScriptDataBS, init_script=None) -> None:
         self.script_data:ScriptDataBS = script_data
+        if init_script != None:
+            self._load_script(init_script)
         sd_dict = script_data.to_dict()
         self.vfs_static = VFS(sd_dict['IncludedItems'], sd_dict['ExcludedItems'])
         self.vfs_final = self.vfs_static.clone()
@@ -197,11 +199,7 @@ class WindowMain(nss.AbstractBlockingWindow):
             if not script_to_load:
                 return
             self.update_status_bar('Loading script...')
-            self.script_data.load_pyz(script_to_load)
-            name = os.path.basename(script_to_load)
-            i = name.rfind('.')
-            self.script_data.ScriptFilename = [name[:i], name[i:]]
-            self.script_data.ScriptDestination = os.path.dirname(script_to_load)
+            self._load_script(script_to_load)
             self.load()
             self.push(context.window)
             self.update_status_bar('')
@@ -273,6 +271,14 @@ class WindowMain(nss.AbstractBlockingWindow):
                 popup.auto_ok()
             popup.open(context)
         return success
+    
+    def _load_script(self, script):
+        """Loads script into self.script_data"""
+        self.script_data.load_pyz(script)
+        name = os.path.basename(script)
+        i = name.rfind('.')
+        self.script_data.ScriptFilename = [name[:i], name[i:]]
+        self.script_data.ScriptDestination = os.path.dirname(script)
     
     def refresh_ie(self, window):
         vfsdata_static = self.vfs_static.calc_vfsdata()

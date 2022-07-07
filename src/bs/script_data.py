@@ -1,3 +1,4 @@
+import sys
 from dataclasses import dataclass
 from src.scriptlib.script_data import *
 from src.bs import g
@@ -91,6 +92,10 @@ class ScriptDataBS(ScriptData):
     def _setMatchingGroupsList(self, value): self._MatchingGroupsList.set(value)
     MatchingGroupsList:list = property(fget=_getMatchingGroupsList, fset=_setMatchingGroupsList)
 
-
+    def make_load_pyz_command(self, path, comm_file):
+        command = '{} "{}" {} {}'.format(sys.executable, path, '--getdata', comm_file)
+        return command
+    def fetch_comm_file(self):
+        return g.cli.getdata_file()
 
     

@@ -41,23 +41,22 @@ Unimplemented
 - BS: add relative paths (might have to be explicit)
 - BS: add matching option for age of file
 - BS: should there be a way to see the include>exclude>include>... structure in vfs explorer?
-- BS: implement opening script with backupscripter
 
 Design, Behavior, Error Prevention
+- NSS/BS: Formatting rework needed. Should use PEP8 as a standard, with a document in nssgui (ref'd in BS) showing the differences, such as line length limitations, indentation, brace placement, multi-line statments, consecutive lines with whitespace to align words, and so on. Ideally, there should be a reason for each deviation given.
 - BS: The default matching groups are automatically processed upon program start, which affects loading time. Something should be done about this.
 - NSS/BS: improve consistency with 'folder' vs 'dir'
 - BS: pulling date from files only works if no periods in file name or date string, enforce this with GUI
 - NSS: making the edit window for ListContainer was messy and poorly documented. This needs to be easier to understand.
 - SL: how do changes to code affect backwards compatibility with existing pyz scripts? how to prevent the functions from breaking when accessing pyz script generated from older code?
-- NSS: should the event_loop() function really be in the event_manager class?
 - NSS: folder browse button for StringContainer/TextList is currently a part of StringContainer (in the init), shouldn't it be a part of TextList instead?
 - NSS: are asyncwindows disabled from context.disable()?
 - NSS: gem.row/etc should be self.row in window classes. Maybe use a iGEManager interface for passing gem as param as well?
 - NSS/BS: Error prevention needed. Try unintended actions to see what happens, and fix.
 - NSS: currently every element saves data, shouldn't there be an option, especially for output elements?
-- BS: Add color to vfs explorer for included/excluded (very pale red/green)w
-- NSS: rework Popup to use EventManager, adding Popup's unique code to EventManager's event loop
+- BS: Add color to vfs explorer for included/excluded (very pale red/green)
 - NSS: add multiple handler binding to EventManager/EventLoop (one event -> multiple handlers)
+- BS: get rid of app.py
 
 Tests
 - BS: Make test for 2+ roots included with identical names (after first, should be renamed with _2, _3, ... appended)

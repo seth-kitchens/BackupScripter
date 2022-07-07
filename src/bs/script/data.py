@@ -252,7 +252,7 @@ class PreExecutionData(ExecutionData):
         print('Key Details')
         uprint.thin_line()
         self._print_key_details(script_data)
-        if not g.is_noinput():
+        if not g.cli.parsed.noinput:
             uprint.line()
             do_continue = gp_utils.prompt_do_continue('Continue with backup?')
         else:

@@ -52,9 +52,8 @@ class window_main:
 class window_manage_included:
     window = InfoBuilder().frame('Static Inclusion', [
         'Include or exclude files and folders here by manually selecting them. Excluding a root item',
-        'will remove it from the explorer. Removing a nested item will exclude it. Files or folders',
-        'included or excluded will be ',
-        'Data shown in the file explorer includes:\n\n',
+        'will remove it from the explorer. Removing a nested item will exclude it.\n\n',
+        'Data shown in the file explorer includes:\n',
         'Status: Included/Excluded\n',
         'Inc Size: Recursive size included\n',
         'Exc Size: Recursive size excluded\n',
