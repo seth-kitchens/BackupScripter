@@ -58,7 +58,7 @@ class WindowMain(nss.AbstractBlockingWindow):
             [
                 *gem.row(nss.ge.Input('MaxBackups', 'Max Backups', type='int', negative_invalid=True)),
                 sg.Push(),
-                nss.ge.Info(gem, info.backup_settings, '?', header='Backup Settings')
+                nss.ge.Info(gem, info.backup_settings, '?')
             ],
             gem.row(nss.ge.InputUnits('BackupRecentAge', 'Recent Age', nss.units.Time, nss.units.Time.DAY, store_as_degree=nss.units.Time.SECOND, negative_invalid=True)),
             gem.row(nss.ge.InputUnits('BackupOldAge', 'Old Age', nss.units.Time, nss.units.Time.DAY, store_as_degree=nss.units.Time.SECOND, negative_invalid=True)),
@@ -111,7 +111,7 @@ class WindowMain(nss.AbstractBlockingWindow):
         ]
         system_button_size = 10
         row_system = [
-            nss.ge.Info(self.gem, info.backup_scripter, 'Info', header='Backup Scripter', subheader='Make custom backup scripts', sg_kwargs={'size': system_button_size}),
+            nss.ge.Info(self.gem, info.backup_scripter, 'Info', sg_kwargs={'size': system_button_size}),
             sg.Button('Set Defaults', key='SetDefaults', size=system_button_size),
             sg.Button('Load Defaults', key='LoadDefaults', size=system_button_size),
             sg.Push()
@@ -150,12 +150,11 @@ class WindowMain(nss.AbstractBlockingWindow):
         @self.eventmethod('SetDefaults')
         def event_set_defaults(context:nss.WindowContext):
             self.update_status_bar('Setting defaults...')
-            context.window.refresh()
             self.pull(context.values)
             self.save(self.data)
             self.script_data.load_dict(self.data)
             self.script_data.save_to_file(save_all=True)
-            self.update_status_bar('')
+            self.update_status_bar('Defaults set', 1.0, '')
 
         @self.eventmethod('LoadDefaults')
         def event_load_defaults(context:nss.WindowContext):
@@ -163,7 +162,7 @@ class WindowMain(nss.AbstractBlockingWindow):
             self.script_data.load_save_file()
             self.load()
             self.push(context.window)
-            self.update_status_bar('')
+            self.update_status_bar('Defaults loaded', 1.0, '')
 
         @self.eventmethod(self.gem['ArchiveFormat'].keys['Dropdown'])
         def event_compression_type_chosen(context:nss.WindowContext):

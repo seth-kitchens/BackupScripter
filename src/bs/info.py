@@ -2,7 +2,7 @@ import nssgui as nss
 from nssgui import InfoBuilder
 
 class window_main:
-    backup_scripter = InfoBuilder().frame('Script File', [
+    backup_scripter = InfoBuilder().header('Backup Scripter', 'Make custom single-file backup scripts').frame('Script File', [
             'Settings for the script file created'
         ]).frame('Backup File', [
             'Settings for the backup file created by the script.\n\n',
@@ -33,7 +33,7 @@ class window_main:
         'mm: Minute\nss: Second\nUU: Unix time'
     ])
     
-    backup_settings = InfoBuilder().frame('Max Backups', [
+    backup_settings = InfoBuilder().header('Backup Settings').frame('Max Backups', [
         'Any files in the same backup',
         'destination folder with the same name, extension and date postfix (from a different time)',
         'will be identified as an existing backup. These files will count toward the max and may be deleted.',
@@ -50,7 +50,7 @@ class window_main:
     ])
 
 class window_manage_included:
-    window = InfoBuilder().frame('Static Inclusion', [
+    window = InfoBuilder().header('Manage Included').frame('Static Inclusion', [
         'Include or exclude files and folders here by manually selecting them. Excluding a root item',
         'will remove it from the explorer. Removing a nested item will exclude it.\n\n',
         'Data shown in the file explorer includes:\n',

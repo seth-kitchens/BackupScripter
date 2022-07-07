@@ -25,7 +25,7 @@ class WindowManageIncluded(nss.AbstractBlockingWindow):
         frame_system = nss.sg.FrameColumn('Window', expand_y=True, layout=[
             [sg.Button('Return', size=(12, 2), expand_x=True)],
             [sg.Button('Cancel', size=(12, 2), expand_x=True)],
-            [nss.ge.Info(gem, info.window, bt='Info', header='Manage Included', sg_kwargs={'size': (16, 2)})],
+            [nss.ge.Info(gem, info.window, bt='Info', sg_kwargs={'size': (16, 2)})],
             [sg.VPush()]
         ])
         layout = [
@@ -62,9 +62,11 @@ class WindowManageIncluded(nss.AbstractBlockingWindow):
                 return
             if not nss.popups.confirm(context, 'Resolve up to here? This group and all before it will be processed into static inclusion.'):
                 return
+            self.update_status_bar('Resolving matching groups...')
             self.vfs_static.process_matching_groups(mgs)
             mglist.remove_through_selection()
             self.gem.push_all(context.window)
+            self.update_status_bar('Matching groups resolved', 1.0, '')
 
         @self.eventmethod(self.gem['MatchingGroupsList'].keys['PreviewAll'])
         def event_preview_all(context):
@@ -82,9 +84,11 @@ class WindowManageIncluded(nss.AbstractBlockingWindow):
                 return
             if not nss.popups.confirm(context, 'Resolve all? All groups will be processed into static inclusion.'):
                 return
+            self.update_status_bar('Resolving matching groups...')
             self.vfs_static.process_matching_groups(mgs)
             mglist.remove_all()
             self.gem.push_all(context.window)
+            self.update_status_bar('Matching groups resolved', 1.0, '')
     
     # Data
 
