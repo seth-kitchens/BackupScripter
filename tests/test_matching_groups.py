@@ -1,13 +1,15 @@
-import sys
 import unittest
 import os
 import copy
+
 from src.bs import create
 from src.bs import g
 from src.bs.fs.matching_group import MatchingGroup
 from tests.test_core import *
 
+
 class TestMatchingGroupsExclude(unittest.TestCase):
+
     def _test_matching_groups(self, fsdef_before, fsdef_zipped, included_relpaths, mgs_data, compare_file_contents=False):
         clear_fio()
         
@@ -920,4 +922,3 @@ class TestMatchingGroupsExclude(unittest.TestCase):
         mgs_data['a'] = mg.to_dict()
         included_relpaths = ['A']
         self._test_matching_groups(fsdef_before, fsdef_zipped_3, included_relpaths, mgs_data)
-

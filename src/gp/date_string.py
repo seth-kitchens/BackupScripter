@@ -2,11 +2,14 @@ import os
 import re
 from datetime import datetime
 
+
 __all__ = [
     'DateString'
 ]
 
+
 class DateString:
+
     @classmethod
     def process(cls, date_string:str='_YYYYMMDD_HHmmss', dt:datetime=None):
         now = dt if dt else datetime.now()

@@ -1,20 +1,26 @@
 from __future__ import annotations
+
 import os
 import re
-import nssgui as nss
 from os.path import normpath
 from typing import Iterable
+
+import nssgui as nss
 
 from src.bs.fs.matching_group import MatchingGroup
 from src.bs.fs.vfs_entry import VFSEntryBS
 from src.gp import utils
 
+
 def is_path_in_path(subpath: str, path: str):
     subpath = os.path.normpath(subpath)
     return subpath.startswith(os.path.abspath(path)+os.sep)
 
+
 class VirtualFSBS(nss.VirtualFS):
+
     MATCHING_PATTERN_BANNED_CHARS = ['\r\n']
+
     def __init__(self, included_items=None, excluded_items=None):
         super().__init__()
 
@@ -82,6 +88,7 @@ class VirtualFSBS(nss.VirtualFS):
                 raise TypeError('mg not dict')
             self.process_matching_group(MatchingGroup.from_dict(mg))
         self.calc_all()
+
     def process_matching_groups(self, mgs:Iterable):
         for mg in mgs:
             if not isinstance(mg, MatchingGroup):
@@ -104,7 +111,6 @@ class VirtualFSBS(nss.VirtualFS):
                 d.within_paths[i] = os.path.normpath(path)
                 if not os.path.exists(d.within_paths[i]):
                     return False
-
         total_size_before = self.get_included_size()
         if d.max_backup_size_before != None and total_size_before > d.max_backup_size_before:
             return False
@@ -117,7 +123,8 @@ class VirtualFSBS(nss.VirtualFS):
             elif d.ie_action == 'exclude':
                 vfs.exclude(path, d.apply_recursive)
 
-        # a VFS for testing the changes made by this matching group before actually applying everything at the end
+        # a VFS for testing the changes made by this matching group
+        #     before actually applying everything at the end
         test_vfs = self.clone()
 
         # a VFS of the files this matching group is applied to
@@ -173,9 +180,11 @@ class VirtualFSBS(nss.VirtualFS):
                 if d.max_folder_size != None and size > d.max_folder_size:
                     continue
             if parent_folder_size != None:
-                if d.min_parent_folder_size != None and parent_folder_size < d.min_parent_folder_size:
+                if (d.min_parent_folder_size != None
+                        and parent_folder_size < d.min_parent_folder_size):
                     continue
-                if d.max_parent_folder_size != None and parent_folder_size > d.max_parent_folder_size:
+                if (d.max_parent_folder_size != None
+                        and parent_folder_size > d.max_parent_folder_size):
                     continue
             do_continue = False
             for nwpath in d.not_within_paths:
@@ -326,7 +335,6 @@ class VirtualFSBS(nss.VirtualFS):
 
     def add_path(self, path, recursive_include=True):
         abs_path = os.path.abspath(path)
-
         if not os.path.exists(path):
             return False
 
@@ -449,43 +457,49 @@ class VirtualFSBS(nss.VirtualFS):
     
     def calc_included_size(self):
         return sum(self.for_roots(VFSEntryBS.calc_included_size))
+
     def get_included_size(self):
         return sum(self.for_roots(VFSEntryBS.get_included_size))
-    
+
+
     def calc_excluded_size(self):
         return sum(self.for_roots(VFSEntryBS.calc_excluded_size))
+
     def get_excluded_size(self):
         return sum(self.for_roots(VFSEntryBS.get_excluded_size))
 
+
     def calc_included_file_count(self):
         return sum(self.for_roots(VFSEntryBS.calc_included_file_count))
+
     def get_included_file_count(self):
         return sum(self.for_roots(VFSEntryBS.get_included_file_count))
-    
+
+
     def calc_excluded_file_count(self):
         return sum(self.for_roots(VFSEntryBS.calc_excluded_file_count))
+
     def get_excluded_file_count(self):
         return sum(self.for_roots(VFSEntryBS.get_excluded_file_count))
 
+
     def calc_included_folder_count(self):
         return sum(self.for_roots(VFSEntryBS.calc_included_folder_count))
+
     def get_included_folder_count(self):
         return sum(self.for_roots(VFSEntryBS.get_included_folder_count))
-    
+
+
     def calc_excluded_folder_count(self):
         return sum(self.for_roots(VFSEntryBS.calc_excluded_folder_count))
+
     def get_excluded_folder_count(self):
         return sum(self.for_roots(VFSEntryBS.get_excluded_folder_count))
-    
-    
-
-    
-
-    
 
     # calc
 
     class vfsdata:
+
         def __init__(self, vfs:VirtualFSBS):
             # counts
             self.root_folder_count = vfs.get_root_folder_count()
@@ -496,13 +510,11 @@ class VirtualFSBS(nss.VirtualFS):
             self.excluded_file_count = vfs.get_excluded_file_count()
             self.included_size = vfs.get_included_size()
             self.excluded_size = vfs.get_excluded_size()
-
             self.included_items, self.excluded_items = vfs.make_ie_lists()
 
     def make_ie_lists(self):
         i_list = []
         e_list = []
-
         for path, entry in self.all_entries.items():
             if entry.is_included():
                 if not entry.parent:
@@ -516,18 +528,19 @@ class VirtualFSBS(nss.VirtualFS):
                 elif entry.parent.is_included():
                     e_list.append(path)
                 # else: entry will be excluded by parent
-
         return i_list, e_list
 
     def calc_root(self, path):
         root_entry = self.find_root_entry(path)
         root_entry.calc_all()
+
     def calc_roots(self, paths):
         root_entries = set()
         for path in paths:
             root_entries.add(self.find_root_entry(path))
         for root_entry in root_entries:
             root_entry.calc_all()
+
     def calc_all(self):
         for root_entry in self.root_entries.values():
             root_entry.calc_all()

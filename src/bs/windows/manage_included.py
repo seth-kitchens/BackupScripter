@@ -1,13 +1,17 @@
 import nssgui as nss
 import PySimpleGUI as sg
+
 from src.bs import elements as bs_ge
 from src.bs.fs.vfs import VFSBS as VFS
 from src.bs.info import window_manage_included as info
 from src.bs.script_data import ScriptDataBS
 
+
 button_size = nss.sg.button_size
 
+
 class WindowManageIncluded(nss.AbstractBlockingWindow):
+
     def __init__(self, script_data:ScriptDataBS, vfs_static:VFS) -> None:
         data = script_data.to_dict()
         self.vfs_static = vfs_static.clone()
@@ -60,13 +64,15 @@ class WindowManageIncluded(nss.AbstractBlockingWindow):
             mgs = mglist.get_through_selection().values()
             if not mgs:
                 return
-            if not nss.popups.confirm(context, 'Resolve up to here? This group and all before it will be processed into static inclusion.'):
+            if not nss.popups.confirm(context, text='Resolve up to here?'
+                    'This group and all before it will be processed into static inclusion.'):
                 return
-            self.update_status_bar('Resolving matching groups...')
+            self.update_status('Resolving matching groups...')
             self.vfs_static.process_matching_groups(mgs)
             mglist.remove_through_selection()
             self.gem.push_all(context.window)
-            self.update_status_bar('Matching groups resolved', 1.0, '')
+            self.update_status('Matching groups resolved', 1.0, '',
+                text_color=self.COLOR_STATUS_FADED)
 
         @self.eventmethod(self.gem['MatchingGroupsList'].keys['PreviewAll'])
         def event_preview_all(context):
@@ -82,13 +88,15 @@ class WindowManageIncluded(nss.AbstractBlockingWindow):
             mgs = mglist.get_dict().values()
             if not mgs:
                 return
-            if not nss.popups.confirm(context, 'Resolve all? All groups will be processed into static inclusion.'):
+            if not nss.popups.confirm(context, 'Resolve all?'
+                    'All groups will be processed into static inclusion.'):
                 return
-            self.update_status_bar('Resolving matching groups...')
+            self.update_status('Resolving matching groups...')
             self.vfs_static.process_matching_groups(mgs)
             mglist.remove_all()
             self.gem.push_all(context.window)
-            self.update_status_bar('Matching groups resolved', 1.0, '')
+            self.update_status('Matching groups resolved', 1.0, '',
+                text_color=self.COLOR_STATUS_FADED)
     
     # Data
 
@@ -102,6 +110,7 @@ class WindowManageIncluded(nss.AbstractBlockingWindow):
     # Other
 
     class WindowPreviewMatchGroups(nss.AbstractBlockingWindow):
+
         def __init__(self, title, vfs_static, mgs) -> None:
             self.vfs_temp = VFS()
             self.vfs_temp.copy_from_vfs(vfs_static)
@@ -109,8 +118,10 @@ class WindowManageIncluded(nss.AbstractBlockingWindow):
             data = {}
             self.vfs_explorer = nss.VFSExplorer(self.vfs_temp, data)
             super().__init__(title, data)
+
         def get_layout(self):
-            self.gem.add_ge(bs_ge.VFSExplorerViewBS('TempExplorerView', self.vfs_explorer, read_only=True))
+            self.gem.add_ge(bs_ge.VFSExplorerViewBS('TempExplorerView',
+                self.vfs_explorer, read_only=True))
             column_explorer_view = sg.Column(self.gem['TempExplorerView'].get_layout())
             layout = [
                 [column_explorer_view],
@@ -118,6 +129,7 @@ class WindowManageIncluded(nss.AbstractBlockingWindow):
                 [sg.Push(), sg.OK(size=18), sg.Push()]
             ]
             return layout
+
         def define_events(self):
             super().define_events()
             self.event_value_close('OK', sg.WIN_CLOSED)

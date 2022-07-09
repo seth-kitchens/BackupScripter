@@ -1,22 +1,27 @@
 import os
 from pprint import pprint
-from src.bs.script_data import ScriptDataBS
 
 import nssgui as nss
 import PySimpleGUI as sg
+
 from src.bs.create import create_script
 from src.bs.fs.vfs import VFSBS as VFS
 from src.bs.g import colors
 from src.bs.info import window_main as info
 from src.bs.windows.manage_included import WindowManageIncluded
+from src.bs.script_data import ScriptDataBS
+
 
 button_size = nss.sg.button_size
 
+
 class WindowMain(nss.AbstractBlockingWindow):
+
     archive_exts = {
             'zip': '.zip',
             '7z': '.7z'
     }
+
     def __init__(self, script_data:ScriptDataBS, init_script=None) -> None:
         self.script_data:ScriptDataBS = script_data
         if init_script != None:
@@ -33,7 +38,6 @@ class WindowMain(nss.AbstractBlockingWindow):
 
     def get_layout(self):
         gem = self.gem
-
         frame_script_file = nss.sg.FrameColumn('Script File', expand_x=True, layout=[
             gem.row(nss.ge.Filename('ScriptFilename', 'Filename').sg_kwargs_name(expand_x=True)),
             gem.row(nss.ge.Path('ScriptDestination', 'Destination').sg_kwargs_path(expand_x=True)),
@@ -149,20 +153,20 @@ class WindowMain(nss.AbstractBlockingWindow):
 
         @self.eventmethod('SetDefaults')
         def event_set_defaults(context:nss.WindowContext):
-            self.update_status_bar('Setting defaults...')
+            self.update_status('Setting defaults...')
             self.pull(context.values)
             self.save(self.data)
             self.script_data.load_dict(self.data)
             self.script_data.save_to_file(save_all=True)
-            self.update_status_bar('Defaults set', 1.0, '')
+            self.update_status('Defaults set', 1.0, '', text_color=self.COLOR_STATUS_FADED)
 
         @self.eventmethod('LoadDefaults')
         def event_load_defaults(context:nss.WindowContext):
-            self.update_status_bar('Loading defaults...')
+            self.update_status('Loading defaults...')
             self.script_data.load_save_file()
             self.load()
             self.push(context.window)
-            self.update_status_bar('Defaults loaded', 1.0, '')
+            self.update_status('Defaults loaded', 1.0, '', text_color=self.COLOR_STATUS_FADED)
 
         @self.eventmethod(self.gem['ArchiveFormat'].keys['Dropdown'])
         def event_compression_type_chosen(context:nss.WindowContext):
@@ -186,22 +190,22 @@ class WindowMain(nss.AbstractBlockingWindow):
         
         @self.eventmethod('ExportScript')
         def event_export_script(context:nss.WindowContext):
-            self.update_status_bar('Exporting script...')
+            self.update_status('Exporting script...')
             self.pull(context.values)
             self.save(self.data)
             self.create_script(context, auto_close=False)
-            self.update_status_bar('')
+            self.update_status('Script exported', 1.0, '', text_color=self.COLOR_STATUS_FADED)
         
         @self.eventmethod('LoadScript')
         def event_load_script(context:nss.WindowContext):
             script_to_load = nss.sg.browse_file(context.window)
             if not script_to_load:
                 return
-            self.update_status_bar('Loading script...')
+            self.update_status('Loading script...')
             self._load_script(script_to_load)
             self.load()
             self.push(context.window)
-            self.update_status_bar('')
+            self.update_status('Script Loaded', 1.0, '', text_color=self.COLOR_STATUS_FADED)
         
         @self.eventmethod('CompressionSettings')
         def event_compression_settings(context:nss.WindowContext):
@@ -229,6 +233,7 @@ class WindowMain(nss.AbstractBlockingWindow):
     def save(self, data):
         super().save(data)
         data['IncludedItems'], data['ExcludedItems'] = self.vfs_static.make_ie_lists()
+
     def load(self, data=None):
         """data: defaults to self.script_data.to_dict() if None"""
         if data == None:
@@ -238,9 +243,11 @@ class WindowMain(nss.AbstractBlockingWindow):
         self.vfs_static.build_from_ie_lists(data['IncludedItems'], data['ExcludedItems'])
         self.vfs_final.copy_from_vfs(self.vfs_static)
         self.vfs_final.process_matching_groups_dict(data['MatchingGroupsList'])
+
     def push(self, window):
         super().push(window)
         self.refresh_ie(window)
+
     def init_window(self, window):
         super().init_window(window)
         self.refresh_ie(window)
@@ -263,7 +270,6 @@ class WindowMain(nss.AbstractBlockingWindow):
             nss.PopupBuilder().text(('Script Creation Failed!', 'Exception: ' + str(e))).title(popup_title).ok().open(context)
             raise e
         popup_progress.close(context)
-
         if success:
             popup = nss.PopupBuilder().text('Script Created Successfully').title(popup_title).ok()
             if auto_close:

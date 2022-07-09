@@ -2,7 +2,11 @@ from datetime import datetime
 
 from src.gp import DateString
 
-def is_file_backup(filename:str, backup_basename:str, backup_date_string:str, backup_extension:str):
+
+def is_file_backup(filename:str,
+        backup_basename:str,
+        backup_date_string:str,
+        backup_extension:str):
     if not filename.startswith(backup_basename):
         return False
     fn = filename[len(backup_basename):]

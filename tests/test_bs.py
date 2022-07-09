@@ -1,14 +1,14 @@
-import sys
 import os
-import io
-import contextlib
+
 from src.bs import create
 from src.bs.script_data import ScriptDataBS
 from src.bs import g
 from tests.test_core import *
 from tests.test_core import run_backup_script
 
+
 class TestGeneral(TestCaseBS):
+
     def test_helpers(self):
         clear_fio()
         self.assertTrue(os.path.exists(fio_path))
@@ -130,4 +130,3 @@ class TestGeneral(TestCaseBS):
         self.assertEqual(sd.IncludedItems, [fio_relpath('A')])
 
         clear_fio()
-    

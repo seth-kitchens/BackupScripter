@@ -4,18 +4,22 @@ import os
 from collections import namedtuple
 import sys
 
+
 script_dir = os.path.dirname(__file__)
 project_dir = os.path.dirname(script_dir)
 
+
 ShortcutData = namedtuple('ShortcutData', ['destname', 'srcname', 'args'])
+
+
 data = [
     ShortcutData('_test_editor', 'run_debug.py', '--editor'),
     ShortcutData('_test_backup', 'run_debug.py', '--backup'),
     ShortcutData('_run_tests', 'run_tests.py', None),
     ShortcutData('_cmd_bs', 'cmd_bs.py', None)
 ]
-
 temp_bat=os.path.join(script_dir, '__temp__.bat')
+
 
 # based on https://superuser.com/questions/392061
 def make_py_shortcut(sd:ShortcutData):
@@ -25,7 +29,6 @@ def make_py_shortcut(sd:ShortcutData):
         dest += '.lnk'
     target = sys.executable
     args = src if sd.args == None else '{} {}'.format(src, sd.args)
-
     if not os.path.exists(target):
         print('python exe not found:', target)
         return
@@ -35,7 +38,6 @@ def make_py_shortcut(sd:ShortcutData):
     if os.path.exists(dest):
         print('dest already exists, can\'t overwrite:', dest)
         return
-    
     pws_commands = [
         '$ws = New-Object -ComObject WScript.Shell',
         '$s = $ws.CreateShortcut(%SHORTCUT%)',
@@ -59,8 +61,8 @@ def make_py_shortcut(sd:ShortcutData):
     os.remove(temp_bat)
     print('created', os.path.basename(dest))
 
+
 for sd in data:
     make_py_shortcut(sd)
 if os.path.exists(temp_bat):
     os.remove(temp_bat)
-    

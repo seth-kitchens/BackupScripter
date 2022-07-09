@@ -1,7 +1,8 @@
 import os
 from dataclasses import dataclass
-import nssgui as nss
 import time
+
+import nssgui as nss
 
 from src.bs.fs.vfs import VFSBS as VFS, VirtualFSBS
 from src.bs.script_data import ScriptDataBS
@@ -21,6 +22,7 @@ def clean_invalids(script_data:ScriptDataBS):
     negative_to_none('BackupRecentAge')
     script_data.load_dict(sd_dict)
 
+
 def is_within_age_seconds(path, lower=-1, upper=-1, date_string=None):
     ctime = None
     if date_string != None and (len(os.path.basename(path)) >= len(date_string)):
@@ -35,8 +37,10 @@ def is_within_age_seconds(path, lower=-1, upper=-1, date_string=None):
         return False
     return True
 
+
 @dataclass
 class ExecutionData:
+
     def __init__(self):
         self.existing_backups:list = None
         self.existing_backups_recent:list = None
@@ -51,10 +55,15 @@ class ExecutionData:
         backup_date_string = script_data.BackupDatePostfix
         backup_extension = script_data.BackupFilename[1]
         self.existing_backups = []
+
+        def is_existing_file(f):
+            return os.path.isfile(os.path.normpath(os.path.join(backup_destination, f)))
+        
         if os.path.exists(backup_destination) and os.path.isdir(backup_destination):
-            files = [f for f in os.listdir(backup_destination) if os.path.isfile(os.path.normpath(os.path.join(backup_destination, f)))]
+            files = [f for f in os.listdir(backup_destination) if is_existing_file(f)]
             for filename in files:
-                if b_utils.is_file_backup(filename, backup_basename, backup_date_string, backup_extension):
+                if b_utils.is_file_backup(filename, backup_basename,
+                        backup_date_string, backup_extension):
                     filepath = os.path.normpath(os.path.join(backup_destination, filename))
                     self.existing_backups.append(filepath)
         
@@ -68,24 +77,38 @@ class ExecutionData:
                 return DateString.extract_timestamp(date_string, path)
             else:
                 return os.path.getctime(path)
+        
+        def is_recent(f):
+            return is_within_age_seconds(f,
+                upper=script_data.BackupRecentAge,
+                date_string=date_string)
 
         if script_data.BackupRecentAge != None:
-            eb_recent = [f for f in self.existing_backups if is_within_age_seconds(f, upper=script_data.BackupRecentAge, date_string=date_string)]
+            eb_recent = [f for f in self.existing_backups if is_recent(f)]
         else:
             eb_recent = []
         self.existing_backups_recent = eb_recent
+
+        def is_old(f):
+            return is_within_age_seconds(f,
+                lower=script_data.BackupOldAge,
+                date_string=date_string)
         
         if script_data.BackupOldAge != None:
-            eb_old = [f for f in self.existing_backups if is_within_age_seconds(f, lower=script_data.BackupOldAge, date_string=date_string)]
+            eb_old = [f for f in self.existing_backups if is_old(f)]
         else:
             eb_old = []
         self.existing_backups_old = eb_old
 
-        eb_normal = self.existing_backups_normal = [f for f in self.existing_backups if (not f in eb_recent) and (not f in eb_old)]
+        eb_normal = self.existing_backups_normal = [
+            f for f in self.existing_backups if (not f in eb_recent) and (not f in eb_old)
+        ]
         
         self.backup_to_delete = None
         max_backups = script_data.MaxBackups
-        if max_backups != None and max_backups >= 1 and max_backups <= (len(eb_normal) + len(eb_recent)):
+        if (max_backups != None
+                and max_backups >= 1
+                and max_backups <= (len(eb_normal) + len(eb_recent))):
             if eb_recent:
                 eb_overwrite = eb_recent
             else:
@@ -121,8 +144,10 @@ class ExecutionData:
             most_recent_backup_size_bytes = os.path.getsize(self.existing_backups_most_recent)
         else:
             most_recent_backup_size_bytes = 0
-        most_recent_backup_size = nss.units.Bytes(most_recent_backup_size_bytes, degree_name='byte').get_best(decimal_digits=1)
-        eb_total_size = nss.units.Bytes(self.existing_backups_total_size, degree_name='byte').get_best(decimal_digits=1)
+        most_recent_backup_size = nss.units.Bytes(
+            most_recent_backup_size_bytes, degree_name='byte').get_best(decimal_digits=1)
+        eb_total_size = nss.units.Bytes(
+            self.existing_backups_total_size, degree_name='byte').get_best(decimal_digits=1)
         print('Existing Backups: ' + str(len(self.existing_backups)), end='')
         if old_age_secs != None or recent_age_secs != None:
             print(' (Normal: ' + str(len(self.existing_backups_normal)), end='')
@@ -136,29 +161,31 @@ class ExecutionData:
         else:
             print(' (Total: ' + eb_total_size + ')')
 
+
 @dataclass
 class PreExecutionData(ExecutionData):
+
     def __init__(self, script_data:ScriptDataBS):
         super().__init__()
         self.resolved_date_postfix:str = None
         self.dest_filename:str = None
         self.dest_path:str = None
-
         self.vfsdata_static:VirtualFSBS.vfsdata = None
         self.vfsdata_final:VirtualFSBS.vfsdata = None
-
         self.backup_to_delete:str = None
-
         self.vfs_final:VFS = None
-
         self._collect_data(script_data)
     
     def _collect_data(self, script_data:ScriptDataBS):
         vfs_static = VFS()
 
         self.resolved_date_postfix = DateString.process(script_data.BackupDatePostfix)
-        self.dest_filename = script_data.BackupFilename[0] + self.resolved_date_postfix + script_data.BackupFilename[1]
-        self.dest_path = os.path.normpath(os.path.join(script_data.BackupDestination, self.dest_filename))
+        self.dest_filename = '{}{}{}'.format(
+            script_data.BackupFilename[0],
+            self.resolved_date_postfix,
+            script_data.BackupFilename[1])
+        self.dest_path = os.path.normpath(
+            os.path.join(script_data.BackupDestination, self.dest_filename))
 
         # Inclusion
 
@@ -172,6 +199,7 @@ class PreExecutionData(ExecutionData):
         self._collect_existing_backups_data(script_data)
 
     def _print_details(self, script_data:ScriptDataBS):
+
         def up_print_list(label, l, max_elements=4):
             """Print list items one per line, indenting up to the opening bracket.
             If over 'max_elements' in list, line after max will be: '... ] (# more)' """
@@ -201,9 +229,7 @@ class PreExecutionData(ExecutionData):
         else:
             print(s + 'None')
         print()
-
         print('Backup Settings')
-
         print('Archive Type: ' + script_data.ArchiveFormat)
 
         if script_data.MaxBackups != None and script_data.MaxBackups > 0:
@@ -211,9 +237,11 @@ class PreExecutionData(ExecutionData):
         else:
             print('  Max Backups: Unlimited')
         if script_data.BackupOldAge != None:
-            print('  Old Age:', nss.units.Time(script_data.BackupOldAge, degree_name=nss.units.Time.SECOND).get_best())
+            print('  Old Age:', nss.units.Time(
+                script_data.BackupOldAge, degree_name=nss.units.Time.SECOND).get_best())
         if script_data.BackupRecentAge != None:
-            print('  Recent Age:', nss.units.Time(script_data.BackupRecentAge, degree_name=nss.units.Time.SECOND).get_best())
+            print('  Recent Age:', nss.units.Time(
+                script_data.BackupRecentAge, degree_name=nss.units.Time.SECOND).get_best())
 
     def _print_key_details(self, script_data:ScriptDataBS):
         print('Backup File Name:', self.dest_filename)
@@ -221,15 +249,19 @@ class PreExecutionData(ExecutionData):
         print()
 
         vfsdata = self.vfsdata_final
-        i_size = nss.units.Bytes(vfsdata.included_size, degree_name='byte').get_best(decimal_digits=1)
+        i_size = nss.units.Bytes(
+            vfsdata.included_size, degree_name='byte').get_best(decimal_digits=1)
         i_files = str(vfsdata.included_file_count)
         i_folders = str(vfsdata.included_folder_count)
-        print('Backing up: {0} (Files: {1}, Folders: {2})'.format(i_size.rjust(9), i_files.rjust(3), i_folders.rjust(2)))
+        print('Backing up: {0} (Files: {1}, Folders: {2})'.format(
+            i_size.rjust(9), i_files.rjust(3), i_folders.rjust(2)))
 
-        e_size = nss.units.Bytes(vfsdata.excluded_size, degree_name='byte').get_best(decimal_digits=1)
+        e_size = nss.units.Bytes(
+            vfsdata.excluded_size, degree_name='byte').get_best(decimal_digits=1)
         e_files = str(vfsdata.excluded_file_count)
         e_folders = str(vfsdata.excluded_folder_count)
-        print('      Excl. {0} (Files: {1}, Folders: {2})'.format(e_size.rjust(9), e_files.rjust(3), e_folders.rjust(2)))
+        print('      Excl. {0} (Files: {1}, Folders: {2})'.format(
+            e_size.rjust(9), e_files.rjust(3), e_folders.rjust(2)))
 
         self._print_existing_backups_details(script_data)
 
@@ -262,15 +294,16 @@ class PreExecutionData(ExecutionData):
 
 @dataclass
 class PostExecutionData(ExecutionData):
+
     class Exception(Exception):
         pass
+
     def __init__(self, script_data:ScriptDataBS, pre_data:PreExecutionData):
         """PostExecutionData: Verify success, collect data and display data of backup created."""
         super().__init__()
         self.backup_success:bool = None
         self.backup_deletion_success:bool = None
         self.created_backup_size:int = None
-
         self._collect_data(script_data, pre_data)
     
     def _collect_data(self, script_data:ScriptDataBS, pre_data:PreExecutionData):
@@ -301,7 +334,8 @@ class PostExecutionData(ExecutionData):
         print('  Path: {}'.format(pre_data.dest_path))
 
         # Print: New backup size
-        created_backup_size_str = nss.units.Bytes(self.created_backup_size, degree_name=nss.units.Bytes.BYTE).get_best()
+        created_backup_size_str = nss.units.Bytes(
+            self.created_backup_size, degree_name=nss.units.Bytes.BYTE).get_best()
         print('  Size: {}'.format(created_backup_size_str))
         print('')
 
@@ -310,10 +344,10 @@ class PostExecutionData(ExecutionData):
             if self.backup_deletion_success:
                 backup_deleted = os.path.basename(pre_data.backup_to_delete)
             else:
-                backup_deleted = 'None. Failed to delete backup "{}"'.format(pre_data.backup_to_delete)
+                backup_deleted = 'None. Failed to delete backup "{}"'.format(
+                    pre_data.backup_to_delete)
             print('Backup deleted: {}'.format(backup_deleted))
             print('')
 
         # Print: New count and total size of existing backups
         self._print_existing_backups_details(script_data, print_last=False)
-        

@@ -1,13 +1,14 @@
 import re
 import time
-import sys
 import os
 import unittest
 from datetime import datetime
+
 from tests.test_core import *
 from src.gp import DateString
 from src.bs import create
 from src.bs import g
+
 
 def listdir_match(dirpath, pattern):
     if not os.path.isdir(dirpath):
@@ -19,14 +20,17 @@ def listdir_match(dirpath, pattern):
             matched.append(file)
     return matched
 
+
 def assert_n_files_in_dir(testcase:unittest.TestCase, n, dirpath, pattern):
     testcase.assertTrue(os.path.isdir(dirpath))
     count = len(listdir_match(dirpath, pattern))
     fail_msg = 'Unexpected number of files.\n  Expected: ' + str(n) + '\n  Actual: ' + str(count)
     testcase.assertTrue(n == count, fail_msg)
 
+
 def assert_exists_match(testcase, parentdir, pattern):
     testcase.assertTrue(len(listdir_match(parentdir, pattern) > 0))
+
 
 def wait_n_secs_passed(n=1, prev_second=0):
     """Waits until at least two seconds has passed since timestamp given as prev_second.
@@ -39,6 +43,7 @@ def wait_n_secs_passed(n=1, prev_second=0):
         next_second = int(time.time())
     return next_second
 
+
 def find_most_recent_backup(date_string):
     files = [f for f in os.listdir(fio_path) if f.startswith('test_backup') and f.endswith('.zip')]
     most_recent = None
@@ -50,6 +55,7 @@ def find_most_recent_backup(date_string):
             most_recent = f
     return fio_relpath(most_recent)
 
+
 def set_most_recent_backup_date(date_string, timestamp):
     dt = datetime.fromtimestamp(timestamp)
     most_recent = find_most_recent_backup(date_string)
@@ -60,7 +66,9 @@ def set_most_recent_backup_date(date_string, timestamp):
     new_path = os.path.normpath(os.path.join(parentdir, name + new_postfix + ext))
     os.rename(most_recent, new_path)
 
+
 class TestBackupSettings(TestCaseBS):
+
     def test_max_backups(self):
         clear_fio()
 
@@ -275,7 +283,9 @@ class TestBackupSettings(TestCaseBS):
 
         clear_fio()
 
+
 class TestCompressionSettings(TestCaseBS):
+
     def test_7z(self):
         clear_fio()
 

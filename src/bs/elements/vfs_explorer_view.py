@@ -1,9 +1,13 @@
 import PySimpleGUI as sg
+
 import nssgui as nss
+
 
 __all__ = ['VFSExplorerViewBS']
 
+
 class VFSExplorerViewBS(nss.ge.VFSExplorerView):
+
     def __init__(self, object_id, vfs_explorer, read_only=False) -> None:
         super().__init__(object_id, vfs_explorer, read_only=read_only)
 
@@ -19,7 +23,6 @@ class VFSExplorerViewBS(nss.ge.VFSExplorerView):
 
     def define_events(self):
         super().define_events()
-
         if self.read_only:
             return
 

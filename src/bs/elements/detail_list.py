@@ -1,11 +1,15 @@
 from abc import ABC, abstractmethod
 
 import PySimpleGUI as sg
+
 import nssgui as nss
+
 
 __all__ = ['DetailListBS']
 
+
 class DetailListBS(nss.ge.DetailList, ABC):
+
     def __init__(self, object_id, lstrip=' \n', rstrip=' \n'):
         super().__init__(object_id, lstrip, rstrip)
     

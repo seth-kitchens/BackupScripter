@@ -1,9 +1,12 @@
 import sys
 from dataclasses import dataclass
+
 from src.scriptlib.script_data import *
 from src.bs import g
 
+
 class ScriptDataBS(ScriptData):
+
     def __init__(self, packfio=g.packfio, data_file=g.paths.rel.files.script_data):
         super().__init__(packfio=packfio, data_file=data_file)
         
@@ -33,8 +36,7 @@ class ScriptDataBS(ScriptData):
         self._PullAgeFromPostfix = ScriptVariable('PullAgeFromPostfix', True)
 
         # Dynamic Inclusion
-        self._MatchingGroupsList = ScriptVariable('MatchingGroupsList', {})
-    
+        self._MatchingGroupsList = ScriptVariable('MatchingGroupsList', {})    
 
     def _getScriptFilename(self): return self._ScriptFilename.get()
     def _setScriptFilename(self, value): self._ScriptFilename.set(value)
@@ -95,7 +97,6 @@ class ScriptDataBS(ScriptData):
     def make_load_pyz_command(self, path, comm_file):
         command = '{} "{}" {} {}'.format(sys.executable, path, '--getdata', comm_file)
         return command
+
     def fetch_comm_file(self):
         return g.cli.getdata_file()
-
-    

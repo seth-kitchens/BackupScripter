@@ -22,6 +22,7 @@ Bugs, Poorly Implemented
 - NSS: InfoButton and Info is messy
 * BS: Check behavior of scripts where static inclusion has mismatch at script runtime, i.e. something specified as included/excluded
 does not exist. This should be reported during script execution. Also when loading a script or loading defaults.
+- BS: Dynamically excluded roots don't get counted toward excluded in reports like the manage-included frame
 
 Incomplete
 * BS: Needs to be fully tested on a second Windows environment, including a clean install
@@ -43,7 +44,8 @@ Unimplemented
 - BS: should there be a way to see the include>exclude>include>... structure in vfs explorer?
 
 Design, Behavior, Error Prevention
-- NSS/BS: Formatting rework needed. Should use PEP8 as a standard, with a document in nssgui (ref'd in BS) showing the differences, such as line length limitations, indentation, brace placement, multi-line statments, consecutive lines with whitespace to align words, and so on. Ideally, there should be a reason for each deviation given.
+- NSS: The functions for updating ge's seems messy and inconsistent
+- NSS: save/load/push/pull shouldn't use _func as their inner-abstract naming convention
 - BS: The default matching groups are automatically processed upon program start, which affects loading time. Something should be done about this.
 - NSS/BS: improve consistency with 'folder' vs 'dir'
 - BS: pulling date from files only works if no periods in file name or date string, enforce this with GUI

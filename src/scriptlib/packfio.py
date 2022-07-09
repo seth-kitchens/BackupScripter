@@ -1,18 +1,17 @@
 import json
 import os.path
-from pathlib import Path
+
 
 class PackFIO:
+
     def __init__(self, paths, packfio_data, basepath=None):
         """PackFIO: Packaging File I/O"""
         self.basepath = basepath
         self.paths = paths
         self.packfio_data = packfio_data
 
-
     def is_packed(self):
         return bool(self.packfio_data)
-
 
     def read_file(self, path, require_known=True):
         """path should be relative to project"""
@@ -26,13 +25,13 @@ class PackFIO:
         with open(path, 'r') as file_in:
             text = file_in.read()
         return text
+
     def write_file(self, path, text):
         """path should be relative to project"""
         if self.is_packed():
             raise RuntimeError('Tried to write to packed data')
         with open(path, 'w') as file_out:
             file_out.write(text)
-
 
     def pack_files(self, packing_dir, packed_data_relpath):
         if self.is_packed():

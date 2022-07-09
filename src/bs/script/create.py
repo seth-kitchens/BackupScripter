@@ -4,13 +4,20 @@ from src.bs.script import archive
 from src.bs.script.data import PreExecutionData
 from src.bs.script_data import ScriptDataBS
 
+
 def create_archive(pre_data:PreExecutionData, script_data:ScriptDataBS, archive_format):
     print('Backing up as: {}'.format(archive_format))
 
     archive_base_folder_path = script_data.BackupFilename[0] + pre_data.resolved_date_postfix
     dest_dir_path = script_data.BackupDestination
-    archiver = archive.Archiver(pre_data.vfs_final, pre_data.dest_path, dest_dir_path, archive_base_folder_path, archive_format=archive_format)
+    archiver = archive.Archiver(
+        vfs=pre_data.vfs_final,
+        dest_path=pre_data.dest_path,
+        dest_dir_path=dest_dir_path,
+        base_folder_name=archive_base_folder_path,
+        archive_format=archive_format)
     return archiver.archive_vfs(script_data, script_data.ArchiveMode)
+
 
 def create_backup(pre_data:PreExecutionData, script_data:ScriptDataBS):
     backup_dest = script_data.BackupDestination

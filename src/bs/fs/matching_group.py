@@ -1,12 +1,13 @@
 from src.gp import PackableDict, Dictable
 
 class MatchingGroup(Dictable):
+    
     class _d(PackableDict):
+    
         def __init__(self):
             self.ie_action = 'exclude' # 'include' | 'exclude'
 
             # Apply To
-
             self.apply_to_files = False
             self.apply_to_folders = False
 
@@ -20,7 +21,6 @@ class MatchingGroup(Dictable):
             self.max_folder_size = -1
 
             # Apply If
-            
             self.within_paths = []
             self.not_within_paths = []
             self.apply_if_extensions = []
@@ -29,7 +29,6 @@ class MatchingGroup(Dictable):
             self.max_parent_folder_size = -1
 
             # Apply Group If
-
             self.max_backup_size_before = -1
             self.max_backup_size_after = -1
             self.min_backup_size_before = -1
@@ -38,22 +37,25 @@ class MatchingGroup(Dictable):
             self.min_total_size_diff = -1
 
             # Patterns
-
             self.strip_extensions = False
             self.match_case = False
             self.use_regex = False
             self.whole_name = False
             self.match_all = False
             self.patterns = []
+    
     def __init__(self, d=None):
         self.d = self._d()
         if d != None:
             self.load_dict(d)
+    
     def make_invalid_none(self):
+        
         def negative_to_none(x):
             if x == None or x >= 0:
                 return x
             return None
+
         d = self.d
         d.min_file_size = negative_to_none(d.min_file_size)
         d.max_file_size = negative_to_none(d.max_file_size)

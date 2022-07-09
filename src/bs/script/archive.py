@@ -10,6 +10,7 @@ import py7zr
 from src.bs.fs import vfs as bs_vfs
 from src.bs.script_data import ScriptDataBS
 
+
 def strip_extensions(name:str):
     lstripped = name.lstrip('.')
     if not len(lstripped):
@@ -18,9 +19,12 @@ def strip_extensions(name:str):
     if i < 0:
         return name, ''
     return name[:i], name[i+1:]
-    
+
+
 def unique_basename_dict(paths:Iterable):
-    """Takes an Iterable of paths and makes a dict mapping the paths to their basenames modified to be unique
+    """
+    Takes an Iterable of paths and makes a dict mapping
+    the paths to their basenames modified to be unique\n
     example:\n
         ['A/X', 'A/X', 'A/B/X', 'A/Y', 'A/B/Z'] will become:\n
         {
@@ -28,7 +32,8 @@ def unique_basename_dict(paths:Iterable):
             'A/B/X': 'X_1',
             'A/Y': 'Y',
             'A/B/Z': 'Z'
-        }"""
+        }
+    """
     path_set = set(paths)
     d = {}
     basenames = set()
@@ -48,6 +53,7 @@ def unique_basename_dict(paths:Iterable):
             basenames.add(unique_name)
     return d
 
+
 def rmtree_readonly(path_to_remove):
     """shutil.rmtree but also remove read only"""
     def error_func(func, path, excinfo):
@@ -55,13 +61,16 @@ def rmtree_readonly(path_to_remove):
         os.remove(path)
     shutil.rmtree(path_to_remove, onerror=error_func)
 
+
 class Archiver:
+
     def __init__(self, vfs, dest_path, dest_dir_path, base_folder_name, archive_format) -> None:
         self.vfs:bs_vfs.VFSBS = vfs
         self.dest_path = dest_path
         self.dest_dir_path = dest_dir_path # will be same as dest_path if archiving to folder
         self.base_folder_name = base_folder_name
         self.archive_format = archive_format
+
 
     def vfs_path_to_archive_path(self, path, basename_dict):
         """
@@ -74,6 +83,7 @@ class Archiver:
         archive_root_basename = basename_dict[vfs_root_path]
         archive_path = os.path.normpath(os.path.join(archive_root_basename, rel_path_to_vfs_root))
         return archive_path
+
 
     def archive_vfs(self, script_data:ScriptDataBS, mode):
         """
@@ -104,7 +114,8 @@ class Archiver:
             raise ValueError
     
         if mode_is_compile and format_is_zip:
-            print('Archive mode "Compile" unneccessary for zip format. Switching to "Append" mode...')
+            print('Archive mode "Compile" unneccessary for zip format. '
+                'Switching to "Append" mode...')
             mode_is_compile = False
             mode_is_append = True
         

@@ -1,9 +1,9 @@
 import os
 from logging import *
 
+
 #recent_path = logpath('recent.log')
 #old_path = logpath('old.log')
-
 def info_line():
     info('-' * 50)
 def init_logging(start_msg, log_folder):
@@ -21,5 +21,3 @@ def init_logging(start_msg, log_folder):
     info_line()
     info(start_msg)
     info_line()
-    
-

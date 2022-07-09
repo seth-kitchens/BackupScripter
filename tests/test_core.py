@@ -6,9 +6,11 @@ import zipfile
 import py7zr
 import sys
 
+
 from src.bs.fs.vfs import VFSBS
 from src.bs.script_data import ScriptDataBS
 from src.bs import g
+
 
 __all__ = [
     'fio_path',
@@ -23,12 +25,17 @@ __all__ = [
 ]
 
 fio_path = g.project_path('temp/fio')
+
+
 def fio_relpath(path):
     return os.path.normpath(os.path.join(fio_path, path))
+
+
 def clear_fio():
     if os.path.exists(fio_path):
         shutil.rmtree(fio_path)
     os.mkdir(fio_path)
+
 
 def run_backup_script(relpath, no_input=True, redirect_stdout=True):
     """Runs script at fio relpath given, redirecting and returning stdout"""
@@ -42,6 +49,7 @@ def run_backup_script(relpath, no_input=True, redirect_stdout=True):
     with open(fio_relpath('stdout.txt'), 'r') as file_in:
         s = file_in.read()
     return s
+
 
 def make_sd(sd=None,
         script_filename=None,
@@ -59,6 +67,7 @@ def make_sd(sd=None,
         pull_age_from_postfix=None,
         matching_groups=None) -> ScriptDataBS:
     sd_dict = sd.to_dict() if sd != None else ScriptDataBS(data_file=None).to_dict()
+
     def update(name, val):
         if val != None:
             sd_dict[name] = val
@@ -87,7 +96,9 @@ def make_sd(sd=None,
 
     return ScriptDataBS.from_dict(sd_dict)
 
+
 class TestCaseBS(unittest.TestCase):
+
     def tearDown(self):
         clear_fio()
         packing_dir = g.paths.rel.dirs.packing
@@ -95,6 +106,7 @@ class TestCaseBS(unittest.TestCase):
             shutil.rmtree(packing_dir)
 
 class TestFile:
+
     def __init__(self, name=None, parent_dir=None, path=None, size=None, text=None):
         if path:
             if name or parent_dir:
@@ -109,6 +121,7 @@ class TestFile:
     @property
     def path(self):
         return os.path.normpath(os.path.join(self.parent_dir, self.name))
+
     @path.setter
     def path(self, value):
         self.parent_dir = os.path.dirname(value)
@@ -117,7 +130,6 @@ class TestFile:
     def create(self, path=None):
         MAX_TEST_FILE_SIZE = 10 * 1024 * 1024
         encoding = 'UTF-8'
-
         path = path if path != None else self.path
         text = self.text if self.text != None else ''
         if self.size != None:
@@ -133,7 +145,9 @@ class TestFile:
             with open(path, 'w', encoding=encoding) as f:
                 f.write(text)
 
+
 class TestDir:
+
     def __init__(self, name=None, parent_dir=None, path=None):
         if path:
             if name or parent_dir:
@@ -146,6 +160,7 @@ class TestDir:
     @property
     def path(self):
         return os.path.normpath(os.path.join(self.parent_dir, self.name))
+
     @path.setter
     def path(self, value):
         self.parent_dir = os.path.dirname(value)
@@ -156,6 +171,7 @@ class TestDir:
         os.makedirs(path)
 
 class FSDef:
+
     def __init__(self, base_path, fsdef_dict):
         """FSDef: Define nested directories and files as a dict:\n
             FSDef(..., fsdef_dict={
@@ -184,7 +200,6 @@ class FSDef:
         self.files = {} # path -> TestFile
         self.dirs = {} # path -> TestDir
         self.base_path = base_path
-    
         self.unpack_fsdef_dict(base_path, fsdef_dict)
         
         # Remove Duplicates
@@ -201,11 +216,13 @@ class FSDef:
         test_file.parent_dir = parent_dir
         path = test_file.path
         self.files[path] = test_file
+
     def add_dir(self, name, parent_dir, test_dir):
         test_dir.name = name
         test_dir.parent_dir = parent_dir
         path = test_dir.path
         self.dirs[path] = test_dir
+
     def unpack_fsdef_dict(self, root, fsdef_dict) -> list[str]:
         for k, v in fsdef_dict.items():
             if root:
@@ -307,4 +324,3 @@ class FSDef:
             if not fi.is_directory:
                 archive_filenames.append(os.path.normpath(fi.filename))
         self.assert_filenames_match(testcase, archive_filenames)
-

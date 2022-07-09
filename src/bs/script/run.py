@@ -1,9 +1,9 @@
 from src.bs.script_data import ScriptDataBS
-
 from src.gp import uprint
 from src.gp import utils as gp_utils
 from src.bs.script import data as b_data, create as b_create
 from src.bs import g
+
 
 def run(script_data:ScriptDataBS):
     # Preparation

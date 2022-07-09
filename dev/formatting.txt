@@ -1,0 +1,40 @@
+Formatting for BackupScripter (and nssgui)
+
+---
+PEP8 Exceptions, etc
+
+Lines longer 79 lines
+
+- For aligning words in consecutive, similar lines. Example:
+	some_func('This is a str',                  5, cls.RED,    'append')
+	some_func('This is a longer str',          25, cls.BLUE,   'truncate')
+	some_func('This str is so long, it\'s necessary to break the rule',
+											  120, cls.ORANGE, 'default')
+	some_func('Short str',                      5, cls.RED,    'append')
+	some_func('This is a very very long str', 120, cls.ORANGE, 'default')
+- A comment on a single line of code may go over 79 characters (not the code itself)
+
+Line Breaks
+
+- Hanging indents may include arguments on the first line (Explicitly non-PEP8). This is not suggested for kwarg-only function calls
+	- Good:
+		func('one', 'two', three='three',
+			four='four', five='five')
+
+Blank lines in functions
+
+- Functions should not have blank lines in them as a base practice
+- Inner functions should be surrounded by single blank lines
+- A commented logical block of code should be surrounded by blank lines
+	- So, make a logical, commented block of code if a blank line would be appropriate
+	- There can still be lone comments without blank lines
+- A block of strongly related code may have blank lines around it without a comment:
+	x = some_func()
+	
+	my_list = []
+	my_list.append(my_class('a', 2))
+	my_list.append(my_class('b', 3))
+	my_list.append(my_class('c', 7))
+	my_list.append(my_class('d', 13))
+	
+	y = another_func()

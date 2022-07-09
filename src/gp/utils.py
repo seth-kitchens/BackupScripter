@@ -6,13 +6,16 @@ from typing import Any, Iterable
 
 import nssgui as nss
 
+
 # move functions here to a better location if there is one, and at least several functions belonging there
 
 ### text
 
 default_cmd_width = 80
 
+
 class uprint:
+
     def line(c='-', length=80, spacing=0, end='\n'):
         if c == '\n' or not c:
             s = ''
@@ -58,10 +61,12 @@ def clone_string_unique(s, not_in_strings=None):
         i += 1
     return s + str(i)
 
+
 def remove_blank_lines(text):
     lines = text.split('\n')
     lines = [line for line in lines if line.strip()]
     return '\n'.join(lines)
+
 
 def has_chars(chars, s):
     for c in chars:
@@ -69,10 +74,12 @@ def has_chars(chars, s):
             return True
     return False
 
+
 def remove_chars(chars, s):
     for c in chars:
         s = s.replace(c, '')
     return s
+
 
 def center_decimal_string(s, side, lpad=' ', rpad='0'):
     if '.' not in s:
@@ -82,13 +89,17 @@ def center_decimal_string(s, side, lpad=' ', rpad='0'):
         s = parts[0].rjust(side, lpad) + '.' + parts[1].ljust(side, rpad)
     return s
 
+
 ### data
+
 
 def get_instance_vars(obj):
     names = set(dir(obj)).difference(dir(obj.__class__))
     return {name:obj.__dict__[name] for name in names}
 
+
 ### cmd
+
 
 def prompt_do_continue(continue_text='Continue?'):
     print(continue_text + ' (y/n)\n> ', end='')
@@ -96,13 +107,16 @@ def prompt_do_continue(continue_text='Continue?'):
     yes_answers = ['y', 'yes', 'yeah', 'continue']
     return (answer.lower() in yes_answers)
 
+
 def prompt_any_input(text='Enter any input to continue.'):
     print(text)
     print('> ', end='')
     input()
     return
 
+
 ### fs
+
 
 def find_nonexistent_dir(path):
     if os.path.exists(path):
@@ -114,13 +128,16 @@ def find_nonexistent_dir(path):
         parent = parent_dir(parent)
     return ne
 
+
 def parent_dir(path, repeat_times=0):
     parent_path = os.path.abspath(os.path.join(path, os.pardir))
     if repeat_times:
         return parent_dir(parent_path, repeat_times-1)
     return parent_path
 
+
 ### project
+
 
 def print_current_time():
     print('Current Time:', datetime.today().strftime('%m/%d'), datetime.now().strftime('%H:%M:%S'))
@@ -135,4 +152,3 @@ def open_in_terminal(exe, args:Iterable=None, close_on_success=True):
     if args:
         command += ' {}'.format(' '.join(args))
     os.system(command)
-    

@@ -5,9 +5,12 @@ from src.bs.elements import DetailListBS
 from src.bs.windows.edit_matching_group import WindowEditMatchingGroups
 from src.bs.fs.matching_group import MatchingGroup
 
+
 __all__ = ['MatchingGroupsList']
 
+
 class MatchingGroupsList(DetailListBS):
+
     def __init__(self, object_id, vfs):
         super().__init__(object_id)
 
@@ -16,11 +19,9 @@ class MatchingGroupsList(DetailListBS):
     def make_details(self, item, data:MatchingGroup):
         mg = data
         if mg == None:
-            return nss.sg.EmbedText('No Data')
-        
+            return nss.sg.EmbedText('No Data')        
         mg.make_invalid_none()
         d = mg.d
-
         highlights = {
             'green': '#aaffaa',
             'blue': '#bbbbff',
@@ -31,19 +32,14 @@ class MatchingGroupsList(DetailListBS):
         colors_alert = ('black', 'yellow')
         colors_pattern = ('black', highlights['blue'])
         colors_cond = ('black', highlights['purple'])
+
         et = nss.sg.EmbedText()
-        def et_text(s):
-            et.append(s)
-        def et_var(s):
-            et.color(s, *colors_var)
-        def et_bad(s):
-            et.color(s, *colors_bad)
-        def et_pattern(s):
-            et.color(s, *colors_pattern)
-        def et_cond(s):
-            et.color(s, *colors_cond)
-        def et_alert(s):
-            et.color(s, *colors_alert)
+        def et_text(s):    et.append(s)
+        def et_var(s):     et.color(s, *colors_var)
+        def et_bad(s):     et.color(s, *colors_bad)
+        def et_pattern(s): et.color(s, *colors_pattern)
+        def et_cond(s):    et.color(s, *colors_cond)
+        def et_alert(s):   et.color(s, *colors_alert)
         
         cond_f_sz = cond_F_sz = cond_pF_sz = cond_apply_if = False
         if d.apply_to_files and (d.min_file_size or d.max_file_size):
@@ -156,7 +152,7 @@ class MatchingGroupsList(DetailListBS):
                 et_var('[Regex]')
             else:
                 et_var('[Text]')
-            et_text(' d.patterns below, with conditions ')
+            et_text(' patterns below, with conditions ')
             s = '[Match Case' if d.match_case else '[Match Case'
             s += ', Whole ' if d.whole_name else ', In '
             s += 'Name (Stripped)]' if d.strip_extensions else 'Name]'
@@ -168,8 +164,10 @@ class MatchingGroupsList(DetailListBS):
 
         def below_size(a):
             et_cond('[Below ' + nss.units.Bytes(a, nss.units.Bytes.B).get_best() + ']')
+        
         def above_size(a):
             et_cond('[Above ' + nss.units.Bytes(a, nss.units.Bytes.B).get_best() + ']')
+        
         def within_size(a, b):
             if not (a or b):
                 return
@@ -216,12 +214,12 @@ class MatchingGroupsList(DetailListBS):
         if cond_tsd:
             et_text('\n  Included size change ')
             within_size(d.min_total_size_diff, d.max_total_size_diff)
-
         return et
     
     def edit_data(self, context:sg.Window, item, data):
         mg = data if data != None else MatchingGroup()
-        window_edit_matching_groups = WindowEditMatchingGroups('Matching Group "' + item + '"', mg.to_dict())
+        window_edit_matching_groups = WindowEditMatchingGroups(
+            'Matching Group "' + item + '"', mg.to_dict())
         rv = nss.WRC(window_edit_matching_groups.open(context))
         if rv.check_success():
             mg.load_dict(window_edit_matching_groups.get_data())

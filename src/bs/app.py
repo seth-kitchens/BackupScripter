@@ -1,7 +1,9 @@
 import PySimpleGUI as sg
+
 from src.bs.script_data import ScriptDataBS
 from src.bs.windows.main import WindowMain
 from src.bs import g
+
 
 def app(script_data:ScriptDataBS, context):
     sg.theme(g.style.sg_theme)
