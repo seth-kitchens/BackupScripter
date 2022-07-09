@@ -24,7 +24,7 @@ __all__ = [
     'run_backup_script'
 ]
 
-fio_path = g.project_path('temp/fio')
+fio_path = g.project_path('output/temp/fio')
 
 
 def fio_relpath(path):

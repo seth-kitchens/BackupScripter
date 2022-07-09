@@ -1,10 +1,7 @@
 *.lnk
 
-_backups/
-!_backups/README.md
-
-temp/
 output/
+dev/vscode/BackupScripter.code-workspace
 
 ###############################################################################
 # Python .gitignore template provided by https://github.com/github/gitignore

@@ -11,13 +11,9 @@
     "BackupDatePostfix": "_YYYYMMDD_HHmm",
     "BackupDestination": "C:\\Main\\Python\\MyPyApps\\apps\\BackupScripter\\output\\backups",
     "IncludedItems": [
-        "C:\\Main\\Python\\MyPyApps\\apps\\BackupScripter",
-        "C:\\Main\\Python\\Test\\A"
+        "C:\\Main\\Python\\PyApps\\apps\\BackupScripter"
     ],
-    "ExcludedItems": [
-        "C:\\Main\\Python\\MyPyApps\\apps\\BackupScripter\\temp",
-        "C:\\Main\\Python\\MyPyApps\\apps\\BackupScripter\\.git"
-    ],
+    "ExcludedItems": [],
     "ArchiveFormat": "zip",
     "ArchiveMode": "append",
     "MaxBackups": null,
@@ -25,35 +21,36 @@
     "BackupRecentAge": null,
     "PullAgeFromPostfix": true,
     "MatchingGroupsList": {
-        "E: A": {
-            "min_total_size_diff": null,
+        "E: Folders": {
+            "use_regex": false,
+            "not_within_paths": [],
+            "min_parent_folder_size": null,
+            "apply_recursive": true,
+            "apply_if_extensions": [],
+            "do_not_apply_if_extensions": [],
+            "max_folder_size": null,
+            "min_backup_size_before": null,
+            "ie_action": "exclude",
             "strip_extensions": false,
+            "min_folder_size": null,
+            "max_backup_size_before": null,
+            "min_total_size_diff": null,
+            "apply_to_folders": true,
+            "min_file_size": null,
+            "whole_name": true,
+            "match_case": false,
             "max_parent_folder_size": null,
             "max_backup_size_after": null,
-            "apply_to_folders": true,
-            "max_backup_size_before": null,
-            "max_total_size_diff": null,
-            "min_backup_size_after": null,
-            "max_file_size": null,
             "within_paths": [],
-            "apply_if_extensions": [],
-            "apply_recursive": true,
-            "use_regex": false,
-            "whole_name": true,
-            "min_file_size": null,
-            "match_case": false,
-            "min_folder_size": null,
-            "not_within_paths": [],
-            "min_backup_size_before": null,
-            "do_not_apply_if_extensions": [],
-            "ie_action": "exclude",
+            "max_file_size": null,
+            "apply_to_files": false,
+            "min_backup_size_after": null,
             "patterns": [
-                "A"
+                "__pycache__",
+                ".git"
             ],
-            "max_folder_size": null,
             "match_all": false,
-            "min_parent_folder_size": null,
-            "apply_to_files": false
+            "max_total_size_diff": null
         }
     }
 }

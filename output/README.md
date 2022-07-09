@@ -1,3 +1,4 @@
-Backups and scripts made while manually testing go here. Ignored in .gitignore
+Placeholder file for git
 
-Scripts to be committed should be added to tests/scripts or a new folder such as example_scripts, etc
+Backups and scripts made while manually testing go here.
+Scripts to be committed should be added to tests/scripts or a new folder

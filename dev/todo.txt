@@ -18,6 +18,7 @@ QoL, Settings
 	- settings screen?
 
 Bugs, Poorly Implemented
+- BS: selecting in vfs explorer resets scroll
 - NSS: make units dropdown from InputUnits ordered correctly
 - NSS: InfoButton and Info is messy
 * BS: Check behavior of scripts where static inclusion has mismatch at script runtime, i.e. something specified as included/excluded
@@ -32,6 +33,7 @@ Incomplete
 - NSS/BS: Proper library version control for nssgui not acheived. nssgui should be able to be independently updated alongside BackupScripter, with an otherwise useable version available elsewhere. Git branches should achieve much of this. There is then the question of where the version number is maintained, and how it is changed with pulls and commits from branched development.
 
 Unimplemented
+- BS: Add 'Run Script' then 'Run Once', for a one-time packaging
 - NSS: A ToolBar class would be nice
 - BS: Implement compression settings
 - BS: in assert_files_match_zip in test_core.py, implement compare_contents
@@ -44,6 +46,7 @@ Unimplemented
 - BS: should there be a way to see the include>exclude>include>... structure in vfs explorer?
 
 Design, Behavior, Error Prevention
+- NSS: Should be able to override incoming status bar messages (by pruning the time-event queue)
 - NSS: The functions for updating ge's seems messy and inconsistent
 - NSS: save/load/push/pull shouldn't use _func as their inner-abstract naming convention
 - BS: The default matching groups are automatically processed upon program start, which affects loading time. Something should be done about this.

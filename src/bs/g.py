@@ -71,7 +71,7 @@ class paths:
             packfio_data = 'data/project/packfio_data.py'
 
         class dirs:
-            packing = 'temp/packing'
+            packing = 'output/temp/packing'
             logs = 'logs'
 
     class abs:
@@ -84,7 +84,7 @@ class paths:
 
         class dirs:
             project = _project_path
-            packing = project_path('temp/packing')
+            packing = project_path('output/temp/packing')
             logs = project_path('logs')\
 
 
