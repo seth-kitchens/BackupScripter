@@ -11,11 +11,57 @@ SL: scriptlib (still a part of BackupScripter, BS may include SL)
 - Normal
 * Important
 ---
+Current Goals.
+
+Primary bullets roughly in order of importance
+
+- Requirements, Installation, Distribution
+    - Get clean installations working on own pc. Venv's should provide the isolation needed.
+
+- Ensure code works on second Windows 10 platform
+    - Use desktop pc to test
+
+- Get NSS/BS working on Linux
+    - Use old laptop with Ubuntu to test
+
+- Inform user when i/e path specified does not exist, or have an option for it
+    - Address this anywhere VFSBS is built. This is where it is currently being silently ignored
+    - Implement any popups, data editing windows, etc needed to resolve the issue
+    - Print the information to the user in script execution
+
+- Implement proper branching version control for NssGui
+    - Make a branch for BS, and the main branch
+
+- Document NssGui and revise design for basic usage
+    - Subclassing AbstractBlockingWindow to make a window
+    - Subclassing GE to make a gui element
+    - Using GE's, GEM, etc without using nss windows
+    - WRC's
+    - Popups, PopupBuilder
+    - InfoBuilder
+    - Units
+
+- Create example programs for nssgui, mainly to test, revise, expand and document existing code
+
+
+- Implement basic CLI interface for options during script execution
+    - Eventual options include:
+        - Editing scripts with editor
+        - Editing script data directly (include code to repackage in pyz?)
+
+- Better backwards compatibility for editing scripts
+
+
+- Implement settings
+
+
+---
+Loose TODO Notes
 
 QoL, Settings
 - BS: add default locations for main page file browsing
 - BS: consider settings for editor, particularly default browse locations
-	- settings screen?
+    - settings screen?
 
 Bugs, Poorly Implemented
 - BS: selecting in vfs explorer resets scroll
@@ -44,6 +90,7 @@ Unimplemented
 - BS: add relative paths (might have to be explicit)
 - BS: add matching option for age of file
 - BS: should there be a way to see the include>exclude>include>... structure in vfs explorer?
+- Program Settings? Universal settings format? Like, a standard of common fields such as 'Resource Folder' to choose to store in AppData, etc, which is then scanned by separate programs?
 
 Design, Behavior, Error Prevention
 - NSS: Should be able to override incoming status bar messages (by pruning the time-event queue)
@@ -53,7 +100,7 @@ Design, Behavior, Error Prevention
 - NSS/BS: improve consistency with 'folder' vs 'dir'
 - BS: pulling date from files only works if no periods in file name or date string, enforce this with GUI
 - NSS: making the edit window for ListContainer was messy and poorly documented. This needs to be easier to understand.
-- SL: how do changes to code affect backwards compatibility with existing pyz scripts? how to prevent the functions from breaking when accessing pyz script generated from older code?
+* SL: how do changes to code affect backwards compatibility with existing pyz scripts? how to prevent the functions from breaking when accessing pyz script generated from older code? Version control on the scripts? This needs to worked out and understood. If the scripts are edittable on their own, there is the option to allow them to be editted so that they match a major change in the editor. Or they could communicate with the updated editor to figure out what needs to be changed, producing just a script_data.json for the editor to read in like with [Load Script].
 - NSS: folder browse button for StringContainer/TextList is currently a part of StringContainer (in the init), shouldn't it be a part of TextList instead?
 - NSS: are asyncwindows disabled from context.disable()?
 - NSS: gem.row/etc should be self.row in window classes. Maybe use a iGEManager interface for passing gem as param as well?
