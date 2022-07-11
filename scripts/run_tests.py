@@ -25,5 +25,5 @@ if not parsed.noterm:
     os.system(command)
     sys.exit()
 
-import tests
-tests.run()
+from tests import driver
+driver.run()

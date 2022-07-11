@@ -15,12 +15,6 @@ Current Goals.
 
 Primary bullets roughly in order of importance
 
-- Requirements, Installation, Distribution
-    - Get clean installations working on own pc. Venv's should provide the isolation needed.
-
-- Ensure code works on second Windows 10 platform
-    - Use desktop pc to test
-
 - Get NSS/BS working on Linux
     - Use old laptop with Ubuntu to test
 
