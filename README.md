@@ -42,6 +42,8 @@ Run BackupScript in Debug:
 
 1. Double-click scripts/test_editor.py
 
+OR
+
 2. Enter into cmd:
 ```
 python . --debug --noterm
