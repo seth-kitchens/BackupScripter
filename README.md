@@ -22,6 +22,8 @@ Coming Soon
 
 ## Building
 
+Install Python if needed: https://www.python.org/downloads/
+
 Clone repo:
 ```
 git clone https://github.com/seth-kitchens/BackupScripter
@@ -37,19 +39,6 @@ Run BackupScripter
 ```
 python .
 ```
-
-Run BackupScript in Debug:
-
-1. Double-click scripts/test_editor.py
-
-OR
-
-2. Enter into cmd:
-```
-python . --debug --noterm
-```
-
-Without, --noterm it will open an extra cmd on its own.
 
 
 
