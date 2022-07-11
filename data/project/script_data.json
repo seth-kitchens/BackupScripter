@@ -3,13 +3,13 @@
         "test_script",
         ".pyz"
     ],
-    "ScriptDestination": "C:\\Main\\Python\\MyPyApps\\apps\\BackupScripter\\output\\scripts",
+    "ScriptDestination": "",
     "BackupFilename": [
         "test_backup",
         ".zip"
     ],
     "BackupDatePostfix": "_YYYYMMDD_HHmm",
-    "BackupDestination": "C:\\Main\\Python\\MyPyApps\\apps\\BackupScripter\\output\\backups",
+    "BackupDestination": "",
     "IncludedItems": [],
     "ExcludedItems": [],
     "ArchiveFormat": "zip",
@@ -20,35 +20,35 @@
     "PullAgeFromPostfix": true,
     "MatchingGroupsList": {
         "E: Folders": {
-            "max_backup_size_before": null,
-            "max_file_size": null,
-            "within_paths": [],
             "max_backup_size_after": null,
-            "apply_recursive": true,
-            "min_parent_folder_size": null,
-            "strip_extensions": false,
-            "min_backup_size_before": null,
-            "max_total_size_diff": null,
-            "min_total_size_diff": null,
-            "min_backup_size_after": null,
-            "match_case": false,
-            "max_folder_size": null,
             "ie_action": "exclude",
             "do_not_apply_if_extensions": [],
+            "max_backup_size_before": null,
+            "max_folder_size": null,
+            "min_total_size_diff": null,
+            "min_backup_size_after": null,
+            "whole_name": true,
+            "match_case": false,
+            "min_parent_folder_size": null,
+            "max_total_size_diff": null,
             "patterns": [
                 "__pycache__",
                 ".git"
             ],
-            "apply_if_extensions": [],
-            "max_parent_folder_size": null,
-            "apply_to_folders": true,
-            "not_within_paths": [],
-            "use_regex": false,
-            "whole_name": true,
-            "apply_to_files": false,
-            "match_all": false,
+            "max_file_size": null,
             "min_file_size": null,
-            "min_folder_size": null
+            "within_paths": [],
+            "apply_if_extensions": [],
+            "min_backup_size_before": null,
+            "max_parent_folder_size": null,
+            "match_all": false,
+            "apply_to_files": false,
+            "min_folder_size": null,
+            "strip_extensions": false,
+            "use_regex": false,
+            "not_within_paths": [],
+            "apply_recursive": true,
+            "apply_to_folders": true
         }
     }
 }
