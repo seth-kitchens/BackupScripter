@@ -23,9 +23,6 @@ Primary bullets roughly in order of importance
     - Implement any popups, data editing windows, etc needed to resolve the issue
     - Print the information to the user in script execution
 
-- Implement proper branching version control for NssGui
-    - Make a branch for BS, and the main branch
-
 - Document NssGui and revise design for basic usage
     - Subclassing AbstractBlockingWindow to make a window
     - Subclassing GE to make a gui element
@@ -48,6 +45,19 @@ Primary bullets roughly in order of importance
 
 - Implement settings
 
+
+---
+NSS Revision
+
+- GuiElement
+    - abstract inners: No way around it, they require two functions. make note of these abstract inners in GuiElement docstring
+    - Ordering of functions needs to be reworked
+    - sg_kwargs system needs to be looked at
+    - validity needs to be looked at
+    - GuiElementExample needs to be done
+    - init() and init_window() ?
+    - Info() taking gem is not good
+    - is self.gem['key'] a good convention?
 
 ---
 Loose TODO Notes

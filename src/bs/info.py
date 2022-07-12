@@ -1,4 +1,4 @@
-from nssgui import InfoBuilder
+from nssgui.ge import InfoBuilder
 
 
 class window_main:

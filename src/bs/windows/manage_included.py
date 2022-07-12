@@ -21,15 +21,14 @@ class WindowManageIncluded(nss.AbstractBlockingWindow):
     # Layout
 
     def get_layout(self):
-        gem = self.gem
         frame_explorer = nss.sg.FrameColumn('Static Inclusion',
-            layout=gem.layout(bs_ge.VFSExplorerViewBS('IEExplorer', self.vfs_explorer)))
+            layout=self.layout(bs_ge.VFSExplorerViewBS('IEExplorer', self.vfs_explorer)))
         frame_iepatterns = nss.sg.FrameColumn('Matching Groups', expand_x=True,
-            layout=gem.layout(bs_ge.MatchingGroupsList('MatchingGroupsList', self.vfs_static)))
+            layout=self.layout(bs_ge.MatchingGroupsList('MatchingGroupsList', self.vfs_static)))
         frame_system = nss.sg.FrameColumn('Window', expand_y=True, layout=[
             [sg.Button('Return', size=(12, 2), expand_x=True)],
             [sg.Button('Cancel', size=(12, 2), expand_x=True)],
-            [nss.ge.Info(gem, info.window, bt='Info', sg_kwargs={'size': (16, 2)})],
+            [nss.ge.Info(self.gem, info.window, bt='Info', sg_kwargs={'size': (16, 2)})],
             [sg.VPush()]
         ])
         layout = [

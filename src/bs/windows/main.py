@@ -37,10 +37,9 @@ class WindowMain(nss.AbstractBlockingWindow):
     # Layout
 
     def get_layout(self):
-        gem = self.gem
         frame_script_file = nss.sg.FrameColumn('Script File', expand_x=True, layout=[
-            gem.row(nss.ge.Filename('ScriptFilename', 'Filename').sg_kwargs_name(expand_x=True)),
-            gem.row(nss.ge.Path('ScriptDestination', 'Destination').sg_kwargs_path(expand_x=True)),
+            self.row(nss.ge.Filename('ScriptFilename', 'Filename').sg_kwargs_name(expand_x=True)),
+            self.row(nss.ge.Path('ScriptDestination', 'Destination').sg_kwargs_path(expand_x=True)),
             [
                 sg.Button('Load Script', key='LoadScript', size=10),
                 sg.Push(),
@@ -49,24 +48,24 @@ class WindowMain(nss.AbstractBlockingWindow):
             ]
         ])
         frame_backup_file = nss.sg.FrameColumn('Backup File', expand_x=True, layout=[
-            gem.row(nss.ge.Filename('BackupFilename', 'Filename').sg_kwargs_name(expand_x=True)),
+            self.row(nss.ge.Filename('BackupFilename', 'Filename').sg_kwargs_name(expand_x=True)),
             [
-                *gem.row(nss.ge.Input('BackupDatePostfix', 'Date Postfix').sg_kwargs_in(expand_x=True)),
-                nss.ge.Info(gem, info.date_postfix)
+                *self.row(nss.ge.Input('BackupDatePostfix', 'Date Postfix').sg_kwargs_in(expand_x=True)),
+                nss.ge.Info(self.gem, info.date_postfix)
             ],
-            gem.row(nss.ge.Path('BackupDestination', 'Destination').sg_kwargs_path(expand_x=True)),
-            gem.row(nss.ge.Dropdown('ArchiveFormat', 'Archive Format', list(WindowMain.archive_exts.keys()))),
-            gem.row(nss.ge.Radio('ArchiveMode', 'Archive Mode:', {'append': 'Append', 'compile': 'Compile'}))
+            self.row(nss.ge.Path('BackupDestination', 'Destination').sg_kwargs_path(expand_x=True)),
+            self.row(nss.ge.Dropdown('ArchiveFormat', 'Archive Format', list(WindowMain.archive_exts.keys()))),
+            self.row(nss.ge.Radio('ArchiveMode', 'Archive Mode:', {'append': 'Append', 'compile': 'Compile'}))
         ])
         frame_backup_settings = nss.sg.FrameColumn('Backup Settings', expand_y=True, layout=[
             [
-                *gem.row(nss.ge.Input('MaxBackups', 'Max Backups', type='int', negative_invalid=True)),
+                *self.row(nss.ge.Input('MaxBackups', 'Max Backups', type='int', negative_invalid=True)),
                 sg.Push(),
-                nss.ge.Info(gem, info.backup_settings, '?')
+                nss.ge.Info(self.gem, info.backup_settings, '?')
             ],
-            gem.row(nss.ge.InputUnits('BackupRecentAge', 'Recent Age', nss.units.Time, nss.units.Time.DAY, store_as_degree=nss.units.Time.SECOND, negative_invalid=True)),
-            gem.row(nss.ge.InputUnits('BackupOldAge', 'Old Age', nss.units.Time, nss.units.Time.DAY, store_as_degree=nss.units.Time.SECOND, negative_invalid=True)),
-            [gem.sge(nss.ge.Checkbox('PullAgeFromPostfix', 'Pull Age From Filename'))],
+            self.row(nss.ge.InputUnits('BackupRecentAge', 'Recent Age', nss.units.Time, nss.units.Time.DAY, store_as_degree=nss.units.Time.SECOND, negative_invalid=True)),
+            self.row(nss.ge.InputUnits('BackupOldAge', 'Old Age', nss.units.Time, nss.units.Time.DAY, store_as_degree=nss.units.Time.SECOND, negative_invalid=True)),
+            [self.sge(nss.ge.Checkbox('PullAgeFromPostfix', 'Pull Age From Filename'))],
             [sg.VPush()]
         ])
         column_included_labels = sg.Column(pad=0, layout=[
@@ -74,26 +73,26 @@ class WindowMain(nss.AbstractBlockingWindow):
             [sg.Text('Total Files')]
         ])
         column_included_numbers = sg.Column(element_justification='center', pad=0, layout=[
-            gem.row(nss.ge.OutText('TotalFolders')),
-            gem.row(nss.ge.OutText('TotalFiles'))
+            self.row(nss.ge.OutText('TotalFolders')),
+            self.row(nss.ge.OutText('TotalFiles'))
         ])
         column_included = sg.Column(element_justification='left', pad=0, layout=[
             [sg.Text('Included', text_color=colors.header)],
             [column_included_labels, column_included_numbers],
-            [sg.Column(pad=0, expand_x=True, layout=[[sg.Text('Size'), sg.Push(), *gem.row(nss.ge.OutText('SizeIncluded'))]])]
+            [sg.Column(pad=0, expand_x=True, layout=[[sg.Text('Size'), sg.Push(), *self.row(nss.ge.OutText('SizeIncluded'))]])]
         ])
         column_excluded_labels = sg.Column(pad=0, layout=[
             [sg.Text('Total Folders')],
             [sg.Text('Total Files')]
         ])
         column_excluded_numbers = sg.Column(element_justification='center', pad=0, layout=[
-            gem.row(nss.ge.OutText('TotalFoldersExcluded')),
-            gem.row(nss.ge.OutText('TotalFilesExcluded'))
+            self.row(nss.ge.OutText('TotalFoldersExcluded')),
+            self.row(nss.ge.OutText('TotalFilesExcluded'))
         ])
         column_excluded = sg.Column(pad=0, expand_y=True, layout=[
             [sg.Text('Excluded', text_color=colors.header)],
             [column_excluded_labels, column_excluded_numbers],
-            [sg.Column(pad=0, expand_x=True, layout=[[sg.Text('Size'), sg.Push(), *gem.row(nss.ge.OutText('SizeExcluded'))]])]
+            [sg.Column(pad=0, expand_x=True, layout=[[sg.Text('Size'), sg.Push(), *self.row(nss.ge.OutText('SizeExcluded'))]])]
         ])
         frame_ie = nss.sg.FrameColumn('To Backup', layout=[
             [
@@ -104,7 +103,7 @@ class WindowMain(nss.AbstractBlockingWindow):
             [sg.VPush()],
             [
                 sg.Push(),
-                *gem.row(nss.ge.Radio('IENumbers', text=None, options={'final':'Final', 'static':'Static', 'both':'Static/Final'}).init_data('final')),
+                *self.row(nss.ge.Radio('IENumbers', text=None, options={'final':'Final', 'static':'Static', 'both':'Static/Final'}).load_value('final')),
                 sg.Push()
             ],
             [sg.Button('Manage Included', key='ManageIncluded', expand_x=True)]
