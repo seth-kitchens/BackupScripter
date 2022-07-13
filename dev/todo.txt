@@ -57,7 +57,9 @@ NSS Revision
     - GuiElementExample needs to be done
     - init() and init_window() ?
     - Info() taking gem is not good
-    - is self.gem['key'] a good convention?
+    - is self.gem[key] a good convention? replace with self.ges(key) to try to push gem to private?
+
+- Private vs Public class/instance variables
 
 ---
 Loose TODO Notes
