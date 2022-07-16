@@ -38,8 +38,8 @@ class WindowMain(nss.AbstractBlockingWindow):
 
     def get_layout(self):
         frame_script_file = nss.sg.FrameColumn('Script File', expand_x=True, layout=[
-            self.row(nss.ge.Filename('ScriptFilename', 'Filename').init().sg_kwargs_name(expand_x=True)),
-            self.row(nss.ge.Path('ScriptDestination', 'Destination').init().sg_kwargs_path(expand_x=True)),
+            self.row(nss.ge.Filename('ScriptFilename', 'Filename').sg_kwargs_name(expand_x=True)),
+            self.row(nss.ge.Path('ScriptDestination', 'Destination').sg_kwargs_path(expand_x=True)),
             [
                 sg.Button('Load Script', key='LoadScript', size=10),
                 sg.Push(),
@@ -48,12 +48,12 @@ class WindowMain(nss.AbstractBlockingWindow):
             ]
         ])
         frame_backup_file = nss.sg.FrameColumn('Backup File', expand_x=True, layout=[
-            self.row(nss.ge.Filename('BackupFilename', 'Filename').init().sg_kwargs_name(expand_x=True)),
+            self.row(nss.ge.Filename('BackupFilename', 'Filename').sg_kwargs_name(expand_x=True)),
             [
-                *self.row(nss.ge.Input('BackupDatePostfix', 'Date Postfix').init().sg_kwargs_in(expand_x=True)),
+                *self.row(nss.ge.Input('BackupDatePostfix', 'Date Postfix').sg_kwargs_in(expand_x=True)),
                 nss.ge.Info(self.gem, info.date_postfix)
             ],
-            self.row(nss.ge.Path('BackupDestination', 'Destination').init().sg_kwargs_path(expand_x=True)),
+            self.row(nss.ge.Path('BackupDestination', 'Destination').sg_kwargs_path(expand_x=True)),
             self.row(nss.ge.Dropdown('ArchiveFormat', 'Archive Format', list(WindowMain.archive_exts.keys()))),
             self.row(nss.ge.Radio('ArchiveMode', 'Archive Mode:', {'append': 'Append', 'compile': 'Compile'}))
         ])
@@ -103,7 +103,7 @@ class WindowMain(nss.AbstractBlockingWindow):
             [sg.VPush()],
             [
                 sg.Push(),
-                *self.row(nss.ge.Radio('IENumbers', text=None, options={'final':'Final', 'static':'Static', 'both':'Static/Final'}).init().load_value('final')),
+                *self.row(nss.ge.Radio('IENumbers', text=None, options={'final':'Final', 'static':'Static', 'both':'Static/Final'}).load_value('final')),
                 sg.Push()
             ],
             [sg.Button('Manage Included', key='ManageIncluded', expand_x=True)]

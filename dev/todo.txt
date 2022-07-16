@@ -33,7 +33,13 @@ Primary bullets roughly in order of importance
     - Units
 
 - Create example programs for nssgui, mainly to test, revise, expand and document existing code
-
+    - Pure tkinter vs PySimpleGUI vs PySimpleGUi+nssgui
+        - Multiple windows
+        - Nested elements
+        - Data flow
+        - Custom Popup
+    - Examples of *specific* GuiElement subclasses
+    - Include examples of converting PySimpleGUI projects to PySimpleGUI+nssgui
 
 - Implement basic CLI interface for options during script execution
     - Eventual options include:
@@ -58,8 +64,16 @@ NSS Revision
     - init() and init_window() ?
     - Info() taking gem is not good
     - is self.gem[key] a good convention? replace with self.ges(key) to try to push gem to private?
+    - should the definition functions be private?
 
 - Private vs Public class/instance variables
+- Try to match python terminology
+    - method: function in a class
+
+- VFS shouldn't be in nssgui
+- interface for forcing uniform key syntax?
+- MenuDict shouldn't be in utils
+- Explain data flow (dict[object_id:str, value:Any])
 
 ---
 Loose TODO Notes
