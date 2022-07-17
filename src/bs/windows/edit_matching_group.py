@@ -1,12 +1,12 @@
 import PySimpleGUI as sg
-import nssgui as nss
+import PsgUnsimplified as sgu
 
 from src.bs.info import matching_groups_list as info
 from src.bs.fs.matching_group import MatchingGroup
 MG = MatchingGroup
 
 
-class WindowEditMatchingGroups(nss.AbstractBlockingWindow):
+class WindowEditMatchingGroups(sgu.AbstractBlockingWindow):
 
     def __init__(self, title, data=None) -> None:
         super().__init__(title, data)
@@ -17,73 +17,73 @@ class WindowEditMatchingGroups(nss.AbstractBlockingWindow):
         column_file_size = sg.Column(expand_x=True, element_justification='center', layout=[
             [sg.Text('Within Size (File)')],
             [sg.Sizer(0, 3)],
-            self.row(nss.ge.InputUnits('max_file_size', 'Max', nss.units.Bytes,
-                default_degree=nss.units.Bytes.MB,
-                store_as_degree=nss.units.Bytes.B,
+            self.row(sgu.ge.InputUnits('max_file_size', 'Max', sgu.units.Bytes,
+                default_degree=sgu.units.Bytes.MB,
+                store_as_degree=sgu.units.Bytes.B,
                 negative_invalid=True)),
-            self.row(nss.ge.InputUnits('min_file_size', 'Min', nss.units.Bytes,
-                default_degree=nss.units.Bytes.MB,
-                store_as_degree=nss.units.Bytes.B,
+            self.row(sgu.ge.InputUnits('min_file_size', 'Min', sgu.units.Bytes,
+                default_degree=sgu.units.Bytes.MB,
+                store_as_degree=sgu.units.Bytes.B,
                 negative_invalid=True))
         ])
         column_folder_size = sg.Column(expand_x=True, element_justification='center', layout=[
             [sg.Text('Within Size (Folder)')],
             [sg.Sizer(0, 3)],
-            self.row(nss.ge.InputUnits('max_folder_size', 'Max', nss.units.Bytes,
-                default_degree=nss.units.Bytes.MB,
-                store_as_degree=nss.units.Bytes.B,
+            self.row(sgu.ge.InputUnits('max_folder_size', 'Max', sgu.units.Bytes,
+                default_degree=sgu.units.Bytes.MB,
+                store_as_degree=sgu.units.Bytes.B,
                 negative_invalid=True)),
-            self.row(nss.ge.InputUnits('min_folder_size', 'Min', nss.units.Bytes,
-                default_degree=nss.units.Bytes.MB,
-                store_as_degree=nss.units.Bytes.B,
+            self.row(sgu.ge.InputUnits('min_folder_size', 'Min', sgu.units.Bytes,
+                default_degree=sgu.units.Bytes.MB,
+                store_as_degree=sgu.units.Bytes.B,
                 negative_invalid=True))
         ])
         column_total_size = sg.Column(expand_x=True, element_justification='center', layout=[
             [sg.Text('Total Size Diff')],
             [sg.Sizer(0, 3)],
-            self.row(nss.ge.InputUnits('max_total_size_diff', 'Max', nss.units.Bytes,
-                default_degree=nss.units.Bytes.MB,
-                store_as_degree=nss.units.Bytes.B, 
+            self.row(sgu.ge.InputUnits('max_total_size_diff', 'Max', sgu.units.Bytes,
+                default_degree=sgu.units.Bytes.MB,
+                store_as_degree=sgu.units.Bytes.B, 
                 negative_invalid=True)),
-            self.row(nss.ge.InputUnits('min_total_size_diff', 'Min', nss.units.Bytes,
-                default_degree=nss.units.Bytes.MB,
-                store_as_degree=nss.units.Bytes.B,
+            self.row(sgu.ge.InputUnits('min_total_size_diff', 'Min', sgu.units.Bytes,
+                default_degree=sgu.units.Bytes.MB,
+                store_as_degree=sgu.units.Bytes.B,
                 negative_invalid=True))
         ])
         column_backup_size_before = sg.Column(expand_x=True, element_justification='center', layout=[
             [sg.Text('Backup Size Before')],
             [sg.Sizer(0, 3)],
-            self.row(nss.ge.InputUnits('max_backup_size_before', 'Max', nss.units.Bytes, 
-                default_degree=nss.units.Bytes.MB,
-                store_as_degree=nss.units.Bytes.B,
+            self.row(sgu.ge.InputUnits('max_backup_size_before', 'Max', sgu.units.Bytes, 
+                default_degree=sgu.units.Bytes.MB,
+                store_as_degree=sgu.units.Bytes.B,
                 negative_invalid=True)),
-            self.row(nss.ge.InputUnits('min_backup_size_before', 'Min', nss.units.Bytes,
-                default_degree=nss.units.Bytes.MB,
-                store_as_degree=nss.units.Bytes.B,
+            self.row(sgu.ge.InputUnits('min_backup_size_before', 'Min', sgu.units.Bytes,
+                default_degree=sgu.units.Bytes.MB,
+                store_as_degree=sgu.units.Bytes.B,
                 negative_invalid=True))
         ])
         column_backup_size_after = sg.Column(expand_x=True, element_justification='center', layout=[
             [sg.Text('Backup Size After')],
             [sg.Sizer(0, 3)],
-            self.row(nss.ge.InputUnits('max_backup_size_after', 'Max', nss.units.Bytes,
-                default_degree=nss.units.Bytes.MB,
-                store_as_degree=nss.units.Bytes.B, 
+            self.row(sgu.ge.InputUnits('max_backup_size_after', 'Max', sgu.units.Bytes,
+                default_degree=sgu.units.Bytes.MB,
+                store_as_degree=sgu.units.Bytes.B, 
                 negative_invalid=True)),
-            self.row(nss.ge.InputUnits('min_backup_size_after', 'Min', nss.units.Bytes,
-                default_degree=nss.units.Bytes.MB,
-                store_as_degree=nss.units.Bytes.B,
+            self.row(sgu.ge.InputUnits('min_backup_size_after', 'Min', sgu.units.Bytes,
+                default_degree=sgu.units.Bytes.MB,
+                store_as_degree=sgu.units.Bytes.B,
                 negative_invalid=True))
         ])
         row_parent_folder_size = [
             sg.Text('Parent Folder Size:'),
-            *self.row(nss.ge.InputUnits('max_parent_folder_size', 'Max', nss.units.Bytes,
-                default_degree=nss.units.Bytes.MB,
-                store_as_degree=nss.units.Bytes.B,
+            *self.row(sgu.ge.InputUnits('max_parent_folder_size', 'Max', sgu.units.Bytes,
+                default_degree=sgu.units.Bytes.MB,
+                store_as_degree=sgu.units.Bytes.B,
                 negative_invalid=True)),
             sg.Sizer(5, 0),
-            *self.row(nss.ge.InputUnits('min_parent_folder_size', 'Min', nss.units.Bytes,
-                default_degree=nss.units.Bytes.MB,
-                store_as_degree=nss.units.Bytes.B,
+            *self.row(sgu.ge.InputUnits('min_parent_folder_size', 'Min', sgu.units.Bytes,
+                default_degree=sgu.units.Bytes.MB,
+                store_as_degree=sgu.units.Bytes.B,
                 negative_invalid=True))
         ]
         row_apply_to_size = [
@@ -105,8 +105,8 @@ class WindowEditMatchingGroups(nss.AbstractBlockingWindow):
         ]
         frame_apply_to = sg.Frame('Apply To', layout=[
             [
-                self.sge(nss.ge.Checkbox('apply_to_files', 'Files')),
-                self.sge(nss.ge.Checkbox('apply_to_folders', 'Folders') \
+                self.sge(sgu.ge.Checkbox('apply_to_files', 'Files')),
+                self.sge(sgu.ge.Checkbox('apply_to_folders', 'Folders') \
                     .sg_kwargs_checkbox(enable_events=True))
             ]
         ])
@@ -114,18 +114,18 @@ class WindowEditMatchingGroups(nss.AbstractBlockingWindow):
             row_apply_to_size,
             [
                 *self.row(
-                    nss.ge.StringContainer('Within paths:',
-                        nss.ge.TextList('within_paths',
+                    sgu.ge.StringContainer('Within paths:',
+                        sgu.ge.TextList('within_paths',
                             delim=';',
                             strip=(' .', ' ')),
                         folder_browse=True,
                         blank_invalid=True)),
-                nss.ge.Info(self.gem, 'If empty, applies to all included/excluded before this group.')
+                sgu.ge.Info(self.gem, 'If empty, applies to all included/excluded before this group.')
             ],
             [
                 *self.row(
-                    nss.ge.StringContainer('Not within paths:',
-                        nss.ge.TextList('not_within_paths',
+                    sgu.ge.StringContainer('Not within paths:',
+                        sgu.ge.TextList('not_within_paths',
                             delim=';', 
                             strip=(' .', ' ')),
                         folder_browse=True,
@@ -133,16 +133,16 @@ class WindowEditMatchingGroups(nss.AbstractBlockingWindow):
             ],
             [
                 *self.row(
-                    nss.ge.StringContainer('Has extensions:',
-                        nss.ge.TextList('apply_if_extensions',
+                    sgu.ge.StringContainer('Has extensions:',
+                        sgu.ge.TextList('apply_if_extensions',
                             delim=',', 
                             strip=(' .', ' ')),
                         blank_invalid=True))
             ],
             [
                 *self.row(
-                    nss.ge.StringContainer('Does not have extensions:',
-                        nss.ge.TextList('do_not_apply_if_extension',
+                    sgu.ge.StringContainer('Does not have extensions:',
+                        sgu.ge.TextList('do_not_apply_if_extension',
                             delim=',',
                             strip=(' .', ' ')),
                         blank_invalid=True))
@@ -153,26 +153,26 @@ class WindowEditMatchingGroups(nss.AbstractBlockingWindow):
             row_apply_group_if_size
         ])
         frame_action = sg.Frame('Action', expand_x=True, layout=[
-            self.row(nss.ge.Radio('ie_action', '', {'exclude':'Exclude', 'include':'Include'}))
+            self.row(sgu.ge.Radio('ie_action', '', {'exclude':'Exclude', 'include':'Include'}))
         ])
         frame_pattern_options = sg.Frame('Pattern Options', expand_x=True, layout=[
             [
-                self.sge(nss.ge.Checkbox('strip_extensions', 'Strip Extensions')),
-                self.sge(nss.ge.Checkbox('whole_name', 'Match Whole Name'))
+                self.sge(sgu.ge.Checkbox('strip_extensions', 'Strip Extensions')),
+                self.sge(sgu.ge.Checkbox('whole_name', 'Match Whole Name'))
             ],
             [   
-                self.sge(nss.ge.Checkbox('match_case', 'Match Case')),
-                self.sge(nss.ge.Checkbox('use_regex', 'Use Regex')),
+                self.sge(sgu.ge.Checkbox('match_case', 'Match Case')),
+                self.sge(sgu.ge.Checkbox('use_regex', 'Use Regex')),
             ],
             [
-                self.sge(nss.ge.Checkbox('match_all', 'Match All Patterns'))
+                self.sge(sgu.ge.Checkbox('match_all', 'Match All Patterns'))
             ]
         ])
         layout_patterns = [
             [
                 sg.Column(
                     layout=self.layout(
-                        nss.ge.TextList('patterns',
+                        sgu.ge.TextList('patterns',
                             empty_text='None (Matches Any)', 
                             border='"')),
                     expand_y=True)
@@ -192,12 +192,12 @@ class WindowEditMatchingGroups(nss.AbstractBlockingWindow):
         layout = [
             [column_left, column_right],
             [
-                nss.ge.Info(self.gem, info.window, bt='Info', sg_kwargs={'size': 10}), 
+                sgu.ge.Info(self.gem, info.window, bt='Info', sg_kwargs={'size': 10}), 
                 sg.Push(),
                 sg.OK(size=10),
                 sg.Cancel(size=10)],
             [sg.Sizer(0, 5)],
-            [self.status_bar(nss.ge.StatusBar('StatusBar'))]
+            [self.status_bar(sgu.ge.StatusBar('StatusBar'))]
         ]
         return layout
 

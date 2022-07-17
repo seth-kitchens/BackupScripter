@@ -1,4 +1,4 @@
-Formatting for BackupScripter (and nssgui)
+Formatting for BackupScripter (and PsgUnsimplified)
 
 ---
 PEP8 Exceptions, etc

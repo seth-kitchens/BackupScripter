@@ -4,7 +4,7 @@ import sys
 from datetime import datetime
 from typing import Any, Iterable
 
-import nssgui as nss
+import PsgUnsimplified as sgu
 
 
 # move functions here to a better location if there is one, and at least several functions belonging there
@@ -33,19 +33,19 @@ class uprint:
     def side_by_side(iterables: Iterable[Iterable], max_table_width=default_cmd_width):
         pcs = []
         for it in iterables:
-            pc = nss.PrintColumn()
+            pc = sgu.PrintColumn()
             pc.add_rows(it)
             pcs.append(pc)
-        nss.PrintColumn.print_section(pcs, max_table_width)
+        sgu.PrintColumn.print_section(pcs, max_table_width)
     
     def side_by_side_dicts(d1, d2):
-        pc1 = nss.PrintColumn(2)
+        pc1 = sgu.PrintColumn(2)
         pc1.add_dict(d1)
 
-        pc2 = nss.PrintColumn(2)
+        pc2 = sgu.PrintColumn(2)
         pc2.add_dict(d2)
 
-        nss.PrintColumn.print_section([pc1, pc2])
+        sgu.PrintColumn.print_section([pc1, pc2])
 
 
 def clone_string_unique(s, not_in_strings=None):

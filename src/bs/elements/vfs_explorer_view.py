@@ -1,12 +1,12 @@
 import PySimpleGUI as sg
 
-import nssgui as nss
+import PsgUnsimplified as sgu
 
 
 __all__ = ['VFSExplorerViewBS']
 
 
-class VFSExplorerViewBS(nss.ge.VFSExplorerView):
+class VFSExplorerViewBS(sgu.ge.VFSExplorerView):
 
     def __init__(self, object_id, vfs_explorer, read_only=False) -> None:
         super().__init__(object_id, vfs_explorer, read_only=read_only)

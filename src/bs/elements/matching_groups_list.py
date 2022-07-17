@@ -1,5 +1,5 @@
 import PySimpleGUI as sg
-import nssgui as nss
+import PsgUnsimplified as sgu
 
 from src.bs.elements import DetailListBS
 from src.bs.windows.edit_matching_group import WindowEditMatchingGroups
@@ -19,7 +19,7 @@ class MatchingGroupsList(DetailListBS):
     def make_details(self, item, data:MatchingGroup):
         mg = data
         if mg == None:
-            return nss.sg.EmbedText('No Data')        
+            return sgu.sg.EmbedText('No Data')        
         mg.make_invalid_none()
         d = mg.d
         highlights = {
@@ -33,7 +33,7 @@ class MatchingGroupsList(DetailListBS):
         colors_pattern = ('black', highlights['blue'])
         colors_cond = ('black', highlights['purple'])
 
-        et = nss.sg.EmbedText()
+        et = sgu.sg.EmbedText()
         def et_text(s):    et.append(s)
         def et_var(s):     et.color(s, *colors_var)
         def et_bad(s):     et.color(s, *colors_bad)
@@ -163,10 +163,10 @@ class MatchingGroupsList(DetailListBS):
                 et_pattern(pattern)
 
         def below_size(a):
-            et_cond('[Below ' + nss.units.Bytes(a, nss.units.Bytes.B).get_best() + ']')
+            et_cond('[Below ' + sgu.units.Bytes(a, sgu.units.Bytes.B).get_best() + ']')
         
         def above_size(a):
-            et_cond('[Above ' + nss.units.Bytes(a, nss.units.Bytes.B).get_best() + ']')
+            et_cond('[Above ' + sgu.units.Bytes(a, sgu.units.Bytes.B).get_best() + ']')
         
         def within_size(a, b):
             if not (a or b):
@@ -176,9 +176,9 @@ class MatchingGroupsList(DetailListBS):
             if not b:
                 return above_size(a)
             s = '[Between '
-            s += nss.units.Bytes(a, nss.units.Bytes.B).get_best(decimal_digits=1, minimum=0.5)
+            s += sgu.units.Bytes(a, sgu.units.Bytes.B).get_best(decimal_digits=1, minimum=0.5)
             s += ' and '
-            s += nss.units.Bytes(b, nss.units.Bytes.B).get_best(decimal_digits=1, minimum=0.5)
+            s += sgu.units.Bytes(b, sgu.units.Bytes.B).get_best(decimal_digits=1, minimum=0.5)
             s += ']'
             if a < b:
                 et_cond(s)
@@ -220,7 +220,7 @@ class MatchingGroupsList(DetailListBS):
         mg = data if data != None else MatchingGroup()
         window_edit_matching_groups = WindowEditMatchingGroups(
             'Matching Group "' + item + '"', mg.to_dict())
-        rv = nss.WRC(window_edit_matching_groups.open(context))
+        rv = sgu.WRC(window_edit_matching_groups.open(context))
         if rv.check_success():
             mg.load_dict(window_edit_matching_groups.get_data())
             return rv, mg

@@ -1,7 +1,7 @@
 *.lnk
 
 output/
-dev/vscode/BackupScripter.code-workspace
+dev/local/
 
 ###############################################################################
 # Python .gitignore template provided by https://github.com/github/gitignore

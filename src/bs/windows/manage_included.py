@@ -1,4 +1,4 @@
-import nssgui as nss
+import PsgUnsimplified as sgu
 import PySimpleGUI as sg
 
 from src.bs import elements as bs_ge
@@ -7,35 +7,35 @@ from src.bs.info import window_manage_included as info
 from src.bs.script_data import ScriptDataBS
 
 
-button_size = nss.sg.button_size
+button_size = sgu.sg.button_size
 
 
-class WindowManageIncluded(nss.AbstractBlockingWindow):
+class WindowManageIncluded(sgu.AbstractBlockingWindow):
 
     def __init__(self, script_data:ScriptDataBS, vfs_static:VFS) -> None:
         data = script_data.to_dict()
         self.vfs_static = vfs_static.clone()
-        self.vfs_explorer = nss.VFSExplorer(self.vfs_static, data.copy())
+        self.vfs_explorer = sgu.VFSExplorer(self.vfs_static, data.copy())
         super().__init__('WindowManageIncluded', data)
 
     # Layout
 
     def get_layout(self):
-        frame_explorer = nss.sg.FrameColumn('Static Inclusion',
+        frame_explorer = sgu.sg.FrameColumn('Static Inclusion',
             layout=self.layout(bs_ge.VFSExplorerViewBS('IEExplorer', self.vfs_explorer)))
-        frame_iepatterns = nss.sg.FrameColumn('Matching Groups', expand_x=True,
+        frame_iepatterns = sgu.sg.FrameColumn('Matching Groups', expand_x=True,
             layout=self.layout(bs_ge.MatchingGroupsList('MatchingGroupsList', self.vfs_static)))
-        frame_system = nss.sg.FrameColumn('Window', expand_y=True, layout=[
+        frame_system = sgu.sg.FrameColumn('Window', expand_y=True, layout=[
             [sg.Button('Return', size=(12, 2), expand_x=True)],
             [sg.Button('Cancel', size=(12, 2), expand_x=True)],
-            [nss.ge.Info(self.gem, info.window, bt='Info', sg_kwargs={'size': (16, 2)})],
+            [sgu.ge.Info(self.gem, info.window, bt='Info', sg_kwargs={'size': (16, 2)})],
             [sg.VPush()]
         ])
         layout = [
             [frame_explorer],
             [frame_iepatterns, frame_system],
             [sg.Sizer(0, 5)],
-            [self.status_bar(nss.ge.StatusBar('StatusBar'))]
+            [self.status_bar(sgu.ge.StatusBar('StatusBar'))]
         ]
         return layout
     
@@ -63,7 +63,7 @@ class WindowManageIncluded(nss.AbstractBlockingWindow):
             mgs = mglist.get_through_selection().values()
             if not mgs:
                 return
-            if not nss.popups.confirm(context, text='Resolve up to here?'
+            if not sgu.popups.confirm(context, text='Resolve up to here?'
                     'This group and all before it will be processed into static inclusion.'):
                 return
             self.update_status('Resolving matching groups...')
@@ -87,7 +87,7 @@ class WindowManageIncluded(nss.AbstractBlockingWindow):
             mgs = mglist.get_dict().values()
             if not mgs:
                 return
-            if not nss.popups.confirm(context, 'Resolve all?'
+            if not sgu.popups.confirm(context, 'Resolve all?'
                     'All groups will be processed into static inclusion.'):
                 return
             self.update_status('Resolving matching groups...')
@@ -108,14 +108,14 @@ class WindowManageIncluded(nss.AbstractBlockingWindow):
 
     # Other
 
-    class WindowPreviewMatchGroups(nss.AbstractBlockingWindow):
+    class WindowPreviewMatchGroups(sgu.AbstractBlockingWindow):
 
         def __init__(self, title, vfs_static, mgs) -> None:
             self.vfs_temp = VFS()
             self.vfs_temp.copy_from_vfs(vfs_static)
             self.vfs_temp.process_matching_groups(mgs)
             data = {}
-            self.vfs_explorer = nss.VFSExplorer(self.vfs_temp, data)
+            self.vfs_explorer = sgu.VFSExplorer(self.vfs_temp, data)
             super().__init__(title, data)
 
         def get_layout(self):

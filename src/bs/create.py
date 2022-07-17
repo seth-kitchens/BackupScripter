@@ -2,14 +2,14 @@ import os
 import shutil
 import zipapp
 
-import nssgui as nss
+import PsgUnsimplified as sgu
 
 from src.bs import g
 from src.bs.script_data import ScriptDataBS
 from src.gp import utils as gp_utils
 
 
-def create_script(context:nss.WindowContext, script_data:ScriptDataBS, progress_func):
+def create_script(context:sgu.WindowContext, script_data:ScriptDataBS, progress_func):
     """progress func should be: func(args[0]:str|None, args[1]:float|None=None)\n
     args[0]: update text to show\n
     args[1]: update percent, a value between 0.0 and 1.0"""
@@ -22,7 +22,7 @@ def create_script(context:nss.WindowContext, script_data:ScriptDataBS, progress_
     do_make_path = False
     if (not os.path.exists(script_destination)) and (not do_make_path):
         ne_dir = gp_utils.find_nonexistent_dir(script_destination)
-        nss.PopupBuilder.T.error().text((
+        sgu.PopupBuilder.T.error().text((
             'Script destination does not exist.',
             'Path: ' + script_destination,
             'Nonexistent: ' + os.path.basename(ne_dir)
@@ -32,14 +32,14 @@ def create_script(context:nss.WindowContext, script_data:ScriptDataBS, progress_
     progress_func('Checking Script File', 0.45)
     if os.path.exists(script_path):
         if ScriptDataBS.verify_file_is_script(script_path):
-            do_continue = nss.PopupBuilder.T.warning().text((
+            do_continue = sgu.PopupBuilder.T.warning().text((
                 'Script file "' + script_file_name + '" already exists. Continue?',
                 'Full path: ' + script_path
             )).open(context)
             if not do_continue:
                 return False
         else:
-            nss.PopupBuilder.T.error().text((
+            sgu.PopupBuilder.T.error().text((
                 'File "' + script_file_name + ' is not an overwriteable ".pyz" file.',
                 'Full path: ' + script_path
             )).open(context)

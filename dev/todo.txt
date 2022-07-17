@@ -4,7 +4,7 @@ Todo
 ---
 Legend
 
-NSS: nssgui
+PSGU: psgu
 BS: BackupScripter
 SL: scriptlib (still a part of BackupScripter, BS may include SL)
 
@@ -15,7 +15,7 @@ Current Goals.
 
 Primary bullets roughly in order of importance
 
-- Get NSS/BS working on Linux
+- Get PSGU/BS working on Linux
     - Use old laptop with Ubuntu to test
 
 - Inform user when i/e path specified does not exist, or have an option for it
@@ -23,23 +23,23 @@ Primary bullets roughly in order of importance
     - Implement any popups, data editing windows, etc needed to resolve the issue
     - Print the information to the user in script execution
 
-- Document NssGui and revise design for basic usage
+- Document psgu and revise design for basic usage
     - Subclassing AbstractBlockingWindow to make a window
     - Subclassing GE to make a gui element
-    - Using GE's, GEM, etc without using nss windows
+    - Using GE's, GEM, etc without using PSGU windows
     - WRC's
     - Popups, PopupBuilder
     - InfoBuilder
     - Units
 
-- Create example programs for nssgui, mainly to test, revise, expand and document existing code
-    - Pure tkinter vs PySimpleGUI vs PySimpleGUi+nssgui
+- Create example programs for psgu, mainly to test, revise, expand and document existing code
+    - Pure tkinter vs PySimpleGUI vs PySimpleGUi+psgu
         - Multiple windows
         - Nested elements
         - Data flow
         - Custom Popup
     - Examples of *specific* GuiElement subclasses
-    - Include examples of converting PySimpleGUI projects to PySimpleGUI+nssgui
+    - Include examples of converting PySimpleGUI projects to PySimpleGUI+psgu
 
 - Implement basic CLI interface for options during script execution
     - Eventual options include:
@@ -53,7 +53,7 @@ Primary bullets roughly in order of importance
 
 
 ---
-NSS Revision
+PSGU Revision
 
 - GuiElement
     - abstract inners: No way around it, they require two functions. make note of these abstract inners in GuiElement docstring
@@ -70,7 +70,7 @@ NSS Revision
 - Try to match python terminology
     - method: function in a class
 
-- VFS shouldn't be in nssgui
+- VFS shouldn't be in psgu
 - interface for forcing uniform key syntax?
 - MenuDict shouldn't be in utils
 - Explain data flow (dict[object_id:str, value:Any])
@@ -85,49 +85,49 @@ QoL, Settings
 
 Bugs, Poorly Implemented
 - BS: selecting in vfs explorer resets scroll
-- NSS: make units dropdown from InputUnits ordered correctly
-- NSS: InfoButton and Info is messy
+- PSGU: make units dropdown from InputUnits ordered correctly
+- PSGU: InfoButton and Info is messy
 * BS: Check behavior of scripts where static inclusion has mismatch at script runtime, i.e. something specified as included/excluded
 does not exist. This should be reported during script execution. Also when loading a script or loading defaults.
 - BS: Dynamically excluded roots don't get counted toward excluded in reports like the manage-included frame
 
 Incomplete
 * BS: Needs to be fully tested on a second Windows environment, including a clean install
-- NSS/BS: Needs to be tested on Linux
-- NSS/BS: Needs to be tested on Mac
-* NSS/BS: Installation process incomplete, requirements etc must be finished
-- NSS/BS: Proper library version control for nssgui not acheived. nssgui should be able to be independently updated alongside BackupScripter, with an otherwise useable version available elsewhere. Git branches should achieve much of this. There is then the question of where the version number is maintained, and how it is changed with pulls and commits from branched development.
+- PSGU/BS: Needs to be tested on Linux
+- PSGU/BS: Needs to be tested on Mac
+* PSGU/BS: Installation process incomplete, requirements etc must be finished
+- PSGU/BS: Proper library version control for psgu not acheived. psgu should be able to be independently updated alongside BackupScripter, with an otherwise useable version available elsewhere. Git branches should achieve much of this. There is then the question of where the version number is maintained, and how it is changed with pulls and commits from branched development.
 
 Unimplemented
 - BS: Add 'Run Script' then 'Run Once', for a one-time packaging
-- NSS: A ToolBar class would be nice
+- PSGU: A ToolBar class would be nice
 - BS: Implement compression settings
 - BS: in assert_files_match_zip in test_core.py, implement compare_contents
 - BS: in script/details.py add (# days old) text to backup-to-be-overwritten segment
 - BS: in script/app.py add option to edit scripts with editor
 - BS: in scriptlib/.../script_data.py:ScriptData:verify_file_is_script(), make a more through check, perhaps by inserting data into the pyz
-- NSS: Increase performance by making a lazy init function in gem, as in gem.layout(class, *args, *kwargs) that calls init IF first call
+- PSGU: Increase performance by making a lazy init function in gem, as in gem.layout(class, *args, *kwargs) that calls init IF first call
 - BS: add relative paths (might have to be explicit)
 - BS: add matching option for age of file
 - BS: should there be a way to see the include>exclude>include>... structure in vfs explorer?
 - Program Settings? Universal settings format? Like, a standard of common fields such as 'Resource Folder' to choose to store in AppData, etc, which is then scanned by separate programs?
 
 Design, Behavior, Error Prevention
-- NSS: Should be able to override incoming status bar messages (by pruning the time-event queue)
-- NSS: The functions for updating ge's seems messy and inconsistent
-- NSS: save/load/push/pull shouldn't use _func as their inner-abstract naming convention
+- PSGU: Should be able to override incoming status bar messages (by pruning the time-event queue)
+- PSGU: The functions for updating ge's seems messy and inconsistent
+- PSGU: save/load/push/pull shouldn't use _func as their inner-abstract naming convention
 - BS: The default matching groups are automatically processed upon program start, which affects loading time. Something should be done about this.
-- NSS/BS: improve consistency with 'folder' vs 'dir'
+- PSGU/BS: improve consistency with 'folder' vs 'dir'
 - BS: pulling date from files only works if no periods in file name or date string, enforce this with GUI
-- NSS: making the edit window for ListContainer was messy and poorly documented. This needs to be easier to understand.
+- PSGU: making the edit window for ListContainer was messy and poorly documented. This needs to be easier to understand.
 * SL: how do changes to code affect backwards compatibility with existing pyz scripts? how to prevent the functions from breaking when accessing pyz script generated from older code? Version control on the scripts? This needs to worked out and understood. If the scripts are edittable on their own, there is the option to allow them to be editted so that they match a major change in the editor. Or they could communicate with the updated editor to figure out what needs to be changed, producing just a script_data.json for the editor to read in like with [Load Script].
-- NSS: folder browse button for StringContainer/TextList is currently a part of StringContainer (in the init), shouldn't it be a part of TextList instead?
-- NSS: are asyncwindows disabled from context.disable()?
-- NSS: gem.row/etc should be self.row in window classes. Maybe use a iGEManager interface for passing gem as param as well?
-- NSS/BS: Error prevention needed. Try unintended actions to see what happens, and fix.
-- NSS: currently every element saves data, shouldn't there be an option, especially for output elements?
+- PSGU: folder browse button for StringContainer/TextList is currently a part of StringContainer (in the init), shouldn't it be a part of TextList instead?
+- PSGU: are asyncwindows disabled from context.disable()?
+- PSGU: gem.row/etc should be self.row in window classes. Maybe use a iGEManager interface for passing gem as param as well?
+- PSGU/BS: Error prevention needed. Try unintended actions to see what happens, and fix.
+- PSGU: currently every element saves data, shouldn't there be an option, especially for output elements?
 - BS: Add color to vfs explorer for included/excluded (very pale red/green)
-- NSS: add multiple handler binding to EventManager/EventLoop (one event -> multiple handlers)
+- PSGU: add multiple handler binding to EventManager/EventLoop (one event -> multiple handlers)
 - BS: get rid of app.py
 
 Tests
@@ -135,8 +135,8 @@ Tests
 
 Documentation
 - BS: clean and document project/create.py
-- NSS/BS: convert above-function comments to docstrings so that they can be seen in ide
-- NSS/BS: look over and update existing documentation
+- PSGU/BS: convert above-function comments to docstrings so that they can be seen in ide
+- PSGU/BS: look over and update existing documentation
 - BS: update FSDef in test_core.py with correct documentation of TestFile and TestDir
 
 Inclusion Matching
@@ -145,5 +145,5 @@ Inclusion Matching
 - BS: Should inclusion require a 'within path' ?
 
 Project Organization, Version Control
-- NSS: vfs explorer view is still somewhat project specific
-- NSS: move EmbedText from nssgui.sg.utils to somewhere better
+- PSGU: vfs explorer view is still somewhat project specific
+- PSGU: move EmbedText from psgu.sg.utils to somewhere better

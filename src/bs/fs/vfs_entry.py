@@ -1,10 +1,10 @@
-import nssgui as nss
+import PsgUnsimplified as sgu
 
 
-class VFSEntryBS(nss.VFSEntry):
+class VFSEntryBS(sgu.VFSEntry):
 
     def __init__(self, init_path, init_status):
-        nss.VFSEntry.__init__(self, init_path)
+        sgu.VFSEntry.__init__(self, init_path)
         self.children:list[VFSEntryBS]
 
         self.status:str = init_status # included/excluded

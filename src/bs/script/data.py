@@ -2,7 +2,7 @@ import os
 from dataclasses import dataclass
 import time
 
-import nssgui as nss
+import PsgUnsimplified as sgu
 
 from src.bs.fs.vfs import VFSBS as VFS, VirtualFSBS
 from src.bs.script_data import ScriptDataBS
@@ -144,9 +144,9 @@ class ExecutionData:
             most_recent_backup_size_bytes = os.path.getsize(self.existing_backups_most_recent)
         else:
             most_recent_backup_size_bytes = 0
-        most_recent_backup_size = nss.units.Bytes(
+        most_recent_backup_size = sgu.units.Bytes(
             most_recent_backup_size_bytes, degree_name='byte').get_best(decimal_digits=1)
-        eb_total_size = nss.units.Bytes(
+        eb_total_size = sgu.units.Bytes(
             self.existing_backups_total_size, degree_name='byte').get_best(decimal_digits=1)
         print('Existing Backups: ' + str(len(self.existing_backups)), end='')
         if old_age_secs != None or recent_age_secs != None:
@@ -237,11 +237,11 @@ class PreExecutionData(ExecutionData):
         else:
             print('  Max Backups: Unlimited')
         if script_data.BackupOldAge != None:
-            print('  Old Age:', nss.units.Time(
-                script_data.BackupOldAge, degree_name=nss.units.Time.SECOND).get_best())
+            print('  Old Age:', sgu.units.Time(
+                script_data.BackupOldAge, degree_name=sgu.units.Time.SECOND).get_best())
         if script_data.BackupRecentAge != None:
-            print('  Recent Age:', nss.units.Time(
-                script_data.BackupRecentAge, degree_name=nss.units.Time.SECOND).get_best())
+            print('  Recent Age:', sgu.units.Time(
+                script_data.BackupRecentAge, degree_name=sgu.units.Time.SECOND).get_best())
 
     def _print_key_details(self, script_data:ScriptDataBS):
         print('Backup File Name:', self.dest_filename)
@@ -249,14 +249,14 @@ class PreExecutionData(ExecutionData):
         print()
 
         vfsdata = self.vfsdata_final
-        i_size = nss.units.Bytes(
+        i_size = sgu.units.Bytes(
             vfsdata.included_size, degree_name='byte').get_best(decimal_digits=1)
         i_files = str(vfsdata.included_file_count)
         i_folders = str(vfsdata.included_folder_count)
         print('Backing up: {0} (Files: {1}, Folders: {2})'.format(
             i_size.rjust(9), i_files.rjust(3), i_folders.rjust(2)))
 
-        e_size = nss.units.Bytes(
+        e_size = sgu.units.Bytes(
             vfsdata.excluded_size, degree_name='byte').get_best(decimal_digits=1)
         e_files = str(vfsdata.excluded_file_count)
         e_folders = str(vfsdata.excluded_folder_count)
@@ -334,8 +334,8 @@ class PostExecutionData(ExecutionData):
         print('  Path: {}'.format(pre_data.dest_path))
 
         # Print: New backup size
-        created_backup_size_str = nss.units.Bytes(
-            self.created_backup_size, degree_name=nss.units.Bytes.BYTE).get_best()
+        created_backup_size_str = sgu.units.Bytes(
+            self.created_backup_size, degree_name=sgu.units.Bytes.BYTE).get_best()
         print('  Size: {}'.format(created_backup_size_str))
         print('')
 
