@@ -1,4 +1,4 @@
-from PsgUnsimplified.ge import InfoBuilder
+from psgu.ge import InfoBuilder
 
 
 class window_main:
@@ -37,7 +37,7 @@ class window_main:
             'will be used to date existing backups.\n']) \
         .frame('Patterns', [
             'YYYY: Year\nMM: Month\nDD: Day\nHH: Hour(24)\nhh: Hour(12)\n',
-            'mm: Minute\sgu: Second\nUU: Unix time'])
+            'mm: Minute\psgu: Second\nUU: Unix time'])
     
     backup_settings = InfoBuilder() \
         .header('Backup Settings') \

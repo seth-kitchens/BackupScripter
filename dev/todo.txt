@@ -26,7 +26,7 @@ Primary bullets roughly in order of importance
 - Document psgu and revise design for basic usage
     - Subclassing AbstractBlockingWindow to make a window
     - Subclassing GE to make a gui element
-    - Using GE's, GEM, etc without using PSGU windows
+    - Using GE's, GEM, etc without using psgu windows
     - WRC's
     - Popups, PopupBuilder
     - InfoBuilder
@@ -53,7 +53,7 @@ Primary bullets roughly in order of importance
 
 
 ---
-PSGU Revision
+psgu Revision
 
 - GuiElement
     - abstract inners: No way around it, they require two functions. make note of these abstract inners in GuiElement docstring

@@ -1,7 +1,7 @@
 import sys
 argv = tuple(sys.argv)
 
-import PsgUnsimplified as sgu
+import psgu
 
 from src.bs import g
 from src.bs.app import app
@@ -27,7 +27,7 @@ def run():
 
 
 def run_editor():
-    context = sgu.WindowContext()
+    context = psgu.WindowContext()
     WindowMain.open_loading_window(context, title='Backup Scripter')    
     if g.cli.parsed.debug:
         gp_utils.print_current_time()

@@ -1,5 +1,5 @@
 import PySimpleGUI as sg
-import PsgUnsimplified as sgu
+import psgu
 
 from src.bs.elements import DetailListBS
 from src.bs.windows.edit_matching_group import WindowEditMatchingGroups
@@ -19,7 +19,7 @@ class MatchingGroupsList(DetailListBS):
     def make_details(self, item, data:MatchingGroup):
         mg = data
         if mg == None:
-            return sgu.sg.EmbedText('No Data')        
+            return psgu.sg.EmbedText('No Data')        
         mg.make_invalid_none()
         d = mg.d
         highlights = {
@@ -33,7 +33,7 @@ class MatchingGroupsList(DetailListBS):
         colors_pattern = ('black', highlights['blue'])
         colors_cond = ('black', highlights['purple'])
 
-        et = sgu.sg.EmbedText()
+        et = psgu.sg.EmbedText()
         def et_text(s):    et.append(s)
         def et_var(s):     et.color(s, *colors_var)
         def et_bad(s):     et.color(s, *colors_bad)
@@ -163,10 +163,10 @@ class MatchingGroupsList(DetailListBS):
                 et_pattern(pattern)
 
         def below_size(a):
-            et_cond('[Below ' + sgu.units.Bytes(a, sgu.units.Bytes.B).get_best() + ']')
+            et_cond('[Below ' + psgu.units.Bytes(a, psgu.units.Bytes.B).get_best() + ']')
         
         def above_size(a):
-            et_cond('[Above ' + sgu.units.Bytes(a, sgu.units.Bytes.B).get_best() + ']')
+            et_cond('[Above ' + psgu.units.Bytes(a, psgu.units.Bytes.B).get_best() + ']')
         
         def within_size(a, b):
             if not (a or b):
@@ -176,9 +176,9 @@ class MatchingGroupsList(DetailListBS):
             if not b:
                 return above_size(a)
             s = '[Between '
-            s += sgu.units.Bytes(a, sgu.units.Bytes.B).get_best(decimal_digits=1, minimum=0.5)
+            s += psgu.units.Bytes(a, psgu.units.Bytes.B).get_best(decimal_digits=1, minimum=0.5)
             s += ' and '
-            s += sgu.units.Bytes(b, sgu.units.Bytes.B).get_best(decimal_digits=1, minimum=0.5)
+            s += psgu.units.Bytes(b, psgu.units.Bytes.B).get_best(decimal_digits=1, minimum=0.5)
             s += ']'
             if a < b:
                 et_cond(s)
@@ -220,7 +220,7 @@ class MatchingGroupsList(DetailListBS):
         mg = data if data != None else MatchingGroup()
         window_edit_matching_groups = WindowEditMatchingGroups(
             'Matching Group "' + item + '"', mg.to_dict())
-        rv = sgu.WRC(window_edit_matching_groups.open(context))
+        rv = psgu.WRC(window_edit_matching_groups.open(context))
         if rv.check_success():
             mg.load_dict(window_edit_matching_groups.get_data())
             return rv, mg

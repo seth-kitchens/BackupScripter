@@ -2,13 +2,13 @@ from abc import ABC, abstractmethod
 
 import PySimpleGUI as sg
 
-import PsgUnsimplified as sgu
+import psgu
 
 
 __all__ = ['DetailListBS']
 
 
-class DetailListBS(sgu.ge.DetailList, ABC):
+class DetailListBS(psgu.ge.DetailList, ABC):
 
     def __init__(self, object_id, lstrip=' \n', rstrip=' \n'):
         super().__init__(object_id, lstrip, rstrip)

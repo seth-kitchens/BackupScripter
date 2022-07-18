@@ -1,10 +1,10 @@
-import PsgUnsimplified as sgu
+import psgu
 
 
-class VFSEntryBS(sgu.VFSEntry):
+class VFSEntryBS(psgu.VFSEntry):
 
     def __init__(self, init_path, init_status):
-        sgu.VFSEntry.__init__(self, init_path)
+        psgu.VFSEntry.__init__(self, init_path)
         self.children:list[VFSEntryBS]
 
         self.status:str = init_status # included/excluded
