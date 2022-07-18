@@ -216,11 +216,11 @@ class MatchingGroupsList(DetailListBS):
             within_size(d.min_total_size_diff, d.max_total_size_diff)
         return et
     
-    def edit_data(self, context:sg.Window, item, data):
+    def edit_data(self, window_context:psgu.WindowContext, item, data):
         mg = data if data != None else MatchingGroup()
         window_edit_matching_groups = WindowEditMatchingGroups(
             'Matching Group "' + item + '"', mg.to_dict())
-        rv = psgu.WRC(window_edit_matching_groups.open(context))
+        rv = psgu.WRC(window_edit_matching_groups.open(window_context))
         if rv.check_success():
             mg.load_dict(window_edit_matching_groups.get_data())
             return rv, mg

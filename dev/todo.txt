@@ -122,7 +122,7 @@ Design, Behavior, Error Prevention
 - PSGU: making the edit window for ListContainer was messy and poorly documented. This needs to be easier to understand.
 * SL: how do changes to code affect backwards compatibility with existing pyz scripts? how to prevent the functions from breaking when accessing pyz script generated from older code? Version control on the scripts? This needs to worked out and understood. If the scripts are edittable on their own, there is the option to allow them to be editted so that they match a major change in the editor. Or they could communicate with the updated editor to figure out what needs to be changed, producing just a script_data.json for the editor to read in like with [Load Script].
 - PSGU: folder browse button for StringContainer/TextList is currently a part of StringContainer (in the init), shouldn't it be a part of TextList instead?
-- PSGU: are asyncwindows disabled from context.disable()?
+- PSGU: are asyncwindows disabled from .disable()?
 - PSGU: gem.row/etc should be self.row in window classes. Maybe use a iGEManager interface for passing gem as param as well?
 - PSGU/BS: Error prevention needed. Try unintended actions to see what happens, and fix.
 - PSGU: currently every element saves data, shouldn't there be an option, especially for output elements?

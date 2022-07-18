@@ -211,7 +211,7 @@ class WindowEditMatchingGroups(psgu.AbstractBlockingWindow):
 
     # Data
 
-    def init_window_finalized(self, window):
+    def init_window_finalized(self, window:sg.Window):
         super().init_window_finalized(window)
         include_rb_key = self.gem['ie_action'].v_to_k['include']
         window[include_rb_key].update(disabled=True)

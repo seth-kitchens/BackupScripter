@@ -27,41 +27,41 @@ class VFSExplorerViewBS(psgu.ge.VFSExplorerView):
             return
 
         @self.eventmethod(self.keys['Remove'])
-        def event_remove(context):
+        def event_remove(event_context:psgu.EventContext):
             if not self.selection:
                 return
             path = self.selection.get_path()
             root = self.vfs.find_root_entry(path)
             if path != root.get_path():
-                context.event = self.keys['Exclude']
-                return self.handle_event(context)
+                event_context.event = self.keys['Exclude']
+                return self.handle_event(event_context)
             else:
                 self.vfs.remove(path)
             root.calc_ie()
             self.vfs_explorer.refresh_current_dir()
             self.deselect()
-            self.push(context.window)
+            self.push(event_context.window_context.window)
 
         # VFSExplorerViewBS
 
         @self.eventmethod(self.keys['Include'])
-        def event_include(context):
+        def event_include(event_context:psgu.EventContext):
             if not self.selection:
                 return
             self.selection.include()
             root = self.vfs.find_root_entry(self.selection.get_path())
             root.calc_ie()
-            self.push(context.window)
+            self.push(event_context.window_context.window)
 
         @self.eventmethod(self.keys['Exclude'])
-        def event_exclude(context):
+        def event_exclude(event_context:psgu.EventContext):
             if not self.selection:
                 return
             self.selection.exclude()
             path = self.selection.get_path()
             root = self.vfs.find_root_entry(path)
             if path == root.get_path():
-                context.event = self.keys['Remove']
-                return self.handle_event(context)
+                event_context.event = self.keys['Remove']
+                return self.handle_event(event_context)
             root.calc_ie()
-            self.push(context.window)
+            self.push(event_context.window_context.window)

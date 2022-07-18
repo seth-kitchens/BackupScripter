@@ -9,7 +9,7 @@ from src.bs.script_data import ScriptDataBS
 from src.gp import utils as gp_utils
 
 
-def create_script(context:psgu.WindowContext, script_data:ScriptDataBS, progress_func):
+def create_script(window_context:psgu.WindowContext, script_data:ScriptDataBS, progress_func):
     """progress func should be: func(args[0]:str|None, args[1]:float|None=None)\n
     args[0]: update text to show\n
     args[1]: update percent, a value between 0.0 and 1.0"""
@@ -26,7 +26,7 @@ def create_script(context:psgu.WindowContext, script_data:ScriptDataBS, progress
             'Script destination does not exist.',
             'Path: ' + script_destination,
             'Nonexistent: ' + os.path.basename(ne_dir)
-        )).open(context)
+        )).open(window_context)
         return False
     
     progress_func('Checking Script File', 0.45)
@@ -35,14 +35,14 @@ def create_script(context:psgu.WindowContext, script_data:ScriptDataBS, progress
             do_continue = psgu.PopupBuilder.T.warning().text((
                 'Script file "' + script_file_name + '" already exists. Continue?',
                 'Full path: ' + script_path
-            )).open(context)
+            )).open(window_context)
             if not do_continue:
                 return False
         else:
             psgu.PopupBuilder.T.error().text((
                 'File "' + script_file_name + ' is not an overwriteable ".pyz" file.',
                 'Full path: ' + script_path
-            )).open(context)
+            )).open(window_context)
             return False
     return _create_script(script_data, progress_func)
 

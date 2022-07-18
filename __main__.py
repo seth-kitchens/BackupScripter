@@ -27,13 +27,13 @@ def run():
 
 
 def run_editor():
-    context = psgu.WindowContext()
-    WindowMain.open_loading_window(context, title='Backup Scripter')    
+    window_context = psgu.WindowContext()
+    WindowMain.open_loading_window(window_context, title='Backup Scripter')    
     if g.cli.parsed.debug:
         gp_utils.print_current_time()
     script_data = ScriptDataBS()
     script_data.load_save_file()
-    app(script_data, context)
+    app(script_data, window_context)
 
 
 run()

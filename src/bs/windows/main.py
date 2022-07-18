@@ -145,76 +145,77 @@ class WindowMain(psgu.AbstractBlockingWindow):
 
         radio_button_keys = self.gem['IENumbers'].get_button_keys()
         @self.eventmethod(*radio_button_keys)
-        def event_radio_ie_numbers(context:psgu.WindowContext):
-            self.gem['IENumbers'].pull(context.values)
-            self.refresh_ie(context.window)
-            self.gem['IENumbers'].push(context.window)
+        def event_radio_ie_numbers(event_context:psgu.EventContext):
+            self.gem['IENumbers'].pull(event_context.values)
+            self.refresh_ie(event_context.window_context)
+            self.gem['IENumbers'].push(event_context.window_context.window)
 
         @self.eventmethod('SetDefaults')
-        def event_set_defaults(context:psgu.WindowContext):
+        def event_set_defaults(event_context:psgu.EventContext):
             self.update_status('Setting defaults...')
-            self.pull(context.values)
+            self.pull(event_context.values)
             self.save(self.data)
             self.script_data.load_dict(self.data)
             self.script_data.save_to_file(save_all=True)
             self.update_status('Defaults set', 1.0, '', text_color=self.COLOR_STATUS_FADED)
 
         @self.eventmethod('LoadDefaults')
-        def event_load_defaults(context:psgu.WindowContext):
+        def event_load_defaults(event_context:psgu.EventContext):
             self.update_status('Loading defaults...')
             self.script_data.load_save_file()
             self.load()
-            self.push(context.window)
+            self.push(event_context.window_context.window)
             self.update_status('Defaults loaded', 1.0, '', text_color=self.COLOR_STATUS_FADED)
 
         @self.eventmethod(self.gem['ArchiveFormat'].keys['Dropdown'])
-        def event_compression_type_chosen(context:psgu.WindowContext):
-            selection = context.values[self.gem['ArchiveFormat'].keys['Dropdown']]
+        def event_compression_type_chosen(event_context:psgu.EventContext):
+            selection = event_context.values[self.gem['ArchiveFormat'].keys['Dropdown']]
             archive_ext = WindowMain.archive_exts[selection]
-            self.gem['BackupFilename'].update(context.window, extension=archive_ext)
+            window = event_context.window_context.window
+            self.gem['BackupFilename'].update(window, extension=archive_ext)
             if selection == 'zip':
-                self.gem['ArchiveMode'].disable_button(context.window, 'compile')
+                self.gem['ArchiveMode'].disable_button(window, 'compile')
                 if self.gem['ArchiveMode'].is_selected('compile'):
-                    self.gem['ArchiveMode'].update(context.window, value='append')
+                    self.gem['ArchiveMode'].update(window, value='append')
             elif selection == '7z':
-                self.gem['ArchiveMode'].enable_button(context.window, 'compile')
-                self.gem['ArchiveMode'].update(context.window, value='compile')
+                self.gem['ArchiveMode'].enable_button(window, 'compile')
+                self.gem['ArchiveMode'].update(window, value='compile')
 
         @self.eventmethod('ExportQuit')
-        def event_export_quit(context:psgu.WindowContext):
-            self.pull(context.values)
+        def event_export_quit(event_context:psgu.EventContext):
+            self.pull(event_context.values)
             self.save(self.data)
-            success = self.create_script(context, auto_close=True)
+            success = self.create_script(event_context, auto_close=True)
             return True if success else None
         
         @self.eventmethod('ExportScript')
-        def event_export_script(context:psgu.WindowContext):
+        def event_export_script(event_context:psgu.EventContext):
             self.update_status('Exporting script...')
-            self.pull(context.values)
+            self.pull(event_context.values)
             self.save(self.data)
-            self.create_script(context, auto_close=False)
+            self.create_script(event_context.window_context, auto_close=False)
             self.update_status('Script exported', 1.0, '', text_color=self.COLOR_STATUS_FADED)
         
         @self.eventmethod('LoadScript')
-        def event_load_script(context:psgu.WindowContext):
-            script_to_load = psgu.sg.browse_file(context.window)
+        def event_load_script(event_context:psgu.EventContext):
+            script_to_load = psgu.sg.browse_file(event_context.window_context.window)
             if not script_to_load:
                 return
             self.update_status('Loading script...')
             self._load_script(script_to_load)
             self.load()
-            self.push(context.window)
+            self.push(event_context.window_context.window)
             self.update_status('Script Loaded', 1.0, '', text_color=self.COLOR_STATUS_FADED)
         
         @self.eventmethod('CompressionSettings')
-        def event_compression_settings(context:psgu.WindowContext):
+        def event_compression_settings(event_context:psgu.EventContext):
             pass
 
         @self.eventmethod('ManageIncluded')
-        def event_manage_included(context:psgu.WindowContext):
+        def event_manage_included(event_context:psgu.EventContext):
             self.script_data.load_dict(self.data)
             window_manage_included = WindowManageIncluded(self.script_data, self.vfs_static)
-            rv = psgu.WRC(window_manage_included.open(context))
+            rv = psgu.WRC(window_manage_included.open(event_context.window_context))
             if rv.check_exit():
                 return rv
             if not rv.check_success():
@@ -225,7 +226,7 @@ class WindowMain(psgu.AbstractBlockingWindow):
             self.vfs_static.copy_from_vfs(window_manage_included.vfs_static)
             self.vfs_final.copy_from_vfs(self.vfs_static)
             self.vfs_final.process_matching_groups_dict(self.data['MatchingGroupsList'])
-            self.refresh_ie(context.window)
+            self.refresh_ie(event_context.window_context.window)
 
     # Data
 
@@ -247,7 +248,7 @@ class WindowMain(psgu.AbstractBlockingWindow):
         super().push(window)
         self.refresh_ie(window)
 
-    def init_window_finalized(self, window):
+    def init_window_finalized(self, window:sg.Window):
         super().init_window_finalized(window)
         self.refresh_ie(window)
         archive_mode = self.gem['ArchiveMode']
@@ -256,24 +257,24 @@ class WindowMain(psgu.AbstractBlockingWindow):
 
     ### WindowMain
 
-    def create_script(self, context:psgu.WindowContext, auto_close=True):
+    def create_script(self, window_context:psgu.WindowContext, auto_close=True):
         popup_title = 'Create Script'
         self.script_data.load_dict(self.data)
         popup_progress = psgu.ProgressWindow('Progress', header='Creating Script')
         progress_function = popup_progress.get_progress_function()
-        popup_progress.open(context)
+        popup_progress.open(window_context)
         try:
-            success = create_script(context, self.script_data, progress_function)
+            success = create_script(window_context, self.script_data, progress_function)
         except Exception as e:
             success = False
-            psgu.PopupBuilder().text(('Script Creation Failed!', 'Exception: ' + str(e))).title(popup_title).ok().open(context)
+            psgu.PopupBuilder().text(('Script Creation Failed!', 'Exception: ' + str(e))).title(popup_title).ok().open(window_context)
             raise e
-        popup_progress.close(context)
+        popup_progress.close(window_context)
         if success:
             popup = psgu.PopupBuilder().text('Script Created Successfully').title(popup_title).ok()
             if auto_close:
                 popup.auto_ok()
-            popup.open(context)
+            popup.open(window_context)
         return success
     
     def _load_script(self, script):

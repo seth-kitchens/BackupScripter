@@ -49,51 +49,51 @@ class WindowManageIncluded(psgu.AbstractBlockingWindow):
     
         @self.eventmethod(self.gem['MatchingGroupsList'].keys['PreviewHere'])
         @self.eventmethod(self.gem['MatchingGroupsList'].key_rcm('ListboxItem', 'PreviewHere'))
-        def event_preview_here(context):
+        def event_preview_here(event_context:psgu.EventContext):
             mglist = self.gem['MatchingGroupsList']
             mgs = mglist.get_through_selection().values()
             if not mgs:
                 return
-            self.preview_match_groups(context, mgs)
+            self.preview_match_groups(event_context, mgs)
 
         @self.eventmethod(self.gem['MatchingGroupsList'].keys['ResolveHere'])
         @self.eventmethod(self.gem['MatchingGroupsList'].key_rcm('ListboxItem', 'ResolveHere'))
-        def event_resolve_here(context):
+        def event_resolve_here(event_context:psgu.EventContext):
             mglist = self.gem['MatchingGroupsList']
             mgs = mglist.get_through_selection().values()
             if not mgs:
                 return
-            if not psgu.popups.confirm(context, text='Resolve up to here?'
+            if not psgu.popups.confirm(event_context.window_context, text='Resolve up to here?'
                     'This group and all before it will be processed into static inclusion.'):
                 return
             self.update_status('Resolving matching groups...')
             self.vfs_static.process_matching_groups(mgs)
             mglist.remove_through_selection()
-            self.gem.push_all(context.window)
+            self.gem.push_all(event_context.window_context)
             self.update_status('Matching groups resolved', 1.0, '',
                 text_color=self.COLOR_STATUS_FADED)
 
         @self.eventmethod(self.gem['MatchingGroupsList'].keys['PreviewAll'])
-        def event_preview_all(context):
+        def event_preview_all(event_context:psgu.EventContext):
             mglist = self.gem['MatchingGroupsList']
             mgs = mglist.get_dict().values()
             if not mgs:
                 return
-            self.preview_match_groups(context, mgs)
+            self.preview_match_groups(event_context, mgs)
 
         @self.eventmethod(self.gem['MatchingGroupsList'].keys['ResolveAll'])
-        def event_resolve_all(context):
+        def event_resolve_all(event_context:psgu.EventContext):
             mglist = self.gem['MatchingGroupsList']
             mgs = mglist.get_dict().values()
             if not mgs:
                 return
-            if not psgu.popups.confirm(context, 'Resolve all?'
+            if not psgu.popups.confirm(event_context, 'Resolve all?'
                     'All groups will be processed into static inclusion.'):
                 return
             self.update_status('Resolving matching groups...')
             self.vfs_static.process_matching_groups(mgs)
             mglist.remove_all()
-            self.gem.push_all(context.window)
+            self.gem.push_all(event_context.window_context)
             self.update_status('Matching groups resolved', 1.0, '',
                 text_color=self.COLOR_STATUS_FADED)
     
@@ -133,6 +133,6 @@ class WindowManageIncluded(psgu.AbstractBlockingWindow):
             super().define_events()
             self.event_value_close('OK', sg.WIN_CLOSED)
 
-    def preview_match_groups(self, context, mgs):
+    def preview_match_groups(self, window_context, mgs):
         w = self.WindowPreviewMatchGroups('Preview', self.vfs_static, mgs)
-        w.open(context)
+        w.open(window_context)
