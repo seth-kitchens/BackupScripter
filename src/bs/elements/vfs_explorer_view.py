@@ -40,7 +40,7 @@ class VFSExplorerViewBS(psgu.ge.VFSExplorerView):
             root.calc_ie()
             self.vfs_explorer.refresh_current_dir()
             self.deselect()
-            self.push(event_context.window_context.window)
+            self.push(event_context.window)
 
         # VFSExplorerViewBS
 
@@ -51,7 +51,7 @@ class VFSExplorerViewBS(psgu.ge.VFSExplorerView):
             self.selection.include()
             root = self.vfs.find_root_entry(self.selection.get_path())
             root.calc_ie()
-            self.push(event_context.window_context.window)
+            self.push(event_context.window)
 
         @self.eventmethod(self.keys['Exclude'])
         def event_exclude(event_context:psgu.EventContext):
@@ -64,4 +64,4 @@ class VFSExplorerViewBS(psgu.ge.VFSExplorerView):
                 event_context.event = self.keys['Remove']
                 return self.handle_event(event_context)
             root.calc_ie()
-            self.push(event_context.window_context.window)
+            self.push(event_context.window)

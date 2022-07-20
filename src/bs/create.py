@@ -22,24 +22,24 @@ def create_script(window_context:psgu.WindowContext, script_data:ScriptDataBS, p
     do_make_path = False
     if (not os.path.exists(script_destination)) and (not do_make_path):
         ne_dir = gp_utils.find_nonexistent_dir(script_destination)
-        psgu.PopupBuilder.T.error().text((
+        psgu.popups.error(window_context, text=(
             'Script destination does not exist.',
             'Path: ' + script_destination,
             'Nonexistent: ' + os.path.basename(ne_dir)
-        )).open(window_context)
+        ))
         return False
     
     progress_func('Checking Script File', 0.45)
     if os.path.exists(script_path):
         if ScriptDataBS.verify_file_is_script(script_path):
-            do_continue = psgu.PopupBuilder.T.warning().text((
-                'Script file "' + script_file_name + '" already exists. Continue?',
-                'Full path: ' + script_path
-            )).open(window_context)
+            do_continue = psgu.popups.warning(window_context, text=(
+                    'Script file "{}" already exists. Continue?'.format(script_file_name),
+                    'Full path: {}'.format(script_path)
+                ))
             if not do_continue:
                 return False
         else:
-            psgu.PopupBuilder.T.error().text((
+            psgu.popups.error(window_context, text=(
                 'File "' + script_file_name + ' is not an overwriteable ".pyz" file.',
                 'Full path: ' + script_path
             )).open(window_context)
