@@ -19,7 +19,7 @@ class MatchingGroupsList(DetailListBS):
     def make_details(self, item, data:MatchingGroup):
         mg = data
         if mg == None:
-            return psgu.sg.EmbedText('No Data')        
+            return psgu.FormatText('No Data')        
         mg.make_invalid_none()
         d = mg.d
         highlights = {
@@ -33,13 +33,13 @@ class MatchingGroupsList(DetailListBS):
         colors_pattern = ('black', highlights['blue'])
         colors_cond = ('black', highlights['purple'])
 
-        et = psgu.sg.EmbedText()
-        def et_text(s):    et.append(s)
-        def et_var(s):     et.color(s, *colors_var)
-        def et_bad(s):     et.color(s, *colors_bad)
-        def et_pattern(s): et.color(s, *colors_pattern)
-        def et_cond(s):    et.color(s, *colors_cond)
-        def et_alert(s):   et.color(s, *colors_alert)
+        format_text = psgu.FormatText()
+        def ft_text(s):    format_text.append(s)
+        def ft_var(s):     format_text.color(s, *colors_var)
+        def ft_bad(s):     format_text.color(s, *colors_bad)
+        def ft_pattern(s): format_text.color(s, *colors_pattern)
+        def ft_cond(s):    format_text.color(s, *colors_cond)
+        def ft_alert(s):   format_text.color(s, *colors_alert)
         
         cond_f_sz = cond_F_sz = cond_pF_sz = cond_apply_if = False
         if d.apply_to_files and (d.min_file_size or d.max_file_size):
@@ -71,102 +71,102 @@ class MatchingGroupsList(DetailListBS):
         
 
         s_ie_action = '[' + d.ie_action.capitalize() + ']'
-        et_var(s_ie_action)
-        et_text(' ')
+        ft_var(s_ie_action)
+        ft_text(' ')
 
         if d.apply_to_files and d.apply_to_folders:
             if not has_cond:
-                et_bad('[All]')
-                return et
+                ft_bad('[All]')
+                return format_text
             s_types = 'Files/Folders'
         elif d.apply_to_files:
             if not has_cond:
-                et_bad('[All Files]')
-                return et
+                ft_bad('[All Files]')
+                return format_text
             s_types = 'Files'
         elif d.apply_to_folders:
             if not has_cond:
-                et_bad('[All Folders]')
-                return et
+                ft_bad('[All Folders]')
+                return format_text
             s_types = 'Folders'
         else:
-            et_bad('[None]')
-            return et
+            ft_bad('[None]')
+            return format_text
 
         s = '['
         if d.apply_to_files:
             s += 'Files'
             if d.apply_to_folders:
                 s += ', '
-        et_var(s)
+        ft_var(s)
         s = ''
         if d.apply_to_folders:
             s += 'Folders'
             if not d.apply_recursive:
                 s += ' (NR)'
         if d.apply_if_extensions or d.do_not_apply_if_extensions:
-            et_bad(s)
-            et_var(']')
+            ft_bad(s)
+            ft_var(']')
         else:
-            et_var(s + ']')
+            ft_var(s + ']')
         
         if d.within_paths:
-            et_text(' from paths ')
-            et_var('[' + ', '.join(['"' + p + '"' for p in d.within_paths]) + ']')
+            ft_text(' from paths ')
+            ft_var('[' + ', '.join(['"' + p + '"' for p in d.within_paths]) + ']')
         else:
-            et_text(' from ')
-            et_var('[Included]')
+            ft_text(' from ')
+            ft_var('[Included]')
         if d.not_within_paths:
-            et_text(' and not within paths ')
-            et_var('[' + ', '.join(['"' + p + '"' for p in d.not_within_paths]) + ']')
+            ft_text(' and not within paths ')
+            ft_var('[' + ', '.join(['"' + p + '"' for p in d.not_within_paths]) + ']')
 
         if d.apply_if_extensions or d.do_not_apply_if_extensions:
-            et_text(' ')
+            ft_text(' ')
         if d.apply_if_extensions:
             s1 = 'if any of extensions '
             s2 = '[' + ', '.join(d.apply_if_extensions) + ']'
             if d.do_not_apply_if_extensions or d.apply_to_folders:
-                et_bad(s1 + s2)
+                ft_bad(s1 + s2)
             else:
-                et_text(s1)
-                et_var(s2)
+                ft_text(s1)
+                ft_var(s2)
         if d.do_not_apply_if_extensions:
             s1 = 'not any of extensions '
             s2 = '[' + ', '.join(d.do_not_apply_if_extensions) + ']'
             if d.apply_if_extensions:
-                et_bad(' but ' + s1 + s2)
+                ft_bad(' but ' + s1 + s2)
             elif d.apply_to_folders:
-                et_bad('if ' + s1 + s2)
+                ft_bad('if ' + s1 + s2)
             else:
-                et_text('if ' + s1)
-                et_var(s2)
+                ft_text('if ' + s1)
+                ft_var(s2)
 
         if d.patterns:
-            et_text('. Matches names with ')
+            ft_text('. Matches names with ')
             if d.match_all:
-                et_var('[All]')
+                ft_var('[All]')
             else:
-                et_var('[Any]')
-            et_text(' of ')
+                ft_var('[Any]')
+            ft_text(' of ')
             if d.use_regex:
-                et_var('[Regex]')
+                ft_var('[Regex]')
             else:
-                et_var('[Text]')
-            et_text(' patterns below, with conditions ')
+                ft_var('[Text]')
+            ft_text(' patterns below, with conditions ')
             s = '[Match Case' if d.match_case else '[Match Case'
             s += ', Whole ' if d.whole_name else ', In '
             s += 'Name (Stripped)]' if d.strip_extensions else 'Name]'
-            et_var(s)
+            ft_var(s)
             s_indent = '\n  '
             for pattern in ['"' + p + '"' for p in d.patterns]:
-                et_text(s_indent)
-                et_pattern(pattern)
+                ft_text(s_indent)
+                ft_pattern(pattern)
 
         def below_size(a):
-            et_cond('[Below ' + psgu.units.Bytes(a, psgu.units.Bytes.B).get_best() + ']')
+            ft_cond('[Below ' + psgu.units.Bytes(a, psgu.units.Bytes.B).get_best() + ']')
         
         def above_size(a):
-            et_cond('[Above ' + psgu.units.Bytes(a, psgu.units.Bytes.B).get_best() + ']')
+            ft_cond('[Above ' + psgu.units.Bytes(a, psgu.units.Bytes.B).get_best() + ']')
         
         def within_size(a, b):
             if not (a or b):
@@ -181,40 +181,40 @@ class MatchingGroupsList(DetailListBS):
             s += psgu.units.Bytes(b, psgu.units.Bytes.B).get_best(decimal_digits=1, minimum=0.5)
             s += ']'
             if a < b:
-                et_cond(s)
+                ft_cond(s)
             else:
-                et_bad(s)
+                ft_bad(s)
         
         if cond_apply_if:
-            et_text('\nApply to:')
+            ft_text('\nApply to:')
         if cond_f_sz or (cond_F_sz and d.apply_to_files):
             if cond_f_sz:
-                et_text('\n  Files ')
+                ft_text('\n  Files ')
                 within_size(d.min_file_size, d.max_file_size)
             else:
-                et_text('\n  Files of any size.')
+                ft_text('\n  Files of any size.')
         if cond_F_sz or (cond_f_sz and d.apply_to_folders):
             if cond_F_sz:
-                et_text('\n  Folders ')
+                ft_text('\n  Folders ')
                 within_size(d.min_folder_size, d.max_folder_size)
             else:
-                et_text('\n  Folders of any size')
+                ft_text('\n  Folders of any size')
         if cond_pF_sz:
-            et_text('\n  ' + s_types + ' within folders ')
+            ft_text('\n  ' + s_types + ' within folders ')
             within_size(d.min_parent_folder_size, d.max_parent_folder_size)
         
         if cond_apply_group_if:
-            et_text('\nApply Group If:')
+            ft_text('\nApply Group If:')
         if cond_bsb:
-            et_text('\n  Included size before ')
+            ft_text('\n  Included size before ')
             within_size(d.min_backup_size_before, d.max_backup_size_before)
         if cond_bsa:
-            et_text('\n  Included size after ')
+            ft_text('\n  Included size after ')
             within_size(d.min_backup_size_after, d.max_backup_size_after)
         if cond_tsd:
-            et_text('\n  Included size change ')
+            ft_text('\n  Included size change ')
             within_size(d.min_total_size_diff, d.max_total_size_diff)
-        return et
+        return format_text
     
     def edit_data(self, window_context:psgu.WindowContext, item, data):
         mg = data if data != None else MatchingGroup()

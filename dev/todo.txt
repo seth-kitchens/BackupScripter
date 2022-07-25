@@ -55,13 +55,17 @@ Primary bullets roughly in order of importance
 ---
 psgu Revision
 
+- psgu.ge
+    - make sg element wrapper ge's consistent in form
+        - should all have sg_kwargs exposed
+        - should have aliases to match PySimpleGUI (Input/In, Text/T, etc)
+
 - GuiElement
     - abstract inners: No way around it, they require two functions. make note of these abstract inners in GuiElement docstring
     - Ordering of functions needs to be reworked
     - sg_kwargs system needs to be looked at
     - validity needs to be looked at
     - GuiElementExample needs to be done
-    - init() and init_window() ?
     - Info() taking gem is not good
     - is self.gem[key] a good convention? replace with self.ges(key) to try to push gem to private?
     - should the definition functions be private?
@@ -70,10 +74,10 @@ psgu Revision
 - Try to match python terminology
     - method: function in a class
 
-- VFS shouldn't be in psgu
 - interface for forcing uniform key syntax?
-- MenuDict shouldn't be in utils
 - Explain data flow (dict[object_id:str, value:Any])
+
+- Move docstrings from __init__() to "class <class>"
 
 ---
 Loose TODO Notes
@@ -146,4 +150,3 @@ Inclusion Matching
 
 Project Organization, Version Control
 - PSGU: vfs explorer view is still somewhat project specific
-- PSGU: move EmbedText from psgu.sg.utils to somewhere better

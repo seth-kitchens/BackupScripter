@@ -12,9 +12,6 @@ from src.bs.windows.manage_included import WindowManageIncluded
 from src.bs.script_data import ScriptDataBS
 
 
-button_size = psgu.sg.button_size
-
-
 class WindowMain(psgu.AbstractBlockingWindow):
 
     archive_exts = {
@@ -50,16 +47,21 @@ class WindowMain(psgu.AbstractBlockingWindow):
         frame_backup_file = psgu.sg.FrameColumn('Backup File', expand_x=True, layout=[
             self.row(psgu.ge.Filename('BackupFilename', 'Filename').sg_kwargs_name(expand_x=True)),
             [
-                *self.row(psgu.ge.Input('BackupDatePostfix', 'Date Postfix').sg_kwargs_in(expand_x=True)),
+                sg.Text('Date Postfix'),
+                self.sge(psgu.ge.Input('BackupDatePostfix').sg_kwargs_input(expand_x=True)),
                 psgu.ge.Info(self.gem, info.date_postfix)
             ],
             self.row(psgu.ge.Path('BackupDestination', 'Destination').sg_kwargs_path(expand_x=True)),
-            self.row(psgu.ge.Dropdown('ArchiveFormat', 'Archive Format', list(WindowMain.archive_exts.keys()))),
-            self.row(psgu.ge.Radio('ArchiveMode', 'Archive Mode:', {'append': 'Append', 'compile': 'Compile'}))
+            [
+                sg.Text('Archive Format'),
+                self.sge(psgu.ge.Combo('ArchiveFormat', list(WindowMain.archive_exts.keys())))
+            ],
+            self.row(psgu.ge.RadioGroup('ArchiveMode', 'Archive Mode:', {'append': 'Append', 'compile': 'Compile'}))
         ])
         frame_backup_settings = psgu.sg.FrameColumn('Backup Settings', expand_y=True, layout=[
             [
-                *self.row(psgu.ge.Input('MaxBackups', 'Max Backups', type='int', negative_invalid=True)),
+                sg.Text('Max Backups'),
+                self.sge(psgu.ge.Input('MaxBackups', type='int', negative_invalid=True)),
                 sg.Push(),
                 psgu.ge.Info(self.gem, info.backup_settings, '?')
             ],
@@ -73,26 +75,26 @@ class WindowMain(psgu.AbstractBlockingWindow):
             [sg.Text('Total Files')]
         ])
         column_included_numbers = sg.Column(element_justification='center', pad=0, layout=[
-            self.row(psgu.ge.OutText('TotalFolders')),
-            self.row(psgu.ge.OutText('TotalFiles'))
+            [self.sge(psgu.ge.Text('TotalFolders'))],
+            [self.sge(psgu.ge.Text('TotalFiles'))]
         ])
         column_included = sg.Column(element_justification='left', pad=0, layout=[
             [sg.Text('Included', text_color=colors.header)],
             [column_included_labels, column_included_numbers],
-            [sg.Column(pad=0, expand_x=True, layout=[[sg.Text('Size'), sg.Push(), *self.row(psgu.ge.OutText('SizeIncluded'))]])]
+            [sg.Column(pad=0, expand_x=True, layout=[[sg.Text('Size'), sg.Push(), self.sge(psgu.ge.Text('SizeIncluded'))]])]
         ])
         column_excluded_labels = sg.Column(pad=0, layout=[
             [sg.Text('Total Folders')],
             [sg.Text('Total Files')]
         ])
         column_excluded_numbers = sg.Column(element_justification='center', pad=0, layout=[
-            self.row(psgu.ge.OutText('TotalFoldersExcluded')),
-            self.row(psgu.ge.OutText('TotalFilesExcluded'))
+            [self.sge(psgu.ge.Text('TotalFoldersExcluded'))],
+            [self.sge(psgu.ge.Text('TotalFilesExcluded'))]
         ])
         column_excluded = sg.Column(pad=0, expand_y=True, layout=[
             [sg.Text('Excluded', text_color=colors.header)],
             [column_excluded_labels, column_excluded_numbers],
-            [sg.Column(pad=0, expand_x=True, layout=[[sg.Text('Size'), sg.Push(), *self.row(psgu.ge.OutText('SizeExcluded'))]])]
+            [sg.Column(pad=0, expand_x=True, layout=[[sg.Text('Size'), sg.Push(), self.sge(psgu.ge.Text('SizeExcluded'))]])]
         ])
         frame_ie = psgu.sg.FrameColumn('To Backup', layout=[
             [
@@ -103,7 +105,7 @@ class WindowMain(psgu.AbstractBlockingWindow):
             [sg.VPush()],
             [
                 sg.Push(),
-                *self.row(psgu.ge.Radio('IENumbers', text=None, options={'final':'Final', 'static':'Static', 'both':'Static/Final'}).load_value('final')),
+                *self.row(psgu.ge.RadioGroup('IENumbers', text=None, options={'final':'Final', 'static':'Static', 'both':'Static/Final'}).load_value('final')),
                 sg.Push()
             ],
             [sg.Button('Manage Included', key='ManageIncluded', expand_x=True)]
@@ -132,7 +134,7 @@ class WindowMain(psgu.AbstractBlockingWindow):
         return layout
     
     def define_menus(self):
-        mb = self.menubar = psgu.sg.MenuBar()
+        mb = self.menubar = psgu.MenuBar()
         mb.unlock()
         pass
         mb.lock()
@@ -167,9 +169,9 @@ class WindowMain(psgu.AbstractBlockingWindow):
             self.push(event_context.window)
             self.update_status('Defaults loaded', 1.0, '', text_color=self.COLOR_STATUS_FADED)
 
-        @self.eventmethod(self.gem['ArchiveFormat'].keys['Dropdown'])
+        @self.eventmethod(self.gem['ArchiveFormat'].keys['Combo'])
         def event_compression_type_chosen(event_context:psgu.EventContext):
-            selection = event_context.values[self.gem['ArchiveFormat'].keys['Dropdown']]
+            selection = event_context.values[self.gem['ArchiveFormat'].keys['Combo']]
             archive_ext = WindowMain.archive_exts[selection]
             window = event_context.window
             self.gem['BackupFilename'].update(window, extension=archive_ext)
@@ -202,7 +204,7 @@ class WindowMain(psgu.AbstractBlockingWindow):
         
         @self.eventmethod('LoadScript')
         def event_load_script(event_context:psgu.EventContext):
-            script_to_load = psgu.sg.browse_file(event_context.window)
+            script_to_load = psgu.tk.browse_file(event_context.window)
             if not script_to_load:
                 return
             self.update_status('Loading script...')

@@ -2,11 +2,13 @@ import PySimpleGUI as sg
 
 import psgu
 
+from src.gp.vfs_explorer_view import *
+
 
 __all__ = ['VFSExplorerViewBS']
 
 
-class VFSExplorerViewBS(psgu.ge.VFSExplorerView):
+class VFSExplorerViewBS(VFSExplorerView):
 
     def __init__(self, object_id, vfs_explorer, read_only=False) -> None:
         super().__init__(object_id, vfs_explorer, read_only=read_only)

@@ -1,10 +1,12 @@
 import psgu
 
+from src.gp.fs import VFSEntry
 
-class VFSEntryBS(psgu.VFSEntry):
+
+class VFSEntryBS(VFSEntry):
 
     def __init__(self, init_path, init_status):
-        psgu.VFSEntry.__init__(self, init_path)
+        VFSEntry.__init__(self, init_path)
         self.children:list[VFSEntryBS]
 
         self.status:str = init_status # included/excluded

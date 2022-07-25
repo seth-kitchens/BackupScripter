@@ -5,11 +5,10 @@ import re
 from os.path import normpath
 from typing import Iterable
 
-import psgu
-
 from src.bs.fs.matching_group import MatchingGroup
 from src.bs.fs.vfs_entry import VFSEntryBS
 from src.gp import utils
+from src.gp.fs import VirtualFS, VFSEntry
 
 
 def is_path_in_path(subpath: str, path: str):
@@ -17,7 +16,7 @@ def is_path_in_path(subpath: str, path: str):
     return subpath.startswith(os.path.abspath(path)+os.sep)
 
 
-class VirtualFSBS(psgu.VirtualFS):
+class VirtualFSBS(VirtualFS):
 
     MATCHING_PATTERN_BANNED_CHARS = ['\r\n']
 
@@ -165,14 +164,14 @@ class VirtualFSBS(psgu.VirtualFS):
             parent_folder_size = data['parent_folder_size']
             item_type = data['entry_type']
 
-            if item_type == psgu.VFSEntry.entry_types.FILE:
+            if item_type == VFSEntry.entry_types.FILE:
                 if not d.apply_to_files:
                     continue
                 if d.min_file_size != None and size < d.min_file_size:
                     continue
                 if d.max_file_size != None and size > d.max_file_size:
                     continue
-            if item_type == psgu.VFSEntry.entry_types.DIR:
+            if item_type == VFSEntry.entry_types.DIR:
                 if not d.apply_to_folders:
                     continue
                 if d.min_folder_size != None and size < d.min_folder_size:

@@ -5,9 +5,7 @@ from src.bs import elements as bs_ge
 from src.bs.fs.vfs import VFSBS as VFS
 from src.bs.info import window_manage_included as info
 from src.bs.script_data import ScriptDataBS
-
-
-button_size = psgu.sg.button_size
+from src.gp.fs import VFSExplorer
 
 
 class WindowManageIncluded(psgu.AbstractBlockingWindow):
@@ -15,7 +13,7 @@ class WindowManageIncluded(psgu.AbstractBlockingWindow):
     def __init__(self, script_data:ScriptDataBS, vfs_static:VFS) -> None:
         data = script_data.to_dict()
         self.vfs_static = vfs_static.clone()
-        self.vfs_explorer = psgu.VFSExplorer(self.vfs_static, data.copy())
+        self.vfs_explorer = VFSExplorer(self.vfs_static, data.copy())
         super().__init__('WindowManageIncluded', data)
 
     # Layout
@@ -115,7 +113,7 @@ class WindowManageIncluded(psgu.AbstractBlockingWindow):
             self.vfs_temp.copy_from_vfs(vfs_static)
             self.vfs_temp.process_matching_groups(mgs)
             data = {}
-            self.vfs_explorer = psgu.VFSExplorer(self.vfs_temp, data)
+            self.vfs_explorer = VFSExplorer(self.vfs_temp, data)
             super().__init__(title, data)
 
         def get_layout(self):

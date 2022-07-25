@@ -153,7 +153,7 @@ class WindowEditMatchingGroups(psgu.AbstractBlockingWindow):
             row_apply_group_if_size
         ])
         frame_action = sg.Frame('Action', expand_x=True, layout=[
-            self.row(psgu.ge.Radio('ie_action', '', {'exclude':'Exclude', 'include':'Include'}))
+            self.row(psgu.ge.RadioGroup('ie_action', '', {'exclude':'Exclude', 'include':'Include'}))
         ])
         frame_pattern_options = sg.Frame('Pattern Options', expand_x=True, layout=[
             [
