@@ -61,7 +61,7 @@ class WindowMain(psgu.AbstractBlockingWindow):
         frame_backup_settings = psgu.sg.FrameColumn('Backup Settings', expand_y=True, layout=[
             [
                 sg.Text('Max Backups'),
-                self.sge(psgu.ge.Input('MaxBackups', type='int', negative_invalid=True)),
+                self.sge(psgu.ge.Input('MaxBackups', value_flags=(psgu.VALUES.NONNEGATIVE_INT)).sg_kwargs_input(size=5)),
                 sg.Push(),
                 psgu.ge.Info(self.gem, info.backup_settings, '?')
             ],
