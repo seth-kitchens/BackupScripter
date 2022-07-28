@@ -1,10 +1,9 @@
-"""
-Copyright 2022 Seth Kitchens.
-"""
+# Copyright 2022 Seth Kitchens.
+
 from typing import Iterable
 import math
 
-from psgu import TableList
+from src.gp.text.table_list import TableList
 
 
 __all__ = [

@@ -1,5 +1,6 @@
 import psgu
 import PySimpleGUI as sg
+from psgu import ge
 
 from src.bs import ge as bs_ge
 from src.bs.fs.vfs import VFSBS as VFS
@@ -26,14 +27,14 @@ class WindowManageIncluded(psgu.AbstractBlockingWindow):
         frame_system = psgu.sg.FrameColumn('Window', expand_y=True, layout=[
             [sg.Button('Return', size=(12, 2), expand_x=True)],
             [sg.Button('Cancel', size=(12, 2), expand_x=True)],
-            [psgu.ge.Info(self.gem, info.window, bt='Info', sg_kwargs={'size': (16, 2)})],
+            [ge.Info(self.gem, info.window, bt='Info', sg_kwargs={'size': (16, 2)})],
             [sg.VPush()]
         ])
         layout = [
             [frame_explorer],
             [frame_iepatterns, frame_system],
             [sg.Sizer(0, 5)],
-            [self.status_bar(psgu.ge.StatusBar('StatusBar'))]
+            [self.status_bar(ge.StatusBar('StatusBar'))]
         ]
         return layout
     

@@ -1,5 +1,6 @@
 import PySimpleGUI as sg
 import psgu
+from psgu import units
 
 from src.bs.ge import DetailListBS
 from src.bs.windows.edit_matching_group import WindowEditMatchingGroups
@@ -163,10 +164,10 @@ class MatchingGroupsList(DetailListBS):
                 ft_pattern(pattern)
 
         def below_size(a):
-            ft_cond('[Below ' + psgu.units.Bytes(a, psgu.units.Bytes.B).get_best() + ']')
+            ft_cond('[Below ' + units.Bytes(a, units.Bytes.B).get_best() + ']')
         
         def above_size(a):
-            ft_cond('[Above ' + psgu.units.Bytes(a, psgu.units.Bytes.B).get_best() + ']')
+            ft_cond('[Above ' + units.Bytes(a, units.Bytes.B).get_best() + ']')
         
         def within_size(a, b):
             if not (a or b):
@@ -176,9 +177,9 @@ class MatchingGroupsList(DetailListBS):
             if not b:
                 return above_size(a)
             s = '[Between '
-            s += psgu.units.Bytes(a, psgu.units.Bytes.B).get_best(decimal_digits=1, minimum=0.5)
+            s += units.Bytes(a, units.Bytes.B).get_best(decimal_digits=1, minimum=0.5)
             s += ' and '
-            s += psgu.units.Bytes(b, psgu.units.Bytes.B).get_best(decimal_digits=1, minimum=0.5)
+            s += units.Bytes(b, units.Bytes.B).get_best(decimal_digits=1, minimum=0.5)
             s += ']'
             if a < b:
                 ft_cond(s)

@@ -1,5 +1,6 @@
 import PySimpleGUI as sg
 import psgu
+from psgu import ge, units
 
 from src.bs.info import matching_groups_list as info
 from src.bs.fs.matching_group import MatchingGroup
@@ -17,73 +18,73 @@ class WindowEditMatchingGroups(psgu.AbstractBlockingWindow):
         column_file_size = sg.Column(expand_x=True, element_justification='center', layout=[
             [sg.Text('Within Size (File)')],
             [sg.Sizer(0, 3)],
-            self.row(psgu.ge.InputUnits('max_file_size', 'Max', psgu.units.Bytes,
-                default_degree=psgu.units.Bytes.MB,
-                store_as_degree=psgu.units.Bytes.B,
+            self.row(ge.InputUnits('max_file_size', 'Max', units.Bytes,
+                default_degree=units.Bytes.MB,
+                store_as_degree=units.Bytes.B,
                 negative_invalid=True)),
-            self.row(psgu.ge.InputUnits('min_file_size', 'Min', psgu.units.Bytes,
-                default_degree=psgu.units.Bytes.MB,
-                store_as_degree=psgu.units.Bytes.B,
+            self.row(ge.InputUnits('min_file_size', 'Min', units.Bytes,
+                default_degree=units.Bytes.MB,
+                store_as_degree=units.Bytes.B,
                 negative_invalid=True))
         ])
         column_folder_size = sg.Column(expand_x=True, element_justification='center', layout=[
             [sg.Text('Within Size (Folder)')],
             [sg.Sizer(0, 3)],
-            self.row(psgu.ge.InputUnits('max_folder_size', 'Max', psgu.units.Bytes,
-                default_degree=psgu.units.Bytes.MB,
-                store_as_degree=psgu.units.Bytes.B,
+            self.row(ge.InputUnits('max_folder_size', 'Max', units.Bytes,
+                default_degree=units.Bytes.MB,
+                store_as_degree=units.Bytes.B,
                 negative_invalid=True)),
-            self.row(psgu.ge.InputUnits('min_folder_size', 'Min', psgu.units.Bytes,
-                default_degree=psgu.units.Bytes.MB,
-                store_as_degree=psgu.units.Bytes.B,
+            self.row(ge.InputUnits('min_folder_size', 'Min', units.Bytes,
+                default_degree=units.Bytes.MB,
+                store_as_degree=units.Bytes.B,
                 negative_invalid=True))
         ])
         column_total_size = sg.Column(expand_x=True, element_justification='center', layout=[
             [sg.Text('Total Size Diff')],
             [sg.Sizer(0, 3)],
-            self.row(psgu.ge.InputUnits('max_total_size_diff', 'Max', psgu.units.Bytes,
-                default_degree=psgu.units.Bytes.MB,
-                store_as_degree=psgu.units.Bytes.B, 
+            self.row(ge.InputUnits('max_total_size_diff', 'Max', units.Bytes,
+                default_degree=units.Bytes.MB,
+                store_as_degree=units.Bytes.B, 
                 negative_invalid=True)),
-            self.row(psgu.ge.InputUnits('min_total_size_diff', 'Min', psgu.units.Bytes,
-                default_degree=psgu.units.Bytes.MB,
-                store_as_degree=psgu.units.Bytes.B,
+            self.row(ge.InputUnits('min_total_size_diff', 'Min', units.Bytes,
+                default_degree=units.Bytes.MB,
+                store_as_degree=units.Bytes.B,
                 negative_invalid=True))
         ])
         column_backup_size_before = sg.Column(expand_x=True, element_justification='center', layout=[
             [sg.Text('Backup Size Before')],
             [sg.Sizer(0, 3)],
-            self.row(psgu.ge.InputUnits('max_backup_size_before', 'Max', psgu.units.Bytes, 
-                default_degree=psgu.units.Bytes.MB,
-                store_as_degree=psgu.units.Bytes.B,
+            self.row(ge.InputUnits('max_backup_size_before', 'Max', units.Bytes, 
+                default_degree=units.Bytes.MB,
+                store_as_degree=units.Bytes.B,
                 negative_invalid=True)),
-            self.row(psgu.ge.InputUnits('min_backup_size_before', 'Min', psgu.units.Bytes,
-                default_degree=psgu.units.Bytes.MB,
-                store_as_degree=psgu.units.Bytes.B,
+            self.row(ge.InputUnits('min_backup_size_before', 'Min', units.Bytes,
+                default_degree=units.Bytes.MB,
+                store_as_degree=units.Bytes.B,
                 negative_invalid=True))
         ])
         column_backup_size_after = sg.Column(expand_x=True, element_justification='center', layout=[
             [sg.Text('Backup Size After')],
             [sg.Sizer(0, 3)],
-            self.row(psgu.ge.InputUnits('max_backup_size_after', 'Max', psgu.units.Bytes,
-                default_degree=psgu.units.Bytes.MB,
-                store_as_degree=psgu.units.Bytes.B, 
+            self.row(ge.InputUnits('max_backup_size_after', 'Max', units.Bytes,
+                default_degree=units.Bytes.MB,
+                store_as_degree=units.Bytes.B, 
                 negative_invalid=True)),
-            self.row(psgu.ge.InputUnits('min_backup_size_after', 'Min', psgu.units.Bytes,
-                default_degree=psgu.units.Bytes.MB,
-                store_as_degree=psgu.units.Bytes.B,
+            self.row(ge.InputUnits('min_backup_size_after', 'Min', units.Bytes,
+                default_degree=units.Bytes.MB,
+                store_as_degree=units.Bytes.B,
                 negative_invalid=True))
         ])
         row_parent_folder_size = [
             sg.Text('Parent Folder Size:'),
-            *self.row(psgu.ge.InputUnits('max_parent_folder_size', 'Max', psgu.units.Bytes,
-                default_degree=psgu.units.Bytes.MB,
-                store_as_degree=psgu.units.Bytes.B,
+            *self.row(ge.InputUnits('max_parent_folder_size', 'Max', units.Bytes,
+                default_degree=units.Bytes.MB,
+                store_as_degree=units.Bytes.B,
                 negative_invalid=True)),
             sg.Sizer(5, 0),
-            *self.row(psgu.ge.InputUnits('min_parent_folder_size', 'Min', psgu.units.Bytes,
-                default_degree=psgu.units.Bytes.MB,
-                store_as_degree=psgu.units.Bytes.B,
+            *self.row(ge.InputUnits('min_parent_folder_size', 'Min', units.Bytes,
+                default_degree=units.Bytes.MB,
+                store_as_degree=units.Bytes.B,
                 negative_invalid=True))
         ]
         row_apply_to_size = [
@@ -105,8 +106,8 @@ class WindowEditMatchingGroups(psgu.AbstractBlockingWindow):
         ]
         frame_apply_to = sg.Frame('Apply To', layout=[
             [
-                self.sge(psgu.ge.Checkbox('apply_to_files', 'Files')),
-                self.sge(psgu.ge.Checkbox('apply_to_folders', 'Folders') \
+                self.sge(ge.Checkbox('apply_to_files', 'Files')),
+                self.sge(ge.Checkbox('apply_to_folders', 'Folders') \
                     .sg_kwargs_checkbox(enable_events=True))
             ]
         ])
@@ -114,18 +115,18 @@ class WindowEditMatchingGroups(psgu.AbstractBlockingWindow):
             row_apply_to_size,
             [
                 *self.row(
-                    psgu.ge.StringContainer('Within paths:',
-                        psgu.ge.TextList('within_paths',
+                    ge.StringContainer('Within paths:',
+                        ge.TextList('within_paths',
                             delim=';',
                             strip=(' .', ' ')),
                         folder_browse=True,
                         blank_invalid=True)),
-                psgu.ge.Info(self.gem, 'If empty, applies to all included/excluded before this group.')
+                ge.Info(self.gem, 'If empty, applies to all included/excluded before this group.')
             ],
             [
                 *self.row(
-                    psgu.ge.StringContainer('Not within paths:',
-                        psgu.ge.TextList('not_within_paths',
+                    ge.StringContainer('Not within paths:',
+                        ge.TextList('not_within_paths',
                             delim=';', 
                             strip=(' .', ' ')),
                         folder_browse=True,
@@ -133,16 +134,16 @@ class WindowEditMatchingGroups(psgu.AbstractBlockingWindow):
             ],
             [
                 *self.row(
-                    psgu.ge.StringContainer('Has extensions:',
-                        psgu.ge.TextList('apply_if_extensions',
+                    ge.StringContainer('Has extensions:',
+                        ge.TextList('apply_if_extensions',
                             delim=',', 
                             strip=(' .', ' ')),
                         blank_invalid=True))
             ],
             [
                 *self.row(
-                    psgu.ge.StringContainer('Does not have extensions:',
-                        psgu.ge.TextList('do_not_apply_if_extension',
+                    ge.StringContainer('Does not have extensions:',
+                        ge.TextList('do_not_apply_if_extension',
                             delim=',',
                             strip=(' .', ' ')),
                         blank_invalid=True))
@@ -153,26 +154,26 @@ class WindowEditMatchingGroups(psgu.AbstractBlockingWindow):
             row_apply_group_if_size
         ])
         frame_action = sg.Frame('Action', expand_x=True, layout=[
-            self.row(psgu.ge.RadioGroup('ie_action', '', {'exclude':'Exclude', 'include':'Include'}))
+            self.row(ge.RadioGroup('ie_action', '', {'exclude':'Exclude', 'include':'Include'}))
         ])
         frame_pattern_options = sg.Frame('Pattern Options', expand_x=True, layout=[
             [
-                self.sge(psgu.ge.Checkbox('strip_extensions', 'Strip Extensions')),
-                self.sge(psgu.ge.Checkbox('whole_name', 'Match Whole Name'))
+                self.sge(ge.Checkbox('strip_extensions', 'Strip Extensions')),
+                self.sge(ge.Checkbox('whole_name', 'Match Whole Name'))
             ],
             [   
-                self.sge(psgu.ge.Checkbox('match_case', 'Match Case')),
-                self.sge(psgu.ge.Checkbox('use_regex', 'Use Regex')),
+                self.sge(ge.Checkbox('match_case', 'Match Case')),
+                self.sge(ge.Checkbox('use_regex', 'Use Regex')),
             ],
             [
-                self.sge(psgu.ge.Checkbox('match_all', 'Match All Patterns'))
+                self.sge(ge.Checkbox('match_all', 'Match All Patterns'))
             ]
         ])
         layout_patterns = [
             [
                 sg.Column(
                     layout=self.layout(
-                        psgu.ge.TextList('patterns',
+                        ge.TextList('patterns',
                             empty_text='None (Matches Any)', 
                             border='"')),
                     expand_y=True)
@@ -192,12 +193,12 @@ class WindowEditMatchingGroups(psgu.AbstractBlockingWindow):
         layout = [
             [column_left, column_right],
             [
-                psgu.ge.Info(self.gem, info.window, bt='Info', sg_kwargs={'size': 10}), 
+                ge.Info(self.gem, info.window, bt='Info', sg_kwargs={'size': 10}), 
                 sg.Push(),
                 sg.OK(size=10),
                 sg.Cancel(size=10)],
             [sg.Sizer(0, 5)],
-            [self.status_bar(psgu.ge.StatusBar('StatusBar'))]
+            [self.status_bar(ge.StatusBar('StatusBar'))]
         ]
         return layout
 

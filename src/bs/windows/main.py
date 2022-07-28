@@ -1,8 +1,9 @@
 import os
 from pprint import pprint
 
-import psgu
 import PySimpleGUI as sg
+import psgu
+from psgu import ge, units
 
 from src.bs.create import create_script
 from src.bs.fs.vfs import VFSBS as VFS
@@ -35,8 +36,8 @@ class WindowMain(psgu.AbstractBlockingWindow):
 
     def get_layout(self):
         frame_script_file = psgu.sg.FrameColumn('Script File', expand_x=True, layout=[
-            self.row(psgu.ge.Filename('ScriptFilename', 'Filename').sg_kwargs_name(expand_x=True)),
-            self.row(psgu.ge.Path('ScriptDestination', 'Destination').sg_kwargs_path(expand_x=True)),
+            self.row(ge.Filename('ScriptFilename', 'Filename').sg_kwargs_name(expand_x=True)),
+            self.row(ge.Path('ScriptDestination', 'Destination').sg_kwargs_path(expand_x=True)),
             [
                 sg.Button('Load Script', key='LoadScript', size=10),
                 sg.Push(),
@@ -45,29 +46,29 @@ class WindowMain(psgu.AbstractBlockingWindow):
             ]
         ])
         frame_backup_file = psgu.sg.FrameColumn('Backup File', expand_x=True, layout=[
-            self.row(psgu.ge.Filename('BackupFilename', 'Filename').sg_kwargs_name(expand_x=True)),
+            self.row(ge.Filename('BackupFilename', 'Filename').sg_kwargs_name(expand_x=True)),
             [
                 sg.Text('Date Postfix'),
-                self.sge(psgu.ge.Input('BackupDatePostfix').sg_kwargs_input(expand_x=True)),
-                psgu.ge.Info(self.gem, info.date_postfix)
+                self.sge(ge.Input('BackupDatePostfix').sg_kwargs_input(expand_x=True)),
+                ge.Info(self.gem, info.date_postfix)
             ],
-            self.row(psgu.ge.Path('BackupDestination', 'Destination').sg_kwargs_path(expand_x=True)),
+            self.row(ge.Path('BackupDestination', 'Destination').sg_kwargs_path(expand_x=True)),
             [
                 sg.Text('Archive Format'),
-                self.sge(psgu.ge.Combo('ArchiveFormat', list(WindowMain.archive_exts.keys())))
+                self.sge(ge.Combo('ArchiveFormat', list(WindowMain.archive_exts.keys())))
             ],
-            self.row(psgu.ge.RadioGroup('ArchiveMode', 'Archive Mode:', {'append': 'Append', 'compile': 'Compile'}))
+            self.row(ge.RadioGroup('ArchiveMode', 'Archive Mode:', {'append': 'Append', 'compile': 'Compile'}))
         ])
         frame_backup_settings = psgu.sg.FrameColumn('Backup Settings', expand_y=True, layout=[
             [
                 sg.Text('Max Backups'),
-                self.sge(psgu.ge.Input('MaxBackups', value_flags=(psgu.VALUES.NONNEGATIVE_INT)).sg_kwargs_input(size=5)),
+                self.sge(ge.Input('MaxBackups', value_flags=(psgu.VALUES.NONNEGATIVE_INT)).sg_kwargs_input(size=5)),
                 sg.Push(),
-                psgu.ge.Info(self.gem, info.backup_settings, '?')
+                ge.Info(self.gem, info.backup_settings, '?')
             ],
-            self.row(psgu.ge.InputUnits('BackupRecentAge', 'Recent Age', psgu.units.Time, psgu.units.Time.DAY, store_as_degree=psgu.units.Time.SECOND, negative_invalid=True)),
-            self.row(psgu.ge.InputUnits('BackupOldAge', 'Old Age', psgu.units.Time, psgu.units.Time.DAY, store_as_degree=psgu.units.Time.SECOND, negative_invalid=True)),
-            [self.sge(psgu.ge.Checkbox('PullAgeFromPostfix', 'Pull Age From Filename'))],
+            self.row(ge.InputUnits('BackupRecentAge', 'Recent Age', units.Time, units.Time.DAY, store_as_degree=units.Time.SECOND, negative_invalid=True)),
+            self.row(ge.InputUnits('BackupOldAge', 'Old Age', units.Time, units.Time.DAY, store_as_degree=units.Time.SECOND, negative_invalid=True)),
+            [self.sge(ge.Checkbox('PullAgeFromPostfix', 'Pull Age From Filename'))],
             [sg.VPush()]
         ])
         column_included_labels = sg.Column(pad=0, layout=[
@@ -75,26 +76,26 @@ class WindowMain(psgu.AbstractBlockingWindow):
             [sg.Text('Total Files')]
         ])
         column_included_numbers = sg.Column(element_justification='center', pad=0, layout=[
-            [self.sge(psgu.ge.Text('TotalFolders'))],
-            [self.sge(psgu.ge.Text('TotalFiles'))]
+            [self.sge(ge.Text('TotalFolders'))],
+            [self.sge(ge.Text('TotalFiles'))]
         ])
         column_included = sg.Column(element_justification='left', pad=0, layout=[
             [sg.Text('Included', text_color=colors.header)],
             [column_included_labels, column_included_numbers],
-            [sg.Column(pad=0, expand_x=True, layout=[[sg.Text('Size'), sg.Push(), self.sge(psgu.ge.Text('SizeIncluded'))]])]
+            [sg.Column(pad=0, expand_x=True, layout=[[sg.Text('Size'), sg.Push(), self.sge(ge.Text('SizeIncluded'))]])]
         ])
         column_excluded_labels = sg.Column(pad=0, layout=[
             [sg.Text('Total Folders')],
             [sg.Text('Total Files')]
         ])
         column_excluded_numbers = sg.Column(element_justification='center', pad=0, layout=[
-            [self.sge(psgu.ge.Text('TotalFoldersExcluded'))],
-            [self.sge(psgu.ge.Text('TotalFilesExcluded'))]
+            [self.sge(ge.Text('TotalFoldersExcluded'))],
+            [self.sge(ge.Text('TotalFilesExcluded'))]
         ])
         column_excluded = sg.Column(pad=0, expand_y=True, layout=[
             [sg.Text('Excluded', text_color=colors.header)],
             [column_excluded_labels, column_excluded_numbers],
-            [sg.Column(pad=0, expand_x=True, layout=[[sg.Text('Size'), sg.Push(), self.sge(psgu.ge.Text('SizeExcluded'))]])]
+            [sg.Column(pad=0, expand_x=True, layout=[[sg.Text('Size'), sg.Push(), self.sge(ge.Text('SizeExcluded'))]])]
         ])
         frame_ie = psgu.sg.FrameColumn('To Backup', layout=[
             [
@@ -105,7 +106,7 @@ class WindowMain(psgu.AbstractBlockingWindow):
             [sg.VPush()],
             [
                 sg.Push(),
-                *self.row(psgu.ge.RadioGroup('IENumbers', text=None, options={'final':'Final', 'static':'Static', 'both':'Static/Final'}).load_value('final')),
+                *self.row(ge.RadioGroup('IENumbers', text=None, options={'final':'Final', 'static':'Static', 'both':'Static/Final'}).load_value('final')),
                 sg.Push()
             ],
             [sg.Button('Manage Included', key='ManageIncluded', expand_x=True)]
@@ -116,7 +117,7 @@ class WindowMain(psgu.AbstractBlockingWindow):
         ]
         system_button_size = 10
         row_system = [
-            psgu.ge.Info(self.gem, info.backup_scripter, 'Info', sg_kwargs={'size': system_button_size}),
+            ge.Info(self.gem, info.backup_scripter, 'Info', sg_kwargs={'size': system_button_size}),
             sg.Button('Set Defaults', key='SetDefaults', size=system_button_size),
             sg.Button('Load Defaults', key='LoadDefaults', size=system_button_size),
             sg.Push()
@@ -129,7 +130,7 @@ class WindowMain(psgu.AbstractBlockingWindow):
             [frame_backup_file],
             [row_items],
             [sg.Sizer(0, 5)],
-            [self.status_bar(psgu.ge.StatusBar('StatusBar'))]
+            [self.status_bar(ge.StatusBar('StatusBar'))]
         ]
         return layout
     
@@ -297,17 +298,17 @@ class WindowMain(psgu.AbstractBlockingWindow):
 
         if_static = vfsdata_static.included_file_count
         iF_static = vfsdata_static.included_folder_count
-        isz_static = psgu.units.Bytes(vfsdata_static.included_size, psgu.units.Bytes.B).get_best(1, 0.1)
+        isz_static = units.Bytes(vfsdata_static.included_size, units.Bytes.B).get_best(1, 0.1)
         ef_static = vfsdata_static.excluded_file_count
         eF_static = vfsdata_static.excluded_folder_count
-        esz_static = psgu.units.Bytes(vfsdata_static.excluded_size, psgu.units.Bytes.B).get_best(1, 0.1)
+        esz_static = units.Bytes(vfsdata_static.excluded_size, units.Bytes.B).get_best(1, 0.1)
 
         if_final = vfsdata_final.included_file_count
         iF_final = vfsdata_final.included_folder_count
-        isz_final = psgu.units.Bytes(vfsdata_final.included_size, psgu.units.Bytes.B).get_best(1, 0.1)
+        isz_final = units.Bytes(vfsdata_final.included_size, units.Bytes.B).get_best(1, 0.1)
         ef_final = vfsdata_final.excluded_file_count
         eF_final = vfsdata_final.excluded_folder_count
-        esz_final = psgu.units.Bytes(vfsdata_final.excluded_size, psgu.units.Bytes.B).get_best(1, 0.1)
+        esz_final = units.Bytes(vfsdata_final.excluded_size, units.Bytes.B).get_best(1, 0.1)
 
         def sbs(a, b):
             return str(a) + ' / ' + str(b)

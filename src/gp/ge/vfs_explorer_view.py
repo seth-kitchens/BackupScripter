@@ -2,8 +2,10 @@ import os
 
 import PySimpleGUI as sg
 import psgu
+from psgu import ge, units
 
 from src.gp import fs
+from src.gp.text.table_list import TableList
 
 
 __all__ = [
@@ -46,7 +48,7 @@ class VFSExplorerView(psgu.GuiElement.iLayout, psgu.GuiElement):
             sg.Sizer(6, 0),
             sg.Text('Current'),
             sg.Sizer(5, 0),
-            self.sge(psgu.ge.Input(self.keys['CurrentPath']) \
+            self.sge(ge.Input(self.keys['CurrentPath']) \
                 .sg_kwargs_input(readonly=True, expand_x=True) \
                 .load_value('""'))
         ]
@@ -301,7 +303,7 @@ class VFSExplorerView(psgu.GuiElement.iLayout, psgu.GuiElement):
             s += 'Folder'
         else:
             s += 'File'
-        size_best = psgu.units.Bytes(entry.size, degree_name=psgu.units.Bytes.BYTE) \
+        size_best = units.Bytes(entry.size, degree_name=units.Bytes.BYTE) \
             .get_best()
         s += '\nSize: ' + size_best
         return s
@@ -311,14 +313,14 @@ class VFSExplorerView(psgu.GuiElement.iLayout, psgu.GuiElement):
         if self.vfs_explorer.current_dir_children == None:
             return
         i = 1
-        display_table = psgu.TableList()
+        display_table = TableList()
         display_table.add_row([
             '#', 'Typ', 'Name', 'Status', 'Inc Size',
             'Exc Size', 'I-F', 'I-f', 'E-F', 'E-f'
         ])
         for child in self.vfs_explorer.current_dir_children:
-            i_size_value, i_size_symbol = psgu.units.Bytes(int(child.get_included_size()), psgu.units.Bytes.B).find_best(0.1)
-            e_size_value, e_size_symbol = psgu.units.Bytes(int(child.get_excluded_size()), psgu.units.Bytes.B).find_best(0.1)
+            i_size_value, i_size_symbol = units.Bytes(int(child.get_included_size()), units.Bytes.B).find_best(0.1)
+            e_size_value, e_size_symbol = units.Bytes(int(child.get_excluded_size()), units.Bytes.B).find_best(0.1)
             i_size_value = round(i_size_value, 2)
             e_size_value = round(e_size_value, 2)
             i_size = psgu.utils.center_decimal_string(str(i_size_value), 2) + ' ' + i_size_symbol.rjust(2, ' ')
