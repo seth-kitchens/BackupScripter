@@ -2,7 +2,7 @@ import PySimpleGUI as sg
 
 import psgu
 
-from src.gp.vfs_explorer_view import *
+from src.gp.ge.vfs_explorer_view import *
 
 
 __all__ = ['VFSExplorerViewBS']

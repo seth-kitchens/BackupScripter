@@ -1,7 +1,7 @@
 import PySimpleGUI as sg
 import psgu
 
-from src.bs.elements import DetailListBS
+from src.bs.ge import DetailListBS
 from src.bs.windows.edit_matching_group import WindowEditMatchingGroups
 from src.bs.fs.matching_group import MatchingGroup
 

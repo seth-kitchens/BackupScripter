@@ -6,7 +6,9 @@ import psgu
 from src.gp import fs
 
 
-__all__ = ['VFSExplorerView']
+__all__ = [
+    'VFSExplorerView'
+]
 
 
 class VFSExplorerView(psgu.GuiElement.iLayout, psgu.GuiElement):

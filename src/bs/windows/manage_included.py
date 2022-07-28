@@ -1,7 +1,7 @@
 import psgu
 import PySimpleGUI as sg
 
-from src.bs import elements as bs_ge
+from src.bs import ge as bs_ge
 from src.bs.fs.vfs import VFSBS as VFS
 from src.bs.info import window_manage_included as info
 from src.bs.script_data import ScriptDataBS
@@ -52,7 +52,7 @@ class WindowManageIncluded(psgu.AbstractBlockingWindow):
             mgs = mglist.get_through_selection().values()
             if not mgs:
                 return
-            self.preview_match_groups(event_context, mgs)
+            self.preview_match_groups(event_context.window_context, mgs)
 
         @self.eventmethod(self.gem['MatchingGroupsList'].keys['ResolveHere'])
         @self.eventmethod(self.gem['MatchingGroupsList'].key_rcm('ListboxItem', 'ResolveHere'))
@@ -67,7 +67,7 @@ class WindowManageIncluded(psgu.AbstractBlockingWindow):
             self.update_status('Resolving matching groups...')
             self.vfs_static.process_matching_groups(mgs)
             mglist.remove_through_selection()
-            self.gem.push_all(event_context.window_context)
+            self.gem.for_ges_push(event_context.window)
             self.update_status('Matching groups resolved', 1.0, '',
                 text_color=self.COLOR_STATUS_FADED)
 
@@ -77,7 +77,7 @@ class WindowManageIncluded(psgu.AbstractBlockingWindow):
             mgs = mglist.get_dict().values()
             if not mgs:
                 return
-            self.preview_match_groups(event_context, mgs)
+            self.preview_match_groups(event_context.window_context, mgs)
 
         @self.eventmethod(self.gem['MatchingGroupsList'].keys['ResolveAll'])
         def event_resolve_all(event_context:psgu.EventContext):
@@ -91,7 +91,7 @@ class WindowManageIncluded(psgu.AbstractBlockingWindow):
             self.update_status('Resolving matching groups...')
             self.vfs_static.process_matching_groups(mgs)
             mglist.remove_all()
-            self.gem.push_all(event_context.window_context)
+            self.gem.for_ges_push(event_context.window)
             self.update_status('Matching groups resolved', 1.0, '',
                 text_color=self.COLOR_STATUS_FADED)
     
